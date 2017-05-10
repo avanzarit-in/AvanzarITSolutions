@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link th:href="@{/webjars/bootstrap/3.2.0/css/bootstrap.min.css}"  rel="stylesheet" media="screen" />
+    <link th:href="@{/css/core.css}" rel="stylesheet" media="screen" />
+    <link rel="stylesheet" th:href="@{/css/formValidation.min.css}"/>
+</head>
+<body>
+<div th:replace="fragments/header :: header">
+    Footer data
+</div>
+<div th:replace="${view} :: content">
+    Content
+</div>
+<div th:replace="fragments/footer :: footer">
+    Footer data
+</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="/js/formValidation.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script th:replace="${view} :: js"></script>
+</html>

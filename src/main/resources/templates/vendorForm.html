@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div class="container" th:fragment="content">
+    <style type="text/css">
+#profileForm {
+    margin-top: 15px;
+}
+</style>
+
+    <div class="col-xs-6 col-xs-offset-3">
+
+        <form id="profileForm" class="form-horizontal">
+
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#info-tab" data-toggle="tab">Tab title <i class="fa"></i></a></li>
+                <li><a href="#address-tab" data-toggle="tab">Tab title <i class="fa"></i></a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="info-tab">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Vendor Details</h3>
+                        </div>
+
+                        <div class="panel-body">
+
+
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label">Full name</label>
+
+                                <div class="col-xs-4">
+                                    <input type="text" class="form-control" name="firstName" placeholder="First name"/>
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <input type="text" class="form-control" name="lastName" placeholder="Last name"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">Phone number</label>
+
+                                <div class="col-xs-3">
+                                    <input type="text" class="form-control" name="cellPhone" placeholder="Cell"/>
+                                </div>
+
+                                <div class="col-xs-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="homePhone" placeholder="Home"/>
+                                        <span class="input-group-addon">-</span>
+                                        <input type="text" class="form-control" name="officePhone"
+                                               placeholder="Office"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-xs-6 col-xs-offset-5">
+                                    <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
+                                    <button type="submit" class="btn btn-primary">Update profile</button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane active" id="address-tab">
+                </div>
+            </div>
+          </form>
+    </div>
+</div>
+</body>
+<script th:fragment="js">
+
+    $(document).ready(function() {
+    $('#profileForm').formValidation({
+        framework: 'bootstrap',
+        icon: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            firstName: {
+                row: '.col-xs-4',
+                validators: {
+                    notEmpty: {
+                        message: 'The first name is required'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z\s]+$/,
+                        message: 'The first name can only consist of alphabetical and space'
+                    }
+                }
+            },
+            lastName: {
+                row: '.col-xs-4',
+                validators: {
+                    notEmpty: {
+                        message: 'The last name is required'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z\s]+$/,
+                        message: 'The last name can only consist of alphabetical and space'
+                    }
+                }
+            },
+            cellPhone: {
+                row: '.col-xs-3',
+                validators: {
+                    notEmpty: {
+                        message: 'The cell phone number is required'
+                    }
+                }
+            },
+            homePhone: {
+
+                validators: {
+                    notEmpty: {
+                        message: 'The home phone number is required'
+                    }
+                }
+            },
+            officePhone: {
+
+                validators: {
+                    notEmpty: {
+                        message: 'The office phone number is required'
+                    }
+                }
+            }
+        }
+    }).on('err.field.fv', function(e, data) {
+            // data.element --> The field element
+
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId    = $tabPane.attr('id');
+
+            $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                .parent()
+                .find('i')
+                .removeClass('glyphicon glyphicon-ok')
+                .addClass('glyphicon glyphicon-remove');
+        }).on('success.field.fv', function(e, data) {
+            // data.fv      --> The FormValidation instance
+            // data.element --> The field element
+
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId    = $tabPane.attr('id'),
+                $icon    = $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                            .parent()
+                            .find('i')
+                            .removeClass('glyphicon glyphicon-remove glyphicon-ok');
+
+            // Check if all fields in tab are valid
+            var isValidTab = data.fv.isValidContainer($tabPane);
+            if (isValidTab !== null) {
+                $icon.addClass(isValidTab ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-remove');
+            }
+        }).on('success.form.fv', function(e) {
+    alert('hi');
+            e.preventDefault();
+
+            var $form = $(e.target),
+                fv    = $form.data('formValidation');
+
+            // For demonstrating purpose, the url is generated randomly
+            // to get different response each time
+            // In fact, it should be /path/to/your/back-end/
+            var url = "/add";
+
+            $.ajax({
+                url: url,
+                data: $form.serialize(),
+                dataType: 'json'
+            }).success(function(response) {
+                // If there is error returned from server
+                if (response.result === 'error') {
+                    for (var field in response.fields) {
+                        fv
+                            // Show the custom message
+                            .updateMessage(field, 'blank', response.fields[field])
+                            // Set the field as invalid
+                            .updateStatus(field, 'INVALID', 'blank');
+                    }
+                } else {
+                alert('fai');
+                    // Do whatever you want here
+                    // such as showing a modal ...
+                }
+            });
+     });
+});
+
+
+
+
+
+
+</script>
+</html>

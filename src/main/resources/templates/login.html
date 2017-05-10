@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+
+<div class="container form-signin col-lg-4 col-lg-offset-4" th:fragment="content">
+    <div >
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Log in</h3>
+
+            </div>
+            <div class="panel-body">
+                <div class="row view-area">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <form role="form" id="signinForm" name="signinForm" th:action="@{/login}" method="post">
+                            <div class="row form-group">
+
+                                <div >
+                                    <label for="username">Login User Name</label>
+                                    <input type="text" name="username" id="username" class="form-control"
+                                           placeholder="Vendor ID / AdminUser ID"
+                                           required="required" autofocus="autofocus"/>
+                                </div>
+
+                            </div>
+
+                            <div class="row form-group">
+                                <div >
+                                    <label for="password">Password</label>
+                                    <input type="password" name="password" id="password" class="form-control"
+                                           placeholder="Password"
+                                           required="required"/>
+                                </div>
+
+                            </div>
+                            <div class="row form-group">
+                            <div class="col-lg-12 label label-danger" th:text="${error}"/>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-lg-4 col-lg-offset-4">
+                                    <button class="btn btn-primary" type="submit">
+                                        Login
+                                    </button>
+
+                                </div>
+
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                <h4><a th:href="@{/registration}">Vendor Self Registration</a></h4>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+<script th:fragment="js">
+$(document).ready(function() {
+    $('#signinForm').formValidation({
+        framework: 'bootstrap',
+        icon: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            username: {
+                validators: {
+                    notEmpty: {
+                        message: 'The name is required'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 30,
+                        message: 'The name must be more than 6 and less than 30 characters long'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z0-9_]+$/,
+                        message: 'The name can only consist of alphabetical, number and underscore'
+                    }
+                }
+            },
+            password: {
+                validators: {
+                    notEmpty: {
+                        message: 'The price is required'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+</html>
