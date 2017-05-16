@@ -1,6 +1,5 @@
 package com.avanzarit.apps.vendormgmt.service;
 
-import com.avanzarit.apps.vendormgmt.auth.model.User;
 import com.avanzarit.apps.vendormgmt.model.Vendor;
 
 /**
@@ -9,5 +8,5 @@ import com.avanzarit.apps.vendormgmt.model.Vendor;
 public interface VendorService {
     void save(Vendor user);
 
-    Vendor findByVendorName(String vendorName);
+    Vendor findByVendorId(String vendorId);
 }

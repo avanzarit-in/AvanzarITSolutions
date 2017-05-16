@@ -1,17 +1,10 @@
 package com.avanzarit.apps.vendormgmt.model;
 
-import com.avanzarit.apps.vendormgmt.Tab;
-import com.avanzarit.apps.vendormgmt.utils.Utils;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by SPADHI on 5/4/2017.
@@ -21,82 +14,113 @@ import java.util.Map;
 public class Vendor {
 
 
-    private Long id;
-    @Tab("1")
-    private String accno;
-    @Tab("2")
-    private String country;
-    @Tab("1")
-    private String name;
-    @Tab("3")
+    private String vendorId;
+    private String vendorName1;
+    private String vendorName2;
+    private String vendorName3;
+    private String contactPerson;
+    private String telephoneNumberExtn;
+    private String telephoneNumber;
+    private String telephoneExtn;
+    private String mobileNo;
     private String email;
-    @Tab("2")
-    private String address;
-    @Tab("2")
-    private String postcode;
-    @Tab("2")
+    private String faxNumber;
+    private String faxExtn;
+    private String faxNumberExtn;
+    private String buildingNo;
+    private String address1;
+    private String address2;
+    private String address3;
+    private String address4;
+    private String address5;
     private String city;
-    @Tab("2")
+    private String postCode;
     private String region;
-    @Tab("2")
-    private String pobox;
-    @Tab("2")
-    private String popostalcode;
-    @Tab("2")
-    private String copostalcode;
-    @Tab("3")
-    private String language;
-    @Tab("3")
-    private String telephone;
-    @Tab("3")
-    private String phext;
-    @Tab("3")
-    private String fxext;
-    @Tab("3")
-    private String mobile;
-    @Tab("3")
-    private String faxno;
-    @Tab("3")
-    private String dataline;
-    @Tab("3")
-    private String telebox;
-    private List<String> tabErrorList = new ArrayList<>();
+    private String country;
+    private String railwayStation;
+    private String accountHolderName;
+    private String accountNumber;
+    private String bankName;
+    private String ifscCode;
+    private String branchName;
+    private String branchLocation;
+    private String pan;
+    private String vatNumber;
+    private String gstRegistrationStatus;
+    private String noOfGstRegistration;
+    private String state;
+    private String gstNumber;
+    private String materialCode;
+    private String materialDescription;
+    private String hsn;
+
 
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    public Long getId() {
-        return id;
+    @Column(name="vendorid")
+    public String getVendorId() {
+        return vendorId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setVendorId(String vendorId) {
+        this.vendorId = vendorId;
     }
 
-    public String getAccno() {
-        return accno;
+    @Column(name="vendorname1")
+    public String getVendorName1() {
+        return vendorName1;
     }
 
-    public void setAccno(String accno) {
-        this.accno = accno;
+    public void setVendorName1(String vendorName1) {
+        this.vendorName1 = vendorName1;
     }
 
-    public String getCountry() {
-        return country;
+    @Column(name="vendorname2")
+    public String getVendorName2() {
+        return vendorName2;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setVendorName2(String vendorName2) {
+        this.vendorName2 = vendorName2;
     }
 
-    public String getName() {
-        return name;
+    @Column(name="vendorname3")
+    public String getVendorName3() {
+        return vendorName3;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setVendorName3(String vendorName3) {
+        this.vendorName3 = vendorName3;
     }
 
+    @Column(name="contactperson")
+    public String getContactPerson() {
+        return contactPerson;
+    }
+
+    public void setContactPerson(String contactPerson) {
+        this.contactPerson = contactPerson;
+    }
+
+    @Column(name="telephonenumberextn")
+    public String getTelephoneNumberExtn() {
+        return telephoneNumberExtn;
+    }
+
+    public void setTelephoneNumberExtn(String telephoneNumberExtn) {
+        this.telephoneNumberExtn = telephoneNumberExtn;
+    }
+
+    @Column(name="mobileno")
+    public String getMobileNo() {
+        return mobileNo;
+    }
+
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
+    }
+
+    @Column(name="email")
     public String getEmail() {
         return email;
     }
@@ -105,22 +129,70 @@ public class Vendor {
         this.email = email;
     }
 
-    public String getAddress() {
-        return address;
+    @Column(name="faxnumberextn")
+    public String getFaxNumberExtn() {
+        return faxNumberExtn;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setFaxNumberExtn(String faxNumberExtn) {
+        this.faxNumberExtn = faxNumberExtn;
     }
 
-    public String getPostcode() {
-        return postcode;
+    @Column(name="buildingno")
+    public String getBuildingNo() {
+        return buildingNo;
     }
 
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
+    public void setBuildingNo(String buildingNo) {
+        this.buildingNo = buildingNo;
     }
 
+    @Column(name="address1")
+    public String getAddress1() {
+        return address1;
+    }
+
+    public void setAddress1(String address1) {
+        this.address1 = address1;
+    }
+
+    @Column(name="address2")
+    public String getAddress2() {
+        return address2;
+    }
+
+    public void setAddress2(String address2) {
+        this.address2 = address2;
+    }
+
+    @Column(name="address3")
+    public String getAddress3() {
+        return address3;
+    }
+
+    public void setAddress3(String address3) {
+        this.address3 = address3;
+    }
+
+    @Column(name="address4")
+    public String getAddress4() {
+        return address4;
+    }
+
+    public void setAddress4(String address4) {
+        this.address4 = address4;
+    }
+
+    @Column(name="address5")
+    public String getAddress5() {
+        return address5;
+    }
+
+    public void setAddress5(String address5) {
+        this.address5 = address5;
+    }
+
+    @Column(name="city")
     public String getCity() {
         return city;
     }
@@ -129,6 +201,16 @@ public class Vendor {
         this.city = city;
     }
 
+    @Column(name="postcode")
+    public String getPostCode() {
+        return postCode;
+    }
+
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
+    }
+
+    @Column(name="region")
     public String getRegion() {
         return region;
     }
@@ -137,120 +219,211 @@ public class Vendor {
         this.region = region;
     }
 
-    public String getPobox() {
-        return pobox;
+    @Column(name="country")
+    public String getCountry() {
+        return country;
     }
 
-    public void setPobox(String pobox) {
-        this.pobox = pobox;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
-    public String getPopostalcode() {
-        return popostalcode;
+    @Column(name="railwaystation")
+    public String getRailwayStation() {
+        return railwayStation;
     }
 
-    public void setPopostalcode(String popostalcode) {
-        this.popostalcode = popostalcode;
+    public void setRailwayStation(String railwayStation) {
+        this.railwayStation = railwayStation;
     }
 
-    public String getCopostalcode() {
-        return copostalcode;
+    @Column(name="accountholdername")
+    public String getAccountHolderName() {
+        return accountHolderName;
     }
 
-    public void setCopostalcode(String copostalcode) {
-        this.copostalcode = copostalcode;
+    public void setAccountHolderName(String accountHolderName) {
+        this.accountHolderName = accountHolderName;
     }
 
-    public String getLanguage() {
-        return language;
+    @Column(name="accountnumber")
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
-    public String getTelephone() {
-        return telephone;
+    @Column(name="bankname")
+    public String getBankName() {
+        return bankName;
     }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 
-    public String getPhext() {
-        return phext;
+    @Column(name="ifsccode")
+    public String getIfscCode() {
+        return ifscCode;
     }
 
-    public void setPhext(String phext) {
-        this.phext = phext;
+    public void setIfscCode(String ifscCode) {
+        this.ifscCode = ifscCode;
     }
 
-    public String getFxext() {
-        return fxext;
+    @Column(name="branchname")
+    public String getBranchName() {
+        return branchName;
     }
 
-    public void setFxext(String fxext) {
-        this.fxext = fxext;
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
     }
 
-    public String getMobile() {
-        return mobile;
+    @Column(name="branchlocation")
+    public String getBranchLocation() {
+        return branchLocation;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setBranchLocation(String branchLocation) {
+        this.branchLocation = branchLocation;
     }
 
-    public String getFaxno() {
-        return faxno;
+    @Column(name="pan")
+    public String getPan() {
+        return pan;
     }
 
-    public void setFaxno(String faxno) {
-        this.faxno = faxno;
+    public void setPan(String pan) {
+        this.pan = pan;
     }
 
-    public String getDataline() {
-        return dataline;
+    @Column(name="vatnumber")
+    public String getVatNumber() {
+        return vatNumber;
     }
 
-    public void setDataline(String dataline) {
-        this.dataline = dataline;
+    public void setVatNumber(String vatNumber) {
+        this.vatNumber = vatNumber;
     }
 
-    public String getTelebox() {
-        return telebox;
+    @Column(name="gstregistrationstatus")
+    public String getGstRegistrationStatus() {
+        return gstRegistrationStatus;
     }
 
-    public void setTelebox(String telebox) {
-        this.telebox = telebox;
+    public void setGstRegistrationStatus(String gstRegistrationStatus) {
+        this.gstRegistrationStatus = gstRegistrationStatus;
+    }
+
+    @Column(name="noofgstregistration")
+    public String getNoOfGstRegistration() {
+        return noOfGstRegistration;
+    }
+
+    public void setNoOfGstRegistration(String noOfGstRegistration) {
+        this.noOfGstRegistration = noOfGstRegistration;
+    }
+
+    @Column(name="state")
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    @Column(name="gstnumber")
+    public String getGstNumber() {
+        return gstNumber;
+    }
+
+    public void setGstNumber(String gstNumber) {
+        this.gstNumber = gstNumber;
+    }
+
+    @Column(name="materialcode")
+    public String getMaterialCode() {
+        return materialCode;
+    }
+
+    public void setMaterialCode(String materialCode) {
+        this.materialCode = materialCode;
+    }
+
+    @Column(name="materialdescription")
+    public String getMaterialDescription() {
+        return materialDescription;
+    }
+
+    public void setMaterialDescription(String materialDescription) {
+        this.materialDescription = materialDescription;
+    }
+
+    @Column(name="hsn")
+    public String getHsn() {
+        return hsn;
+    }
+
+    public void setHsn(String hsn) {
+        this.hsn = hsn;
     }
 
     @Transient
-    public Map<String, String> getCountryMap() {
-        return Utils.country;
+    public String getTelephoneNumber() {
+        if(telephoneNumberExtn.contains("-")){
+            telephoneNumber=telephoneNumberExtn.substring(0,telephoneNumberExtn.indexOf("-"));
+        }else{
+            telephoneNumber=telephoneNumberExtn;
+        }
+        return telephoneNumber;
+    }
+
+    public void setTelephoneNumber(String telephoneNumber) {
+        this.telephoneNumber = telephoneNumber;
     }
 
     @Transient
-    public Map<String, String> getCityMap() {
-        return Utils.city;
+    public String getTelephoneExtn() {
+        if(telephoneNumberExtn.contains("-")){
+            telephoneExtn=telephoneNumberExtn.substring(telephoneNumberExtn.indexOf("-")+1,telephoneNumberExtn.length());
+        }
+        return telephoneExtn;
+    }
+
+    public void setTelephoneExtn(String telephoneExtn) {
+        this.telephoneExtn = telephoneExtn;
     }
 
     @Transient
-    public Map<String, String> getRegionMap() {
-        return Utils.region;
+    public String getFaxNumber() {
+
+        if(faxNumberExtn.contains("-")){
+            faxNumber=faxNumberExtn.substring(0,faxNumberExtn.indexOf("-"));
+        }else{
+            faxNumber=faxNumberExtn;
+        }
+         return faxNumber;
+    }
+
+    public void setFaxNumber(String faxNumber) {
+        this.faxNumber = faxNumber;
     }
 
     @Transient
-    public Map<String, String> getLanguageMap() {
-        return Utils.language;
+    public String getFaxExtn() {
+
+        if(faxNumberExtn.contains("-")){
+            faxExtn=faxNumberExtn.substring(faxNumberExtn.indexOf("-")+1,faxNumberExtn.length());
+        }
+        return faxExtn;
+
     }
 
-    @Transient
-    public List<String> getErrorOnTab() {
-        return tabErrorList;
-    }
-
-    public void setErrorOnTab(String tabNo) {
-        tabErrorList.add(tabNo);
+    public void setFaxExtn(String faxExtn) {
+        this.faxExtn = faxExtn;
     }
 }

@@ -15,30 +15,30 @@
                     <tr>
 
                         <th>Vendor ID</th>
-                        <th>Account No</th>
-                        <th>Country Code</th>
-                        <th>Name</th>
+                        <th>Vendor Name</th>
+                        <th>Telephone-Extn</th>
                         <th>Email</th>
                         <th>Address</th>
-                        <th>Pincode</th>
+                        <th>Bank Account Holder Name</th>
+                        <th>GST Number</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="mItem : ${vendors}">
                         <td><label type="text"
-                                   th:text="${mItem.id}" /></td>
+                                   th:text="${mItem.vendorId}" /></td>
                         <td><label type="text"
-                                   th:text="${mItem.accno}" /></td>
+                                   th:text="${mItem.vendorName1}" /></td>
                         <td><label type="text"
-                                   th:text="${mItem.country}" /></td>
-                        <td><label type="text"
-                                   th:text="${mItem.name}" /></td>
+                                   th:text="${mItem.telephoneNumberExtn}" /></td>
                         <td><label type="text"
                                    th:text="${mItem.email}" /></td>
                         <td><label type="text"
-                                   th:text="${mItem.address}" /></td>
+                                   th:text="${mItem.address1}" /></td>
                         <td><label type="text"
-                                   th:text="${mItem.postcode}" /></td>
+                                   th:text="${mItem.accountHolderName}" /></td>
+                        <td><label type="text"
+                                   th:text="${mItem.gstNumber}" /></td>
                     </tr>
                     </tbody>
                 </table>

@@ -31,3 +31,18 @@ top: -2px;
 right: -21px;
 line-height: 18px;
 }
+
+.form-group.required .control-label:after {
+  content:"*";
+  color:red;
+}
+
+.nav-tabs>li>a>i {
+padding-left:3px;
+color:#a94442;
+}
+
+select+i{
+padding-right:15px;
+}
+

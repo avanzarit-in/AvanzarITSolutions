@@ -7,71 +7,664 @@
 #profileForm {
     margin-top: 15px;
 }
-</style>
+    </style>
 
-    <div class="col-xs-6 col-xs-offset-3">
 
-        <form id="profileForm" class="form-horizontal">
+    <form id="profileForm" th:action="@{/add}" th:object="${vendor}" class="form-horizontal" method="post">
 
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#info-tab" data-toggle="tab">Tab title <i class="fa"></i></a></li>
-                <li><a href="#address-tab" data-toggle="tab">Tab title <i class="fa"></i></a></li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane active" id="info-tab">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Vendor Details</h3>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Vendor Profile Details</h3>
+            </div>
+
+            <div class="panel-body">
+
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#info-tab" data-toggle="tab">Basic Details<i class="fa"></i></a></li>
+                    <li><a href="#address-tab" data-toggle="tab">Address Details<i class="fa"></i></a></li>
+                    <li><a href="#communication-tab" data-toggle="tab">Communication Details<i class="fa"></i></a></li>
+                    <li><a href="#bankaccount-tab" data-toggle="tab">Bank Details<i class="fa"></i></a></li>
+                    <li><a href="#gstinfo-tab" data-toggle="tab">GST / TAX Information<i class="fa"></i></a></li>
+                    <li><a href="#material-tab" data-toggle="tab">Material / HSN Details<i class="fa"></i></a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="info-tab">
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">Vendor ID</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{vendorId}"  placeholder="Vendor ID"/>
+                            </div>
                         </div>
 
-                        <div class="panel-body">
+                        <div class="form-group required">
+                            <label class="col-xs-2 control-label">Vendor Name</label>
+                            <div class="col-xs-3">
+                                <input type="text" class="form-control " th:field="*{vendorName1}" placeholder="Name1"/>
+                            </div>
+                            <div class="col-xs-3">
+                                <input type="text" class="form-control" th:field="*{vendorName2}" placeholder="Name2"/>
+                            </div>
+                            <div class="col-xs-3">
+                                <input type="text" class="form-control" th:field="*{vendorName3}" placeholder="Name3"/>
+                            </div>
+                        </div>
 
+                    </div>
 
-                            <div class="form-group">
-                                <label class="col-xs-4 control-label">Full name</label>
+                    <div class="tab-pane" id="address-tab">
 
-                                <div class="col-xs-4">
-                                    <input type="text" class="form-control" name="firstName" placeholder="First name"/>
-                                </div>
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">Building Number</label>
+                            <div class="col-xs-3">
+                                <input type="text" class="form-control" th:field="*{buildingNo}"
+                                       placeholder="Building Number"/>
+                            </div>
+                        </div>
 
-                                <div class="col-xs-4">
-                                    <input type="text" class="form-control" name="lastName" placeholder="Last name"/>
-                                </div>
+                        <div class="form-group required">
+                            <label class="col-xs-2 control-label">Address Line 1</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{address1}"
+                                       placeholder="Address Line 1"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">Address Line 2</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{address2}"
+                                       placeholder="Address Line 2"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">Address Line 3</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{address3}"
+                                       placeholder="Address Line 3"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">Address Line 4</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{address4}"
+                                       placeholder="Address Line 4"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">Address Line 5</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{address5}"
+                                       placeholder="Address Line 5"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="col-xs-2 control-label">PostCode</label>
+                            <div class="col-xs-2">
+                                <input type="text" class="form-control" th:field="*{postCode}"
+                                       placeholder="PostCode"/>
                             </div>
 
-                            <div class="form-group">
-                                <label class="col-xs-3 control-label">Phone number</label>
+                        </div>
 
-                                <div class="col-xs-3">
-                                    <input type="text" class="form-control" name="cellPhone" placeholder="Cell"/>
-                                </div>
+                        <div class="form-group required">
 
-                                <div class="col-xs-6">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="homePhone" placeholder="Home"/>
-                                        <span class="input-group-addon">-</span>
-                                        <input type="text" class="form-control" name="officePhone"
-                                               placeholder="Office"/>
-                                    </div>
+                            <label class="col-xs-2 control-label">Country</label>
+                            <div class="col-xs-3">
+                                <select class="form-control" th:field="*{country}">
+                                    <option value="">Select a Country</option>
+                                    <option value="AD">Andorra</option>
+                                    <option value="AE">Utd.Arab Emir.</option>
+                                    <option value="AF">Afghanistan</option>
+                                    <option value="AG">Antigua/Barbuda</option>
+                                    <option value="AI">Anguilla</option>
+                                    <option value="AL">Albania</option>
+                                    <option value="AM">Armenia</option>
+                                    <option value="AN">Dutch Antilles</option>
+                                    <option value="AO">Angola</option>
+                                    <option value="AQ">Antarctica</option>
+                                    <option value="AR">Argentina</option>
+                                    <option value="AS">Samoa, America</option>
+                                    <option value="AT">Austria</option>
+                                    <option value="AU">Australia</option>
+                                    <option value="AW">Aruba</option>
+                                    <option value="AZ">Azerbaijan</option>
+                                    <option value="BA">Bosnia-Herz.</option>
+                                    <option value="BB">Barbados</option>
+                                    <option value="BD">Bangladesh</option>
+                                    <option value="BE">Belgium</option>
+                                    <option value="BF">Burkina Faso</option>
+                                    <option value="BG">Bulgaria</option>
+                                    <option value="BH">Bahrain</option>
+                                    <option value="BI">Burundi</option>
+                                    <option value="BJ">Benin</option>
+                                    <option value="BL">Blue</option>
+                                    <option value="BM">Bermuda</option>
+                                    <option value="BN">Brunei Daruss.</option>
+                                    <option value="BO">Bolivia</option>
+                                    <option value="BR">Brazil</option>
+                                    <option value="BS">Bahamas</option>
+                                    <option value="BT">Bhutan</option>
+                                    <option value="BV">Bouvet Islands</option>
+                                    <option value="BW">Botswana</option>
+                                    <option value="BY">Belarus</option>
+                                    <option value="BZ">Belize</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="CC">Coconut Islands</option>
+                                    <option value="CD">Dem. Rep. Congo</option>
+                                    <option value="CF">CAR</option>
+                                    <option value="CG">Rep.of Congo</option>
+                                    <option value="CH">Switzerland</option>
+                                    <option value="CI">Cote d'Ivoire</option>
+                                    <option value="CK">Cook Islands</option>
+                                    <option value="CL">Chile</option>
+                                    <option value="CM">Cameroon</option>
+                                    <option value="CN">China</option>
+                                    <option value="CO">Colombia</option>
+                                    <option value="CR">Costa Rica</option>
+                                    <option value="CS">Serbia/Monten.</option>
+                                    <option value="CU">Cuba</option>
+                                    <option value="CV">Cape Verde</option>
+                                    <option value="CX">Christmas Islnd</option>
+                                    <option value="CY">Cyprus</option>
+                                    <option value="CZ">Czech Republic</option>
+                                    <option value="DE">Germany</option>
+                                    <option value="DJ">Djibouti</option>
+                                    <option value="DK">Denmark</option>
+                                    <option value="DM">Dominica</option>
+                                    <option value="DO">Dominican Rep.</option>
+                                    <option value="DZ">Algeria</option>
+                                    <option value="EC">Ecuador</option>
+                                    <option value="EE">Estonia</option>
+                                    <option value="EG">Egypt</option>
+                                    <option value="EH">West Sahara</option>
+                                    <option value="ER">Eritrea</option>
+                                    <option value="ES">Spain</option>
+                                    <option value="ET">Ethiopia</option>
+                                    <option value="EU">European Union</option>
+                                    <option value="FI">Finland</option>
+                                    <option value="FJ">Fiji</option>
+                                    <option value="FK">Falkland Islnds</option>
+                                    <option value="FM">Micronesia</option>
+                                    <option value="FO">Faroe Islands</option>
+                                    <option value="FR">France</option>
+                                    <option value="GA">Gabon</option>
+                                    <option value="GB">United Kingdom</option>
+                                    <option value="GD">Grenada</option>
+                                    <option value="GE">Georgia</option>
+                                    <option value="GF">French Guayana</option>
+                                    <option value="GH">Ghana</option>
+                                    <option value="GI">Gibraltar</option>
+                                    <option value="GL">Greenland</option>
+                                    <option value="GM">Gambia</option>
+                                    <option value="GN">Guinea</option>
+                                    <option value="GP">Guadeloupe</option>
+                                    <option value="GQ">Equatorial Guin</option>
+                                    <option value="GR">Greece</option>
+                                    <option value="GS">S. Sandwich Ins</option>
+                                    <option value="GT">Guatemala</option>
+                                    <option value="GU">Guam</option>
+                                    <option value="GW">Guinea-Bissau</option>
+                                    <option value="GY">Guyana</option>
+                                    <option value="HK">Hong Kong</option>
+                                    <option value="HM">Heard/McDon.Isl</option>
+                                    <option value="HN">Honduras</option>
+                                    <option value="HR">Croatia</option>
+                                    <option value="HT">Haiti</option>
+                                    <option value="HU">Hungary</option>
+                                    <option value="ID">Indonesia</option>
+                                    <option value="IE">Ireland</option>
+                                    <option value="IL">Israel</option>
+                                    <option value="IN">India</option>
+                                    <option value="IO">Brit.Ind.Oc.Ter</option>
+                                    <option value="IQ">Iraq</option>
+                                    <option value="IR">Iran</option>
+                                    <option value="IS">Iceland</option>
+                                    <option value="IT">Italy</option>
+                                    <option value="JM">Jamaica</option>
+                                    <option value="JO">Jordan</option>
+                                    <option value="JP">Japan</option>
+                                    <option value="KE">Kenya</option>
+                                    <option value="KG">Kyrgyzstan</option>
+                                    <option value="KH">Cambodia</option>
+                                    <option value="KI">Kiribati</option>
+                                    <option value="KM">Comoros</option>
+                                    <option value="KN">St Kitts&amp;Nevis</option>
+                                    <option value="KP">North Korea</option>
+                                    <option value="KR">South Korea</option>
+                                    <option value="KW">Kuwait</option>
+                                    <option value="KY">Cayman Islands</option>
+                                    <option value="KZ">Kazakhstan</option>
+                                    <option value="LA">Laos</option>
+                                    <option value="LB">Lebanon</option>
+                                    <option value="LC">St. Lucia</option>
+                                    <option value="LI">Liechtenstein</option>
+                                    <option value="LK">Sri Lanka</option>
+                                    <option value="LR">Liberia</option>
+                                    <option value="LS">Lesotho</option>
+                                    <option value="LT">Lithuania</option>
+                                    <option value="LU">Luxembourg</option>
+                                    <option value="LV">Latvia</option>
+                                    <option value="LY">Libya</option>
+                                    <option value="MA">Morocco</option>
+                                    <option value="MC">Monaco</option>
+                                    <option value="MD">Moldova</option>
+                                    <option value="MG">Madagascar</option>
+                                    <option value="MH">Marshall Islnds</option>
+                                    <option value="MK">Macedonia</option>
+                                    <option value="ML">Mali</option>
+                                    <option value="MM">Burma</option>
+                                    <option value="MN">Mongolia</option>
+                                    <option value="MO">Macau</option>
+                                    <option value="MP">N.Mariana Islnd</option>
+                                    <option value="MQ">Martinique</option>
+                                    <option value="MR">Mauretania</option>
+                                    <option value="MS">Montserrat</option>
+                                    <option value="MT">Malta</option>
+                                    <option value="MU">Mauritius</option>
+                                    <option value="MV">Maldives</option>
+                                    <option value="MW">Malawi</option>
+                                    <option value="MX">Mexico</option>
+                                    <option value="MY">Malaysia</option>
+                                    <option value="MZ">Mozambique</option>
+                                    <option value="NA">Namibia</option>
+                                    <option value="NC">New Caledonia</option>
+                                    <option value="NE">Niger</option>
+                                    <option value="NF">Norfolk Islands</option>
+                                    <option value="NG">Nigeria</option>
+                                    <option value="NI">Nicaragua</option>
+                                    <option value="NL">Netherlands</option>
+                                    <option value="NO">Norway</option>
+                                    <option value="NP">Nepal</option>
+                                    <option value="NR">Nauru</option>
+                                    <option value="NT">NATO</option>
+                                    <option value="NU">Niue</option>
+                                    <option value="NZ">New Zealand</option>
+                                    <option value="OM">Oman</option>
+                                    <option value="OR">Orange</option>
+                                    <option value="PA">Panama</option>
+                                    <option value="PE">Peru</option>
+                                    <option value="PF">Frenc.Polynesia</option>
+                                    <option value="PG">Pap. New Guinea</option>
+                                    <option value="PH">Philippines</option>
+                                    <option value="PK">Pakistan</option>
+                                    <option value="PL">Poland</option>
+                                    <option value="PM">St.Pier,Miquel.</option>
+                                    <option value="PN">Pitcairn Islnds</option>
+                                    <option value="PR">Puerto Rico</option>
+                                    <option value="PS">Palestine</option>
+                                    <option value="PT">Portugal</option>
+                                    <option value="PW">Palau</option>
+                                    <option value="PY">Paraguay</option>
+                                    <option value="QA">Qatar</option>
+                                    <option value="RE">Reunion</option>
+                                    <option value="RO">Romania</option>
+                                    <option value="RU">Russian Fed.</option>
+                                    <option value="RW">Rwanda</option>
+                                    <option value="SA">Saudi Arabia</option>
+                                    <option value="SB">Solomon Islands</option>
+                                    <option value="SC">Seychelles</option>
+                                    <option value="SD">Sudan</option>
+                                    <option value="SE">Sweden</option>
+                                    <option value="SG">Singapore</option>
+                                    <option value="SH">Saint Helena</option>
+                                    <option value="SI">Slovenia</option>
+                                    <option value="SJ">Svalbard</option>
+                                    <option value="SK">Slovakia</option>
+                                    <option value="SL">Sierra Leone</option>
+                                    <option value="SM">San Marino</option>
+                                    <option value="SN">Senegal</option>
+                                    <option value="SO">Somalia</option>
+                                    <option value="SR">Suriname</option>
+                                    <option value="ST">S.Tome,Principe</option>
+                                    <option value="SV">El Salvador</option>
+                                    <option value="SY">Syria</option>
+                                    <option value="SZ">Swaziland</option>
+                                    <option value="TC">Turksh Caicosin</option>
+                                    <option value="TD">Chad</option>
+                                    <option value="TF">French S.Territ</option>
+                                    <option value="TG">Togo</option>
+                                    <option value="TH">Thailand</option>
+                                    <option value="TJ">Tajikistan</option>
+                                    <option value="TK">Tokelau Islands</option>
+                                    <option value="TL">East Timor</option>
+                                    <option value="TM">Turkmenistan</option>
+                                    <option value="TN">Tunisia</option>
+                                    <option value="TO">Tonga</option>
+                                    <option value="TP">East Timor</option>
+                                    <option value="TR">Turkey</option>
+                                    <option value="TT">Trinidad,Tobago</option>
+                                    <option value="TV">Tuvalu</option>
+                                    <option value="TW">Taiwan</option>
+                                    <option value="TZ">Tanzania</option>
+                                    <option value="UA">Ukraine</option>
+                                    <option value="UG">Uganda</option>
+                                    <option value="UM">Minor Outl.Isl.</option>
+                                    <option value="UN">United Nations</option>
+                                    <option value="US">USA</option>
+                                    <option value="UY">Uruguay</option>
+                                    <option value="UZ">Uzbekistan</option>
+                                    <option value="VA">Vatican City</option>
+                                    <option value="VC">St. Vincent</option>
+                                    <option value="VE">Venezuela</option>
+                                    <option value="VG">Brit.Virgin Is.</option>
+                                    <option value="VI">Amer.Virgin Is.</option>
+                                    <option value="VN">Vietnam</option>
+                                    <option value="VU">Vanuatu</option>
+                                    <option value="WF">Wallis,Futuna</option>
+                                    <option value="WS">Samoa</option>
+                                    <option value="YE">Yemen</option>
+                                    <option value="YT">Mayotte</option>
+                                    <option value="ZA">South Africa</option>
+                                    <option value="ZM">Zambia</option>
+                                    <option value="ZW">Zimbabwe</option>
+                                </select>
+
+                            </div>
+                            <label class="col-xs-1 control-label">Region</label>
+                            <div class="col-xs-3">
+                                <select th:field="*{region}" class="form-control">
+                                    <option value="">Select a Region</option>
+                                    <option value="1">Andhra Pradesh</option>
+                                    <option value="2">Arunachal Pradesh</option>
+                                    <option value="3">Assam</option>
+                                    <option value="4">Bihar</option>
+                                    <option value="5">Goa</option>
+                                    <option value="6">Gujarat</option>
+                                    <option value="7">Haryana</option>
+                                    <option value="8">Himachal Pradesh</option>
+                                    <option value="9">Jammu and Kashmir</option>
+                                    <option value="10">Karnataka</option>
+                                    <option value="11">Kerala</option>
+                                    <option value="12">Madhya Pradesh</option>
+                                    <option value="13">Maharashtra</option>
+                                    <option value="14">Manipur</option>
+                                    <option value="15">Megalaya</option>
+                                    <option value="16">Mizoram</option>
+                                    <option value="17">Nagaland</option>
+                                    <option value="18">Orissa</option>
+                                    <option value="19">Punjab</option>
+                                    <option value="20">Rajasthan</option>
+                                    <option value="21">Sikkim</option>
+                                    <option value="22">Tamil Nadu</option>
+                                    <option value="23">Tripura</option>
+                                    <option value="24">Uttar Pradesh</option>
+                                    <option value="25">West Bengal</option>
+                                    <option value="26">Andaman and Nico.In.</option>
+                                    <option value="27">Chandigarh</option>
+                                    <option value="28">Dadra and Nagar Hav.</option>
+                                    <option value="29">Daman and Diu</option>
+                                    <option value="30">Delhi</option>
+                                    <option value="31">Lakshadweep</option>
+                                    <option value="32">Pondicherry</option>
+                                    <option value="33">Chhattisgarh</option>
+                                    <option value="34">Jharkhand</option>
+                                    <option value="35">Uttaranchal</option>
+                                    <option value="36">Telangana</option>
+                                </select>
+
+                            </div>
+                            <label class="col-xs-1 control-label">City</label>
+                            <div class="col-xs-2">
+
+                                <input type="text" class="form-control" th:field="*{city}"
+                                       placeholder="City"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">Nearest Railway Station</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{railwayStation}"
+                                       placeholder="Nearest Railway Station"/>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="tab-pane" id="communication-tab">
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">Contact Person</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{contactPerson}"
+                                       placeholder="Contact Person"/>
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-xs-2  control-label">Telephone-Extn</label>
+                            <div class="col-xs-6">
+                                <div class="input-group">
+
+                                    <input type="text" class="form-control" th:field="*{telephoneNumber}"
+                                           placeholder="TelephoneNo"/>
+                                    <span class="input-group-addon">-</span>
+                                    <input type="text" class="form-control" th:field="*{telephoneExtn}"
+                                           placeholder="Extension"/>
+                                    <input type="hidden" th:field="*{telephoneNumberExtn}"/>
+
                                 </div>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2  control-label">Mobile Number</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{mobileNo}" placeholder="Mobile Number"/>
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-xs-2  control-label">E-mail Address</label>
+                            <div class="col-xs-6">
 
-                            <div class="form-group">
-                                <div class="col-xs-6 col-xs-offset-5">
-                                    <!-- Do NOT use name="submit" or id="submit" for the Submit button -->
-                                    <button type="submit" class="btn btn-primary">Update profile</button>
+                                <input type="text" class="form-control" th:field="*{email}"
+                                       placeholder="Email Address"/>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-2  control-label">Fax Number</label>
+                            <div class="col-xs-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" th:field="*{faxNumber}"
+                                           placeholder="Fax Number"/>
+                                    <span class="input-group-addon">-</span>
+                                    <input type="text" class="form-control" th:field="*{faxExtn}"
+                                           placeholder="Extension"/>
+                                    <input type="hidden" th:field="*{faxNumberExtn}"/>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane active" id="address-tab">
+                    <div class="tab-pane" id="bankaccount-tab">
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">Name of the Account Holder</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{accountHolderName}"
+                                       placeholder="Name of the Account Holder"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">Bank A/c Number</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{accountNumber}"
+                                       placeholder="Bank A/c Number"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">Bank Name</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{bankName}"
+                                       placeholder="Bank Name"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">IFSC Code</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{ifscCode}"
+                                       placeholder="IFSC Code"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">Branch Name</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{branchName}"
+                                       placeholder="Branch Name"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">Branch Location</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{branchLocation}"
+                                       placeholder="Branch Location"/>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="tab-pane" id="gstinfo-tab">
+
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">PAN</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{pan}"
+                                       placeholder="PAN Number"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">VAT Registration No</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{vatNumber}"
+                                       placeholder="VAT Registration No"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">GST Registration Status</label>
+                            <div class="col-xs-3">
+                                <select  class="form-control" th:field="*{gstRegistrationStatus}">
+                                    <option value="">Select a Value</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">Number of GST Registration</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" th:field="*{noOfGstRegistration}"
+                                       placeholder="GST Registration count"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">State</label>
+                            <div class="col-xs-6">
+                                <select th:field="*{state}" class="form-control">
+                                    <option value="">Select a State</option>
+                                    <option value="01">Srinagar / Jammu</option>
+                                    <option value="02">Himachal Pradesh</option>
+                                    <option value="03">Punjab</option>
+                                    <option value="04">Chandigarh</option>
+                                    <option value="05">Uttarakhand</option>
+                                    <option value="06">Haryana</option>
+                                    <option value="07">Delhi</option>
+                                    <option value="08">Rajasthan</option>
+                                    <option value="09">Uttar Pradesh</option>
+                                    <option value="10">Bihar</option>
+                                    <option value="11">Sikkim</option>
+                                    <option value="12">Arunachal Pradesh</option>
+                                    <option value="13">Nagaland</option>
+                                    <option value="14">Manipur</option>
+                                    <option value="15">Mizoram</option>
+                                    <option value="16">Tripura</option>
+                                    <option value="17">Meghalaya</option>
+                                    <option value="18">Assam</option>
+                                    <option value="19">West Bengal</option>
+                                    <option value="20">Jharkhand</option>
+                                    <option value="21">Orissa</option>
+                                    <option value="22">Chhattisgarh</option>
+                                    <option value="23">Madhya Pradesh</option>
+                                    <option value="24">Gujarat</option>
+                                    <option value="25">Daman and Diu</option>
+                                    <option value="26">Dadra and Nagar Haveli</option>
+                                    <option value="27">Maharashtra</option>
+                                    <option value="28">Andhra Pradesh</option>
+                                    <option value="29">Karnataka</option>
+                                    <option value="30">Goa</option>
+                                    <option value="31">Lakshadweep</option>
+                                    <option value="32">Kerala</option>
+                                    <option value="33">Tamil Nadu</option>
+                                    <option value="34">Puducherry</option>
+                                    <option value="35">Andaman and Nicobar</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label class="col-xs-3  control-label">GST Number</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{gstNumber}"
+                                       placeholder="GST Number"/>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="tab-pane" id="material-tab">
+
+                        <div class="form-group">
+                            <label class="col-xs-3  control-label">Material Code in SAP</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{materialCode}"
+                                       placeholder="Material Code in SAP"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-3  control-label">Material Description</label>
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" th:field="*{materialDescription}"
+                                       placeholder="Material Description"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-3  control-label">HSN</label>
+                            <div class="col-xs-4">
+                                <input type="text" class="form-control" th:field="*{hsn}"
+                                       placeholder="HSN Number"/>
+                            </div>
+                        </div>
+
+
+                    </div>
+
                 </div>
             </div>
-          </form>
-    </div>
+            <div class="panel-footer">
+                <div class="form-group">
+                    <div class="col-xs-6 col-xs-offset-5">
+
+                        <button type="submit" class="btn btn-primary">Update profile</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
+    </form>
+
 </div>
 </body>
 <script th:fragment="js">
@@ -79,126 +672,469 @@
     $(document).ready(function() {
     $('#profileForm').formValidation({
         framework: 'bootstrap',
+            excluded: [':disabled'],
         icon: {
             valid: 'glyphicon glyphicon-ok',
             invalid: 'glyphicon glyphicon-remove',
             validating: 'glyphicon glyphicon-refresh'
         },
         fields: {
-            firstName: {
-                row: '.col-xs-4',
-                validators: {
-                    notEmpty: {
-                        message: 'The first name is required'
-                    },
-                    regexp: {
-                        regexp: /^[a-zA-Z\s]+$/,
-                        message: 'The first name can only consist of alphabetical and space'
-                    }
-                }
-            },
-            lastName: {
-                row: '.col-xs-4',
-                validators: {
-                    notEmpty: {
-                        message: 'The last name is required'
-                    },
-                    regexp: {
-                        regexp: /^[a-zA-Z\s]+$/,
-                        message: 'The last name can only consist of alphabetical and space'
-                    }
-                }
-            },
-            cellPhone: {
+            vendorName1: {
                 row: '.col-xs-3',
                 validators: {
                     notEmpty: {
-                        message: 'The cell phone number is required'
+                        message: 'The Vendor Name is required'
+                    }, stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
                     }
                 }
             },
-            homePhone: {
-
+            vendorName2: {
+                row: '.col-xs-3',
                 validators: {
-                    notEmpty: {
-                        message: 'The home phone number is required'
+                   stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
                     }
                 }
             },
-            officePhone: {
-
+            vendorName3: {
+                row: '.col-xs-3',
+                validators: {
+                     stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+            buildingNo:{
+                row: '.col-xs-3',
+                validators: {
+                     stringLength: {
+                        max: 20,
+                        message: 'This field must be less than 20 characters'
+                    }
+                }
+            },
+            address1:{
+                row: '.col-xs-6',
                 validators: {
                     notEmpty: {
-                        message: 'The office phone number is required'
+                        message: 'The Address is required'
+                    },
+                     stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+            address2:{
+                row: '.col-xs-6',
+                validators: {
+
+                     stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+            address3:{
+                row: '.col-xs-6',
+                validators: {
+
+                     stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+            address4:{
+                row: '.col-xs-6',
+                validators: {
+
+                     stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+            address5:{
+                row: '.col-xs-6',
+                validators: {
+
+                     stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+            postcode:{
+                row: '.col-xs-2',
+                validators: {
+                    notEmpty: {
+                        message: 'The Pin Code is required'
+                    },
+                    zipCode: {
+                            country: 'IN',
+                            message: 'The value is not valid %s postal code'
+                        }
+                }
+            },
+            country:{
+                row: '.col-xs-3',
+                validators: {
+                    notEmpty: {
+                        message: 'The Country is required'
+                    }
+                }
+            },
+            region:{
+                row: '.col-xs-3',
+                validators: {
+                    notEmpty: {
+                        message: 'The Region is required'
+                    }
+                }
+            },
+            city:{
+                row: '.col-xs-2',
+                validators: {
+                    notEmpty: {
+                        message: 'The City is required'
+                    },
+                    stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+             railwayStation:{
+                row: '.col-xs-6',
+                validators: {
+                    stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+            telephoneNumber:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Telephone number is required'
+                    },
+                    phone: {
+                       country: 'IN',
+                        message: 'The value is not valid %s phone number'
+                    }
+               }
+            },
+            telephoneNumberExtn:{
+                    excluded: false,
+                        validators: {
+                    stringLength: {
+                        max: 16,
+                        message: 'Telephone number including the extension can not be more than 16  characters'
+                            }
+                    }
+            },
+            telephoneExtn:{
+                    row: '.col-xs-6',
+                        validators: {
+                    digits: {
+                        message: 'Only digits allowed in this field'
+                    },
+                    stringLength: {
+                        max: 6,
+                        message: 'Extension can not be more than 6 digits'
+                            }
+                    }
+            },
+            faxNumber:{
+                row: '.col-xs-8',
+                validators: {
+
+                    phone: {
+                       country: 'IN',
+                        message: 'The value is not valid %s phone number'
+                    }
+               }
+            },
+             faxExtn:{
+                    row: '.col-xs-6',
+                        validators: {
+                    digits: {
+                        message: 'Only digits allowed in this field'
+                    },
+                    stringLength: {
+                        max: 6,
+                        message: 'Extension can not be more than 6 digits'
+                            }
+                    }
+            },
+            faxNumberExtn:{
+                    excluded: false,
+                        validators: {
+                    stringLength: {
+                        max: 16,
+                        message: 'Fax number including the extension can not be more than 16  characters'
+                            }
+                    }
+            },
+            mobileNo:{
+                row: '.col-xs-6',
+
+                validators: {
+
+                    phone: {
+                       country: 'IN',
+                        message: 'The value is not valid %s mobile number'
+                    },
+                    stringLength: {
+                        max: 13,
+                        message: 'Mobile number including the country code can not be more than 13'
+                    }
+                }
+            },
+            email:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Email is required'
+                    },
+                    regexp: {
+                       regexp: '^[^@\\s]+@([^@\\s]+\\.)+[^@\\s]+$',
+                       message: 'The value is not a valid email address'
+                    },
+                    stringLength: {
+                        max: 241,
+                        message: 'This field must be less than 241 characters'
+                    }
+                }
+            },
+            accountHolderName:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Account Holder Name is required'
+                    },
+                    stringLength: {
+                        max: 60,
+                        message: 'This field must be less than 60 characters'
+                    }
+                }
+            },
+            accountNumber:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Account Number is required'
+                    },
+                    digits: {
+                        message: 'Only digits allowed in this field'
+                    },
+                    stringLength: {
+                        max: 18,
+                        message: 'This field must be less than 18 characters'
+                    }
+                }
+            },
+            bankName:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Bank Name is required'
+                    },
+                    stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+            ifscCode:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The IFSC Code is required'
+                    },
+                    stringLength: {
+                        max: 10,
+                        message: 'This field must be less than 10 characters'
+                    }
+                }
+            },
+             branchName:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Branch Name is required'
+                    },
+                    stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+            branchLocation:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Branch Location is required'
+                    },
+                    stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+
+                }
+            },
+            pan:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The PAN number is required'
+                    },
+                    callback: {
+                            message: 'Invalid Pan No',
+                            callback: function (value, validator, $field) {
+                            var panPat = /^([a-zA-Z]{5})(\d{4})([a-zA-Z]{1})$/;
+                            var code = /([C,P,H,F,A,T,B,L,J,G])/;
+                            var code_chk = value.substring(3,4);
+                            if (value.search(panPat) == -1) {
+                               return false;
+                            }
+                            if (code.test(code_chk) == false) {
+                                return false;
+                            }
+                                return true;
+                            }
+                    }
+                }
+            },
+            vatNumber:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The VAT number is required'
+                    },
+                    stringLength: {
+                        max: 9,
+                        message: 'This field must be less than 9 digits'
+                    },
+                    digits: {
+                        message: 'Only digits allowed in this field'
+                    }
+                }
+            },
+            gstRegistrationStatus:{
+                row: '.col-xs-3',
+                validators: {
+                    notEmpty: {
+                        message: 'The GST Registration Status is required'
+                    }
+                }
+            },
+            noOfGstRegistration:{
+                row: '.col-xs-4',
+                validators: {
+                    notEmpty: {
+                        message: 'The number of GST Registered is required'
+                    },
+                      digits: {
+                        message: 'Only digits allowed in this field'
+                    },
+                    between: {
+                        min: 1,
+                        max: 35,
+                        message: 'The number should be between 1 and 35'
+                    }
+                }
+            },
+            gstState:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The GST State is required'
+                    }
+                }
+            },
+            gstNumber:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The GST Number is required'
+                    },
+                    callback: {
+                            message: 'Invalid GSTN Number',
+                            callback: function (value, validator, $field) {
+                                    var state = $('#profileForm').find('[name="state"]').val(),
+                                    pan = $('#profileForm').find('[name="pan"]').val(),
+                                    numberOfGstn=$('#profileForm').find('[name="noOfGstRegistration"]').val();
+                                    var gstnNumber=state+pan+numberOfGstn;
+                                    return value==gstnNumber;
+                            }
                     }
                 }
             }
         }
-    }).on('err.field.fv', function(e, data) {
+    }).on('keyup', '[name="faxNumber"], [name="faxExtn"]', function(e) {
+            var faxNumber = $('#profileForm').find('[name="faxNumber"]').val(),
+                extension = $('#profileForm').find('[name="faxExtn"]').val();
+
+
+            $('#profileForm')
+                // Update the value for hidden field
+                .find('[name="faxNumberExtn"]')
+                    .val(faxNumber+'-'+extension)
+                    .end()
+                // Revalidate it
+                .formValidation('revalidateField', 'faxNumberExtn');
+
+
+        }).on('keyup', '[name="telephoneNumber"], [name="telephoneExtn"]', function(e) {
+            var telephone = $('#profileForm').find('[name="telephoneNumber"]').val(),
+                extension = $('#profileForm').find('[name="telephoneExtn"]').val();
+
+
+            $('#profileForm')
+                // Update the value for hidden field
+                .find('[name="telephoneNumberExtn"]')
+                    .val(telephone+'-'+extension)
+                    .end()
+                // Revalidate it
+                .formValidation('revalidateField', 'telephoneNumberExtn');
+
+
+        }).on('err.field.fv', function(e, data) {
             // data.element --> The field element
 
             var $tabPane = data.element.parents('.tab-pane'),
                 tabId    = $tabPane.attr('id');
-
             $('a[href="#' + tabId + '"][data-toggle="tab"]')
                 .parent()
                 .find('i')
-                .removeClass('glyphicon glyphicon-ok')
-                .addClass('glyphicon glyphicon-remove');
+                 .removeClass('fa-check')
+                .addClass('fa-times');
         }).on('success.field.fv', function(e, data) {
             // data.fv      --> The FormValidation instance
             // data.element --> The field element
+
 
             var $tabPane = data.element.parents('.tab-pane'),
                 tabId    = $tabPane.attr('id'),
                 $icon    = $('a[href="#' + tabId + '"][data-toggle="tab"]')
                             .parent()
                             .find('i')
-                            .removeClass('glyphicon glyphicon-remove glyphicon-ok');
+                            .removeClass('fa-check fa-times');
 
             // Check if all fields in tab are valid
             var isValidTab = data.fv.isValidContainer($tabPane);
             if (isValidTab !== null) {
-                $icon.addClass(isValidTab ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-remove');
+                $icon.addClass(isValidTab ? '' : 'fa-times');
             }
-        }).on('success.form.fv', function(e) {
-    alert('hi');
-            e.preventDefault();
-
-            var $form = $(e.target),
-                fv    = $form.data('formValidation');
-
-            // For demonstrating purpose, the url is generated randomly
-            // to get different response each time
-            // In fact, it should be /path/to/your/back-end/
-            var url = "/add";
-
-            $.ajax({
-                url: url,
-                data: $form.serialize(),
-                dataType: 'json'
-            }).success(function(response) {
-                // If there is error returned from server
-                if (response.result === 'error') {
-                    for (var field in response.fields) {
-                        fv
-                            // Show the custom message
-                            .updateMessage(field, 'blank', response.fields[field])
-                            // Set the field as invalid
-                            .updateStatus(field, 'INVALID', 'blank');
-                    }
-                } else {
-                alert('fai');
-                    // Do whatever you want here
-                    // such as showing a modal ...
-                }
-            });
-     });
+        });
 });
-
-
-
-
 
 
 </script>

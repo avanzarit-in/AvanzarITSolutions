@@ -1,29 +1,20 @@
 package com.avanzarit.apps.vendormgmt.controller;
 
-import com.avanzarit.apps.vendormgmt.auth.validator.VendorValidator;
 import com.avanzarit.apps.vendormgmt.model.Vendor;
 import com.avanzarit.apps.vendormgmt.repository.VendorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
 
 /**
  * Created by SPADHI on 5/3/2017.
@@ -33,8 +24,6 @@ class VendorController {
 
     private static final Logger logger = LoggerFactory.getLogger(VendorController.class);
 
-    @Autowired
-    private VendorValidator vendorValidator;
 
     @Autowired
     private VendorRepository vendorRepository;
@@ -62,7 +51,7 @@ class VendorController {
             return "redirect:/login";
         }
         String userName = auth.getUsername();
-        Vendor vendor = vendorRepository.findByName(userName);
+        Vendor vendor = vendorRepository.findByVendorId(userName);
         if(vendor==null){
             model.addAttribute("vendor", new Vendor());
         }else {
@@ -74,20 +63,9 @@ class VendorController {
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public String addAlbum(@ModelAttribute Vendor vendor, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         logger.debug("in add Vendor => " + vendor);
-
-        vendorValidator.validate(vendor, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            logger.warn("There are validation errors");
-            List<ObjectError> allErrors = bindingResult.getAllErrors();
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.vendor", bindingResult);
-            redirectAttributes.addFlashAttribute("vendor", vendor);
-            return "redirect:/add";
-        }
-
         vendorRepository.save(vendor);
 
-        logger.debug("Forwarding to the albums list...");
+        logger.debug("Forwarding to the Vendor list...");
         return "redirect:vendorListView";
     }
 
@@ -101,7 +79,7 @@ class VendorController {
         if(userName.equals("administrator")){
             mav.addObject("vendors", vendorRepository.findAll());
         }else{
-            mav.addObject("vendors", vendorRepository.findByName(userName));
+            mav.addObject("vendors", vendorRepository.findByVendorId(userName));
         }
         mav.setViewName("vendorListView");
         return mav;

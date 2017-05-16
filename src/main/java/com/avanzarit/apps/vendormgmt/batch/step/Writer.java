@@ -5,7 +5,6 @@ import com.avanzarit.apps.vendormgmt.auth.service.UserService;
 import com.avanzarit.apps.vendormgmt.model.Vendor;
 import com.avanzarit.apps.vendormgmt.repository.VendorRepository;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -16,20 +15,23 @@ public class Writer implements ItemWriter<Vendor> {
     private UserService userService;
 
 
-    public Writer(VendorRepository vendorRepository,UserService userService) {
+    public Writer(VendorRepository vendorRepository, UserService userService) {
         this.vendorRepository = vendorRepository;
-        this.userService=userService;
+        this.userService = userService;
     }
 
     @Override
     public void write(List<? extends Vendor> vendors) throws Exception {
         vendorRepository.save(vendors);
         for (Vendor vendor : vendors) {
-            User user = new User();
-            user.setUsername(vendor.getName());
-            user.setPassword("welcome123");
-            user.setPasswordConfirm("welcome123");
-            userService.save(user);
+            if (userService.findByUsername(vendor.getVendorId())==null) {
+                User user = new User();
+                user.setUsername(vendor.getVendorId());
+                user.setPassword("welcome123");
+                user.setPasswordConfirm("welcome123");
+                userService.save(user);
+            }
+
         }
 
     }
