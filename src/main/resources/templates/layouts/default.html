@@ -7,6 +7,9 @@
     <link th:href="@{/css/core.css}" rel="stylesheet" media="screen" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" media="screen" />
     <link rel="stylesheet" th:href="@{/css/formValidation.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dataTables.bootstrap.min.css}"/>
+
 </head>
 <body>
 <div th:replace="fragments/header :: header">
@@ -23,5 +26,8 @@
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="/js/formValidation.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap.min.js"></script>
+
 <script th:replace="${view} :: js"></script>
 </html>

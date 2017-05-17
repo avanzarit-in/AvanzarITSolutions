@@ -50,9 +50,22 @@ public class Vendor {
     private String noOfGstRegistration;
     private String state;
     private String gstNumber;
-    private String materialCode;
-    private String materialDescription;
-    private String hsn;
+    private String materialCode1;
+    private String materialDescription1;
+    private String hsn1;
+    private String materialCode2;
+    private String materialDescription2;
+    private String hsn2;
+    private String materialCode3;
+    private String materialDescription3;
+    private String hsn3;
+    private String materialCode4;
+    private String materialDescription4;
+    private String hsn4;
+    private String materialCode5;
+    private String materialDescription5;
+    private String hsn5;
+    private String submityn="N";
 
 
 
@@ -345,36 +358,153 @@ public class Vendor {
         this.gstNumber = gstNumber;
     }
 
-    @Column(name="materialcode")
-    public String getMaterialCode() {
-        return materialCode;
+    @Column(name="materialcode1")
+    public String getMaterialCode1() {
+        return materialCode1;
     }
 
-    public void setMaterialCode(String materialCode) {
-        this.materialCode = materialCode;
+    public void setMaterialCode1(String materialCode1) {
+        this.materialCode1 = materialCode1;
     }
 
-    @Column(name="materialdescription")
-    public String getMaterialDescription() {
-        return materialDescription;
+    @Column(name="materialdescription1")
+    public String getMaterialDescription1() {
+        return materialDescription1;
     }
 
-    public void setMaterialDescription(String materialDescription) {
-        this.materialDescription = materialDescription;
+    public void setMaterialDescription1(String materialDescription1) {
+        this.materialDescription1 = materialDescription1;
     }
 
-    @Column(name="hsn")
-    public String getHsn() {
-        return hsn;
+    @Column(name="hsn1")
+    public String getHsn1() {
+        return hsn1;
     }
 
-    public void setHsn(String hsn) {
-        this.hsn = hsn;
+    public void setHsn1(String hsn1) {
+        this.hsn1 = hsn1;
+    }
+
+    @Column(name="materialcode2")
+    public String getMaterialCode2() {
+        return materialCode2;
+    }
+
+    public void setMaterialCode2(String materialCode2) {
+        this.materialCode2 = materialCode2;
+    }
+
+    @Column(name="materialdescription2")
+    public String getMaterialDescription2() {
+        return materialDescription2;
+    }
+
+    public void setMaterialDescription2(String materialDescription2) {
+        this.materialDescription2 = materialDescription2;
+    }
+
+    @Column(name="hsn2")
+    public String getHsn2() {
+        return hsn2;
+    }
+
+    public void setHsn2(String hsn2) {
+        this.hsn2 = hsn2;
+    }
+
+    @Column(name="materialcode3")
+    public String getMaterialCode3() {
+        return materialCode3;
+    }
+
+    public void setMaterialCode3(String materialCode3) {
+        this.materialCode3 = materialCode3;
+    }
+
+    @Column(name="materialdescription3")
+    public String getMaterialDescription3() {
+        return materialDescription3;
+    }
+
+    public void setMaterialDescription3(String materialDescription3) {
+        this.materialDescription3 = materialDescription3;
+    }
+
+    @Column(name="hsn3")
+    public String getHsn3() {
+        return hsn3;
+    }
+
+    public void setHsn3(String hsn3) {
+        this.hsn3 = hsn3;
+    }
+
+    @Column(name="materialcode4")
+    public String getMaterialCode4() {
+        return materialCode4;
+    }
+
+    public void setMaterialCode4(String materialCode4) {
+        this.materialCode4 = materialCode4;
+    }
+
+    @Column(name="materialdescription4")
+    public String getMaterialDescription4() {
+        return materialDescription4;
+    }
+
+    public void setMaterialDescription4(String materialDescription4) {
+        this.materialDescription4 = materialDescription4;
+    }
+
+    @Column(name="hsn4")
+    public String getHsn4() {
+        return hsn4;
+    }
+
+    public void setHsn4(String hsn4) {
+        this.hsn4 = hsn4;
+    }
+
+    @Column(name="materialcode5")
+    public String getMaterialCode5() {
+        return materialCode5;
+    }
+
+    public void setMaterialCode5(String materialCode5) {
+        this.materialCode5 = materialCode5;
+    }
+
+    @Column(name="materialdescription5")
+    public String getMaterialDescription5() {
+        return materialDescription5;
+    }
+
+    public void setMaterialDescription5(String materialDescription5) {
+        this.materialDescription5 = materialDescription5;
+    }
+
+    @Column(name="hsn5")
+    public String getHsn5() {
+        return hsn5;
+    }
+
+    public void setHsn5(String hsn5) {
+        this.hsn5 = hsn5;
+    }
+
+    @Column(name="submityn")
+    public String getSubmityn() {
+        return submityn;
+    }
+
+    public void setSubmityn(String submityn) {
+        this.submityn = submityn;
     }
 
     @Transient
     public String getTelephoneNumber() {
-        if(telephoneNumberExtn.contains("-")){
+        if(telephoneNumberExtn!=null && telephoneNumberExtn.contains("-")){
             telephoneNumber=telephoneNumberExtn.substring(0,telephoneNumberExtn.indexOf("-"));
         }else{
             telephoneNumber=telephoneNumberExtn;
@@ -388,7 +518,7 @@ public class Vendor {
 
     @Transient
     public String getTelephoneExtn() {
-        if(telephoneNumberExtn.contains("-")){
+        if(telephoneNumberExtn!=null && telephoneNumberExtn.contains("-")){
             telephoneExtn=telephoneNumberExtn.substring(telephoneNumberExtn.indexOf("-")+1,telephoneNumberExtn.length());
         }
         return telephoneExtn;
@@ -401,7 +531,7 @@ public class Vendor {
     @Transient
     public String getFaxNumber() {
 
-        if(faxNumberExtn.contains("-")){
+        if(faxNumberExtn!=null && faxNumberExtn.contains("-")){
             faxNumber=faxNumberExtn.substring(0,faxNumberExtn.indexOf("-"));
         }else{
             faxNumber=faxNumberExtn;
@@ -416,7 +546,7 @@ public class Vendor {
     @Transient
     public String getFaxExtn() {
 
-        if(faxNumberExtn.contains("-")){
+        if(faxNumberExtn!=null && faxNumberExtn.contains("-")){
             faxExtn=faxNumberExtn.substring(faxNumberExtn.indexOf("-")+1,faxNumberExtn.length());
         }
         return faxExtn;

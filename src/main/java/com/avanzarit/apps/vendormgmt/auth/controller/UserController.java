@@ -6,6 +6,8 @@ import com.avanzarit.apps.vendormgmt.auth.service.SecurityService;
 import com.avanzarit.apps.vendormgmt.auth.service.UserService;
 import com.avanzarit.apps.vendormgmt.auth.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -63,6 +65,13 @@ public class UserController {
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String welcome(Model model) {
-        return "redirect:/get";
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = auth.getUsername();
+        if(userName.equals("admin")){
+            return "redirect:/vendorListView";
+        }else{
+            return "redirect:/get";
+        }
+
     }
 }

@@ -5,15 +5,19 @@
 <div class="container"  th:fragment="content">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">Vendor List &nbsp;&nbsp;&nbsp;&nbsp; <button class="btn btn-primary" type="submit">Export as CVS</button></h3>
+            <h3 class="panel-title">Vendor List &nbsp;&nbsp;&nbsp;&nbsp; <button class="btn btn-primary" type="submit">Export as CVS</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input checked="checked" type="radio" value="1" name="filter"/>Show All</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="2" name="filter"/>Submitted</label>
+                &nbsp;&nbsp;&nbsp;&nbsp; <label class="radio-inline"><input type="radio" value="3" name="filter"/>Saved</label>
+            </h3>
         </div>
 
         <div class="panel-body">
             <div class="row view-area">
-                <table class="table table-hover table-striped table-bordered">
+                <table id="dataTable" class="table table-hover table-striped table-bordered">
                     <thead class="thead-inverse">
                     <tr>
-
+                        <th>Submitted (Y/N)</th>
                         <th>Vendor ID</th>
                         <th>Vendor Name</th>
                         <th>Telephone-Extn</th>
@@ -21,10 +25,13 @@
                         <th>Address</th>
                         <th>Bank Account Holder Name</th>
                         <th>GST Number</th>
+
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="mItem : ${vendors}">
+                        <td><label type="text"
+                                   th:text="${mItem.submityn}" /></td>
                         <td><label type="text"
                                    th:text="${mItem.vendorId}" /></td>
                         <td><label type="text"
@@ -39,28 +46,55 @@
                                    th:text="${mItem.accountHolderName}" /></td>
                         <td><label type="text"
                                    th:text="${mItem.gstNumber}" /></td>
+
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <div class="panel-footer">
 
-            <ul class="pagination">
-                <li class="disabled"><span>&laquo;</span></li>
-                <li class="active"><span>1</span></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">&raquo;</a></li>
-            </ul>
-
-        </div>
     </div>
 
 </div>
 
 
 </body>
+<script th:fragment="js">
+
+$.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+
+        var selected=$('input[name=filter]:checked').val();
+        var age = data[0];
+
+        if(selected == '2'){
+            return age == 'Y' ? true : false;
+        }
+        if(selected == '1'){
+            return true;
+        }
+        if(selected == '3'){
+            return age == 'N' ? true : false;
+        }
+     });
+
+    $(document).ready(function() {
+        $('#dataTable').DataTable( {
+                "scrollY": 200,
+                "scrollX": true
+            });
+
+    $('input:radio[name="filter"]').change(function(){
+        var table = $('#dataTable').DataTable({
+        retrieve: true
+        });
+        table.draw();
+    });
+ });
+
+
+
+
+
+    </script>
 </html>

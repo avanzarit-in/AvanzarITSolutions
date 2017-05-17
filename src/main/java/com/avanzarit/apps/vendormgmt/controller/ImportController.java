@@ -52,7 +52,7 @@ public class ImportController {
     @Autowired
     private UserService userService;
 
-    public Job job() {
+    public Job importJob() {
         return jobBuilderFactory.get("job").incrementer(new RunIdIncrementer()).listener(new Listener(vendorRepository))
                 .flow(step1()).end().build();
     }
@@ -78,8 +78,8 @@ public class ImportController {
             storageService.store(file);
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
-            jobLauncher.run(job(), jobParameters);
-            storageService.deleteAll();
+            jobLauncher.run(importJob(), jobParameters);
+         //   storageService.deleteAll();
         } catch (Exception e) {
             logger.info(e.getMessage());
         }

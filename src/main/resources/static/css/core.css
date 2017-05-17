@@ -46,3 +46,8 @@ select+i{
 padding-right:15px;
 }
 
+div.dataTables_wrapper {
+        width: 95%;
+        margin: 0 auto;
+    }
+

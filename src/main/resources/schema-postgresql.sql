@@ -36,9 +36,22 @@ CREATE TABLE vendor (
  noofgstregistration VARCHAR(500),
  state VARCHAR(500),
  gstnumber VARCHAR(500),
- materialcode VARCHAR(500),
- materialdescription VARCHAR(500),
- hsn  VARCHAR(500)
+ materialcode1 VARCHAR(500),
+ materialdescription1 VARCHAR(500),
+ hsn1  VARCHAR(500),
+ materialcode2 VARCHAR(500),
+ materialdescription2 VARCHAR(500),
+ hsn2  VARCHAR(500),
+ materialcode3 VARCHAR(500),
+ materialdescription3 VARCHAR(500),
+ hsn3  VARCHAR(500),
+ materialcode4 VARCHAR(500),
+ materialdescription4 VARCHAR(500),
+ hsn4  VARCHAR(500),
+ materialcode5 VARCHAR(500),
+ materialdescription5 VARCHAR(500),
+ hsn5  VARCHAR(500),
+ submityn VARCHAR(1)
 
 );
 

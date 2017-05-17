@@ -38,7 +38,7 @@ class VendorController {
 
             model.addAttribute("vendor", new Vendor());
         }
-        model.addAttribute("vendor", new Vendor());
+     //   model.addAttribute("vendor", new Vendor());
 
         return "vendorForm";
     }
@@ -63,10 +63,17 @@ class VendorController {
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public String addAlbum(@ModelAttribute Vendor vendor, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         logger.debug("in add Vendor => " + vendor);
-        vendorRepository.save(vendor);
 
+        vendorRepository.save(vendor);
+        redirectAttributes.addFlashAttribute("vendor", vendor);
         logger.debug("Forwarding to the Vendor list...");
-        return "redirect:vendorListView";
+        if(vendor.getSubmityn()!=null && vendor.getSubmityn().equals("N")){
+            redirectAttributes.addFlashAttribute("message","Your changes hav been Saved!");
+            return "redirect:add";
+        }
+        redirectAttributes.addFlashAttribute("message",
+                "Successfully Submitted the changes");
+        return "redirect:add";
     }
 
     @RequestMapping(path = "/vendorListView", method = RequestMethod.GET)
@@ -76,7 +83,7 @@ class VendorController {
         ModelAndView mav = new ModelAndView();
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userName = auth.getUsername();
-        if(userName.equals("administrator")){
+        if(userName.equals("admin")){
             mav.addObject("vendors", vendorRepository.findAll());
         }else{
             mav.addObject("vendors", vendorRepository.findByVendorId(userName));
