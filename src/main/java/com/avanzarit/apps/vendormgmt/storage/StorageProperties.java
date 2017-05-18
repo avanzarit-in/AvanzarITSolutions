@@ -13,7 +13,7 @@ public class StorageProperties {
     /**
      * Folder location for storing files
      */
-    private String location = "e:/upload-dir";
+    private String location = "c:/upload-dir";
 
     public String getLocation() {
         return location;

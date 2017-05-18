@@ -1,16 +1,7 @@
 package com.avanzarit.apps.vendormgmt.auth.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -24,6 +15,9 @@ public class User {
     private String password;
     private String passwordConfirm;
     private Set<Role> roles;
+    private Date lastLoginDate;
+    private UserActionEnum lastUserAction;
+
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

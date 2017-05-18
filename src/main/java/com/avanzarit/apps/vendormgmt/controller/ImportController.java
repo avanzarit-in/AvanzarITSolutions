@@ -1,10 +1,7 @@
 package com.avanzarit.apps.vendormgmt.controller;
 
 import com.avanzarit.apps.vendormgmt.auth.service.UserService;
-import com.avanzarit.apps.vendormgmt.batch.step.Listener;
-import com.avanzarit.apps.vendormgmt.batch.step.Processor;
-import com.avanzarit.apps.vendormgmt.batch.step.Reader;
-import com.avanzarit.apps.vendormgmt.batch.step.Writer;
+import com.avanzarit.apps.vendormgmt.batch.step.*;
 import com.avanzarit.apps.vendormgmt.model.Vendor;
 import com.avanzarit.apps.vendormgmt.repository.VendorRepository;
 import com.avanzarit.apps.vendormgmt.storage.StorageFileNotFoundException;
@@ -29,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.sql.DataSource;
+
 /**
  * Created by SPADHI on 5/5/2017.
  */
@@ -50,7 +49,22 @@ public class ImportController {
     public VendorRepository vendorRepository;
 
     @Autowired
+    public DataSource dataSource;
+
+    @Autowired
     private UserService userService;
+
+    public Job exportJob() {
+        return jobBuilderFactory.get("exportjob").incrementer(new RunIdIncrementer())
+                .flow(step2()).end().build();
+    }
+
+
+    public Step step2() {
+        return stepBuilderFactory.get("step2").<Vendor, Vendor>chunk(2)
+                .reader(ExportReader.reader(dataSource))
+                .processor(new ExportItemProcessor()).writer(ExportWriter.write(storageService)).build();
+    }
 
     public Job importJob() {
         return jobBuilderFactory.get("job").incrementer(new RunIdIncrementer()).listener(new Listener(vendorRepository))
@@ -87,6 +101,23 @@ public class ImportController {
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
         return "redirect:/upload";
+    }
+
+    @GetMapping("/download")
+    public String handleFileDownload(RedirectAttributes redirectAttributes) {
+
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        try {
+
+            JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+                    .toJobParameters();
+            jobLauncher.run(exportJob(), jobParameters);
+            //   storageService.deleteAll();
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+
+        return "redirect:/vendorListView";
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)

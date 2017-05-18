@@ -15,7 +15,8 @@ public class ExportReader {
     public ExportReader(DataSource dataSource){
         this.dataSource=dataSource;
     }
-    public static JdbcCursorItemReader<Vendor> reader(String path) {
+
+    public static JdbcCursorItemReader<Vendor> reader(DataSource dataSource) {
         JdbcCursorItemReader<Vendor> reader = new JdbcCursorItemReader<Vendor>();
         reader.setDataSource(dataSource);
         reader.setSql("SELECT vendorid, vendorname1, vendorname2, vendorname3, telephonenumberextn, mobileno, email, faxnumberextn, buildingno, address1, address2, address3, address4, address5, city, postcode, region, country, accountholdername, accountnumber, pan, vatnumber FROM VENDOR");

@@ -1,10 +1,7 @@
 package com.avanzarit.apps.vendormgmt.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by SPADHI on 5/4/2017.
@@ -66,6 +63,24 @@ public class Vendor {
     private String materialDescription5;
     private String hsn5;
     private String submityn="N";
+    private VendorStatusEnum vendorStatus;
+    private String modifiedBy;
+    private Date lastModifiedOn;
+    private String submittedBy;
+    private Date lastSubmittedOn;
+    private String approvedBy;
+    private Date lastApprovedOn;
+    private String rejectedBy;
+    private Date lastRejectedOn;
+    private String lastRevertedBy;
+    private Date lastRevertedOevertedOn;
+    private int revertCount;
+    private String rejectReason;
+    private String revertReason;
+    private boolean acceptTermsAndCondition;
+    private String tncAcceptBy;
+    private Date tncAcceptedOn;
+    private Date sapSyncDate;
 
 
 
