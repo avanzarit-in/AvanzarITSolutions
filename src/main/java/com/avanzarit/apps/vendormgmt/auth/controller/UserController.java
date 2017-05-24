@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by SPADHI on 5/4/2017.
  */
@@ -74,4 +76,21 @@ public class UserController {
         }
 
     }
+
+    @RequestMapping(value = {"/passwordExpired"}, method = RequestMethod.GET)
+    public String changePassword(HttpServletRequest request, Model model) {
+
+            return "redirect:/updatePassword";
+
+
+    }
+
+    @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.GET)
+    public String updatePassword(HttpServletRequest request, Model model) {
+
+        return "updatePassword";
+
+
+    }
+
 }

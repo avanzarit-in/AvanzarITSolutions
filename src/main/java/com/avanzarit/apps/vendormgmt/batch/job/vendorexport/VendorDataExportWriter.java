@@ -1,4 +1,4 @@
-package com.avanzarit.apps.vendormgmt.batch.step;
+package com.avanzarit.apps.vendormgmt.batch.job.vendorexport;
 
 import com.avanzarit.apps.vendormgmt.model.Vendor;
 import com.avanzarit.apps.vendormgmt.storage.StorageService;
@@ -10,7 +10,7 @@ import org.springframework.batch.item.file.transform.FieldExtractor;
 /**
  * Created by SPADHI on 5/17/2017.
  */
-public class ExportWriter {
+public class VendorDataExportWriter {
     public static FlatFileItemWriter write(StorageService storageService) {
         FlatFileItemWriter writer = new FlatFileItemWriter();
 

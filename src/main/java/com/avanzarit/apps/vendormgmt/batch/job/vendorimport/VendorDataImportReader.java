@@ -1,4 +1,4 @@
-package com.avanzarit.apps.vendormgmt.batch.step;
+package com.avanzarit.apps.vendormgmt.batch.job.vendorimport;
 
 import com.avanzarit.apps.vendormgmt.model.Vendor;
 import com.avanzarit.apps.vendormgmt.storage.StorageService;
@@ -8,7 +8,7 @@ import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.core.io.ClassPathResource;
 
-public class Reader {
+public class VendorDataImportReader {
 	public static FlatFileItemReader<Vendor> reader(String path) {
 		FlatFileItemReader<Vendor> reader = new FlatFileItemReader<Vendor>();
 

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="bank" th:object="${vendor}">
+<div class="form-group required">
+    <label class="col-xs-3  control-label">Name of the Account Holder</label>
+    <div class="col-xs-6">
+        <input type="text" class="form-control" th:field="*{accountHolderName}"  th:disabled="*{submityn == 'Y'}"
+               placeholder="Name of the Account Holder"/>
+    </div>
+</div>
+
+<div class="form-group required">
+    <label class="col-xs-3  control-label">Bank A/c Number</label>
+    <div class="col-xs-6">
+        <input type="text" class="form-control" th:field="*{accountNumber}"  th:disabled="*{submityn == 'Y'}"
+               placeholder="Bank A/c Number"/>
+    </div>
+</div>
+
+<div class="form-group required">
+    <label class="col-xs-3  control-label">Bank Name</label>
+    <div class="col-xs-6">
+        <input type="text" class="form-control" th:field="*{bankName}"  th:disabled="*{submityn == 'Y'}"
+               placeholder="Bank Name"/>
+    </div>
+</div>
+
+<div class="form-group required">
+    <label class="col-xs-3  control-label">IFSC Code</label>
+    <div class="col-xs-6">
+        <input type="text" class="form-control" th:field="*{ifscCode}"  th:disabled="*{submityn == 'Y'}"
+               placeholder="IFSC Code"/>
+    </div>
+</div>
+
+<div class="form-group required">
+    <label class="col-xs-3  control-label">Branch Name</label>
+    <div class="col-xs-6">
+        <input type="text" class="form-control" th:field="*{branchName}"  th:disabled="*{submityn == 'Y'}"
+               placeholder="Branch Name"/>
+    </div>
+</div>
+
+<div class="form-group required">
+    <label class="col-xs-3  control-label">Branch Location</label>
+    <div class="col-xs-6">
+        <input type="text" class="form-control" th:field="*{branchLocation}"  th:disabled="*{submityn == 'Y'}"
+               placeholder="Branch Location"/>
+    </div>
+</div>
+</div>
+</body>
+<script th:fragment="bankjs">
+
+$(document).ready(function() {
+     $('#bankaccount-tab').formValidation({
+        framework: 'bootstrap',
+            excluded: [':disabled'],
+     icon: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+     fields: {
+            accountHolderName:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Account Holder Name is required'
+                    },
+                    stringLength: {
+                        max: 60,
+                        message: 'This field must be less than 60 characters'
+                    }
+                }
+            },
+            accountNumber:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Account Number is required'
+                    },
+                    digits: {
+                        message: 'Only digits allowed in this field'
+                    },
+                    stringLength: {
+                        max: 18,
+                        message: 'This field must be less than 18 characters'
+                    }
+                }
+            },
+            bankName:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Bank Name is required'
+                    },
+                    stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+            ifscCode:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The IFSC Code is required'
+                    },
+                    stringLength: {
+                        max: 10,
+                        message: 'This field must be less than 10 characters'
+                    }
+                }
+            },
+             branchName:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Branch Name is required'
+                    },
+                    stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+                }
+            },
+            branchLocation:{
+                row: '.col-xs-6',
+                validators: {
+                    notEmpty: {
+                        message: 'The Branch Location is required'
+                    },
+                    stringLength: {
+                        max: 35,
+                        message: 'This field must be less than 35 characters'
+                    }
+
+                }
+            }
+         }
+     }).on('err.field.fv', function(e, data) {
+
+            // data.element --> The field element
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId    = $tabPane.attr('id');
+            $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                .parent()
+                .find('i')
+                 .removeClass('fa-check')
+                .addClass('fa-times');
+        }).on('success.field.fv', function(e, data) {
+            // data.fv      --> The FormValidation instance
+            // data.element --> The field element
+
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId    = $tabPane.attr('id'),
+                $icon    = $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                            .parent()
+                            .find('i')
+                            .removeClass('fa-check fa-times');
+
+            // Check if all fields in tab are valid
+            var isValidTab = data.fv.isValidContainer($tabPane);
+            if (isValidTab !== null) {
+                $icon.addClass(isValidTab ? '' : 'fa-times');
+            }
+        });
+
+});
+
+</script>
+</html>

@@ -1,7 +1,20 @@
 package com.avanzarit.apps.vendormgmt.controller;
 
+import com.avanzarit.apps.vendormgmt.auth.model.User;
+import com.avanzarit.apps.vendormgmt.auth.repository.RoleRepository;
+import com.avanzarit.apps.vendormgmt.auth.repository.UserRepository;
 import com.avanzarit.apps.vendormgmt.auth.service.UserService;
-import com.avanzarit.apps.vendormgmt.batch.step.*;
+import com.avanzarit.apps.vendormgmt.batch.job.userimport.UserDataListener;
+import com.avanzarit.apps.vendormgmt.batch.job.userimport.UserDataProcessor;
+import com.avanzarit.apps.vendormgmt.batch.job.userimport.UserDataReader;
+import com.avanzarit.apps.vendormgmt.batch.job.userimport.UserDataWriter;
+import com.avanzarit.apps.vendormgmt.batch.job.vendorexport.VendorDataExportProcessor;
+import com.avanzarit.apps.vendormgmt.batch.job.vendorexport.VendorDataExportReader;
+import com.avanzarit.apps.vendormgmt.batch.job.vendorexport.VendorDataExportWriter;
+import com.avanzarit.apps.vendormgmt.batch.job.vendorimport.VendorDataImportListener;
+import com.avanzarit.apps.vendormgmt.batch.job.vendorimport.VendorDataImportProcessor;
+import com.avanzarit.apps.vendormgmt.batch.job.vendorimport.VendorDataImportReader;
+import com.avanzarit.apps.vendormgmt.batch.job.vendorimport.VendorDataImportWriter;
 import com.avanzarit.apps.vendormgmt.model.Vendor;
 import com.avanzarit.apps.vendormgmt.repository.VendorRepository;
 import com.avanzarit.apps.vendormgmt.storage.StorageFileNotFoundException;
@@ -49,33 +62,52 @@ public class ImportController {
     public VendorRepository vendorRepository;
 
     @Autowired
+    public UserRepository userRepository;
+
+    @Autowired
+    public RoleRepository roleRepository;
+
+    @Autowired
     public DataSource dataSource;
 
     @Autowired
     private UserService userService;
 
-    public Job exportJob() {
-        return jobBuilderFactory.get("exportjob").incrementer(new RunIdIncrementer())
-                .flow(step2()).end().build();
+    public Job exportVendorJob() {
+        return jobBuilderFactory.get("exportVendorjob").incrementer(new RunIdIncrementer())
+                .flow(exportVendorStep()).end().build();
     }
 
 
-    public Step step2() {
-        return stepBuilderFactory.get("step2").<Vendor, Vendor>chunk(2)
-                .reader(ExportReader.reader(dataSource))
-                .processor(new ExportItemProcessor()).writer(ExportWriter.write(storageService)).build();
+    public Step exportVendorStep() {
+        return stepBuilderFactory.get("exportVendorStep").<Vendor, Vendor>chunk(2)
+                .reader(VendorDataExportReader.reader(dataSource))
+                .processor(new VendorDataExportProcessor()).writer(VendorDataExportWriter.write(storageService)).build();
     }
 
-    public Job importJob() {
-        return jobBuilderFactory.get("job").incrementer(new RunIdIncrementer()).listener(new Listener(vendorRepository))
-                .flow(step1()).end().build();
+    public Job importVendorJob() {
+        return jobBuilderFactory.get("importVendorjob").incrementer(new RunIdIncrementer()).listener(new VendorDataImportListener(vendorRepository))
+                .flow(importVendorStep()).end().build();
     }
 
 
-    public Step step1() {
-        return stepBuilderFactory.get("step1").<Vendor, Vendor>chunk(2)
-                .reader(Reader.reader(storageService))
-                .processor(new Processor()).writer(new Writer(vendorRepository, userService)).build();
+    public Step importVendorStep() {
+        return stepBuilderFactory.get("importVendorStep").<Vendor, Vendor>chunk(2)
+                .reader(VendorDataImportReader.reader(storageService))
+                .processor(new VendorDataImportProcessor()).writer(new VendorDataImportWriter(vendorRepository, userService)).build();
+    }
+
+    public Job importUserJob() {
+        return jobBuilderFactory.get("importUserjob").incrementer(new RunIdIncrementer()).listener(new UserDataListener(userRepository))
+                .flow(importUserStep()).end().build();
+    }
+
+
+    public Step importUserStep() {
+        return stepBuilderFactory.get("importUserStep").<User, User>chunk(2)
+                .reader(UserDataReader.reader(storageService))
+                .processor(new UserDataProcessor())
+                .writer(new UserDataWriter(userService,roleRepository)).build();
     }
 
     @GetMapping("/upload")
@@ -92,8 +124,29 @@ public class ImportController {
             storageService.store(file);
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
-            jobLauncher.run(importJob(), jobParameters);
-         //   storageService.deleteAll();
+            jobLauncher.run(importVendorJob(), jobParameters);
+            //   storageService.deleteAll();
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        return "redirect:/upload";
+    }
+
+
+    @PostMapping("/userupload")
+    public String handleUserFileUpload(@RequestParam("file") MultipartFile file,
+                                   RedirectAttributes redirectAttributes) {
+
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        try {
+            storageService.store(file);
+            JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+                    .toJobParameters();
+            jobLauncher.run(importUserJob(), jobParameters);
+            //   storageService.deleteAll();
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
@@ -111,7 +164,7 @@ public class ImportController {
 
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
-            jobLauncher.run(exportJob(), jobParameters);
+            jobLauncher.run(exportVendorJob(), jobParameters);
             //   storageService.deleteAll();
         } catch (Exception e) {
             logger.info(e.getMessage());

@@ -1,7 +1,5 @@
 DROP TABLE IF EXISTS vendor;
-DROP TABLE IF EXISTS appuser;
-DROP TABLE IF EXISTS role;
-DROP TABLE IF EXISTS user_role;
+DROP TABLE IF EXISTS materialmaster;
 
 CREATE TABLE vendor (
   vendorid  VARCHAR(500) PRIMARY KEY NOT NULL,
@@ -36,38 +34,33 @@ CREATE TABLE vendor (
  noofgstregistration VARCHAR(500),
  state VARCHAR(500),
  gstnumber VARCHAR(500),
- materialcode1 VARCHAR(500),
- materialdescription1 VARCHAR(500),
- hsn1  VARCHAR(500),
- materialcode2 VARCHAR(500),
- materialdescription2 VARCHAR(500),
- hsn2  VARCHAR(500),
- materialcode3 VARCHAR(500),
- materialdescription3 VARCHAR(500),
- hsn3  VARCHAR(500),
- materialcode4 VARCHAR(500),
- materialdescription4 VARCHAR(500),
- hsn4  VARCHAR(500),
- materialcode5 VARCHAR(500),
- materialdescription5 VARCHAR(500),
- hsn5  VARCHAR(500),
+ vendorstatus VARCHAR(50),
+ modifiedby VARCHAR(50),
+ modifiedon TIMESTAMP,
+ submittedby VARCHAR(500),
+ lastsubmittedon TIMESTAMP,
+ approvedby VARCHAR(500),
+ lastapprovedon TIMESTAMP,
+ rejectedby VARCHAR(500),
+ lastrejectedon TIMESTAMP,
+ lastrevertedby VARCHAR(500),
+ lastrevertedon TIMESTAMP,
+ revertcount INTEGER,
+ rejectreason VARCHAR(500),
+ revertreason VARCHAR(500),
+ isaccepttnc VARCHAR(2),
+ tncacceptedby VARCHAR(500),
+ tncacceptedon TIMESTAMP,
+ sapsyncdate TIMESTAMP,
  submityn VARCHAR(1)
-
 );
 
-CREATE TABLE role (
- id Bigserial PRIMARY KEY NOT NULL,
- name VARCHAR(30) NOT NULL
+CREATE TABLE materialmaster(
+    id Bigserial PRIMARY KEY NOT NULL,
+    vendorid  VARCHAR(500) NOT NULL,
+    code VARCHAR(500),
+    description VARCHAR(500),
+    hsn  VARCHAR(500)
 );
 
-CREATE TABLE appuser (
- id Bigserial PRIMARY KEY NOT NULL,
- username VARCHAR(30) NOT NULL,
- password VARCHAR(300) NOT NULL,
- passwordConfirmation VARCHAR(300)
-);
 
-CREATE TABLE user_role (
-  user_id INT,
-  role_id INT
-);

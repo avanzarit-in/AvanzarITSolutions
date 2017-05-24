@@ -1,7 +1,15 @@
 package com.avanzarit.apps.vendormgmt.model;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by SPADHI on 5/4/2017.
@@ -47,22 +55,8 @@ public class Vendor {
     private String noOfGstRegistration;
     private String state;
     private String gstNumber;
-    private String materialCode1;
-    private String materialDescription1;
-    private String hsn1;
-    private String materialCode2;
-    private String materialDescription2;
-    private String hsn2;
-    private String materialCode3;
-    private String materialDescription3;
-    private String hsn3;
-    private String materialCode4;
-    private String materialDescription4;
-    private String hsn4;
-    private String materialCode5;
-    private String materialDescription5;
-    private String hsn5;
     private String submityn="N";
+    private List<MaterialMaster> material = new ArrayList<>();
     private VendorStatusEnum vendorStatus;
     private String modifiedBy;
     private Date lastModifiedOn;
@@ -77,7 +71,7 @@ public class Vendor {
     private int revertCount;
     private String rejectReason;
     private String revertReason;
-    private boolean acceptTermsAndCondition;
+    private String acceptTermsAndCondition;
     private String tncAcceptBy;
     private Date tncAcceptedOn;
     private Date sapSyncDate;
@@ -373,140 +367,6 @@ public class Vendor {
         this.gstNumber = gstNumber;
     }
 
-    @Column(name="materialcode1")
-    public String getMaterialCode1() {
-        return materialCode1;
-    }
-
-    public void setMaterialCode1(String materialCode1) {
-        this.materialCode1 = materialCode1;
-    }
-
-    @Column(name="materialdescription1")
-    public String getMaterialDescription1() {
-        return materialDescription1;
-    }
-
-    public void setMaterialDescription1(String materialDescription1) {
-        this.materialDescription1 = materialDescription1;
-    }
-
-    @Column(name="hsn1")
-    public String getHsn1() {
-        return hsn1;
-    }
-
-    public void setHsn1(String hsn1) {
-        this.hsn1 = hsn1;
-    }
-
-    @Column(name="materialcode2")
-    public String getMaterialCode2() {
-        return materialCode2;
-    }
-
-    public void setMaterialCode2(String materialCode2) {
-        this.materialCode2 = materialCode2;
-    }
-
-    @Column(name="materialdescription2")
-    public String getMaterialDescription2() {
-        return materialDescription2;
-    }
-
-    public void setMaterialDescription2(String materialDescription2) {
-        this.materialDescription2 = materialDescription2;
-    }
-
-    @Column(name="hsn2")
-    public String getHsn2() {
-        return hsn2;
-    }
-
-    public void setHsn2(String hsn2) {
-        this.hsn2 = hsn2;
-    }
-
-    @Column(name="materialcode3")
-    public String getMaterialCode3() {
-        return materialCode3;
-    }
-
-    public void setMaterialCode3(String materialCode3) {
-        this.materialCode3 = materialCode3;
-    }
-
-    @Column(name="materialdescription3")
-    public String getMaterialDescription3() {
-        return materialDescription3;
-    }
-
-    public void setMaterialDescription3(String materialDescription3) {
-        this.materialDescription3 = materialDescription3;
-    }
-
-    @Column(name="hsn3")
-    public String getHsn3() {
-        return hsn3;
-    }
-
-    public void setHsn3(String hsn3) {
-        this.hsn3 = hsn3;
-    }
-
-    @Column(name="materialcode4")
-    public String getMaterialCode4() {
-        return materialCode4;
-    }
-
-    public void setMaterialCode4(String materialCode4) {
-        this.materialCode4 = materialCode4;
-    }
-
-    @Column(name="materialdescription4")
-    public String getMaterialDescription4() {
-        return materialDescription4;
-    }
-
-    public void setMaterialDescription4(String materialDescription4) {
-        this.materialDescription4 = materialDescription4;
-    }
-
-    @Column(name="hsn4")
-    public String getHsn4() {
-        return hsn4;
-    }
-
-    public void setHsn4(String hsn4) {
-        this.hsn4 = hsn4;
-    }
-
-    @Column(name="materialcode5")
-    public String getMaterialCode5() {
-        return materialCode5;
-    }
-
-    public void setMaterialCode5(String materialCode5) {
-        this.materialCode5 = materialCode5;
-    }
-
-    @Column(name="materialdescription5")
-    public String getMaterialDescription5() {
-        return materialDescription5;
-    }
-
-    public void setMaterialDescription5(String materialDescription5) {
-        this.materialDescription5 = materialDescription5;
-    }
-
-    @Column(name="hsn5")
-    public String getHsn5() {
-        return hsn5;
-    }
-
-    public void setHsn5(String hsn5) {
-        this.hsn5 = hsn5;
-    }
 
     @Column(name="submityn")
     public String getSubmityn() {
@@ -570,5 +430,179 @@ public class Vendor {
 
     public void setFaxExtn(String faxExtn) {
         this.faxExtn = faxExtn;
+    }
+
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
+    public List<MaterialMaster> getMaterial() {
+        if(material.isEmpty()){
+            material.add(new MaterialMaster());
+        }
+        return material;
+    }
+
+    public void setMaterial(List<MaterialMaster> materials) {
+        this.material = materials;
+    }
+
+    @Column(name="vendorstatus")
+    public VendorStatusEnum getVendorStatus() {
+        return vendorStatus;
+    }
+
+    public void setVendorStatus(VendorStatusEnum vendorStatus) {
+        this.vendorStatus = vendorStatus;
+    }
+
+    @Column(name="modifiedby")
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    @Column(name="modifiedon")
+    public Date getLastModifiedOn() {
+        return lastModifiedOn;
+    }
+
+    public void setLastModifiedOn(Date lastModifiedOn) {
+        this.lastModifiedOn = lastModifiedOn;
+    }
+
+    @Column(name="submittedby")
+    public String getSubmittedBy() {
+        return submittedBy;
+    }
+
+    public void setSubmittedBy(String submittedBy) {
+        this.submittedBy = submittedBy;
+    }
+
+    @Column(name="lastsubmittedon")
+    public Date getLastSubmittedOn() {
+        return lastSubmittedOn;
+    }
+
+    public void setLastSubmittedOn(Date lastSubmittedOn) {
+        this.lastSubmittedOn = lastSubmittedOn;
+    }
+
+    @Column(name="approvedby")
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    @Column(name="lastapprovedon")
+    public Date getLastApprovedOn() {
+        return lastApprovedOn;
+    }
+
+    public void setLastApprovedOn(Date lastApprovedOn) {
+        this.lastApprovedOn = lastApprovedOn;
+    }
+
+    @Column(name="rejectedby")
+    public String getRejectedBy() {
+        return rejectedBy;
+    }
+
+    public void setRejectedBy(String rejectedBy) {
+        this.rejectedBy = rejectedBy;
+    }
+
+    @Column(name="lastrejectedon")
+    public Date getLastRejectedOn() {
+        return lastRejectedOn;
+    }
+
+    public void setLastRejectedOn(Date lastRejectedOn) {
+        this.lastRejectedOn = lastRejectedOn;
+    }
+
+    @Column(name="lastrevertedby")
+    public String getLastRevertedBy() {
+        return lastRevertedBy;
+    }
+
+    public void setLastRevertedBy(String lastRevertedBy) {
+        this.lastRevertedBy = lastRevertedBy;
+    }
+
+    @Column(name="lastrevertedon")
+    public Date getLastRevertedOevertedOn() {
+        return lastRevertedOevertedOn;
+    }
+
+    public void setLastRevertedOevertedOn(Date lastRevertedOevertedOn) {
+        this.lastRevertedOevertedOn = lastRevertedOevertedOn;
+    }
+
+    @Column(name="revertcount")
+    public int getRevertCount() {
+        return revertCount;
+    }
+
+    public void setRevertCount(int revertCount) {
+        this.revertCount = revertCount;
+    }
+
+    @Column(name="rejectreason")
+    public String getRejectReason() {
+        return rejectReason;
+    }
+
+    public void setRejectReason(String rejectReason) {
+        this.rejectReason = rejectReason;
+    }
+
+    @Column(name="revertreason")
+    public String getRevertReason() {
+        return revertReason;
+    }
+
+    public void setRevertReason(String revertReason) {
+        this.revertReason = revertReason;
+    }
+
+    @Column(name="isaccepttnc")
+    public String isAcceptTermsAndCondition() {
+        return acceptTermsAndCondition;
+    }
+
+    public void setAcceptTermsAndCondition(String acceptTermsAndCondition) {
+        this.acceptTermsAndCondition = acceptTermsAndCondition;
+    }
+
+    @Column(name="tncacceptedby")
+    public String getTncAcceptBy() {
+        return tncAcceptBy;
+    }
+
+    public void setTncAcceptBy(String tncAcceptBy) {
+        this.tncAcceptBy = tncAcceptBy;
+    }
+
+    @Column(name="tncacceptedon")
+    public Date getTncAcceptedOn() {
+        return tncAcceptedOn;
+    }
+
+    public void setTncAcceptedOn(Date tncAcceptedOn) {
+        this.tncAcceptedOn = tncAcceptedOn;
+    }
+
+    @Column(name="sapsyncdate")
+    public Date getSapSyncDate() {
+        return sapSyncDate;
+    }
+
+    public void setSapSyncDate(Date sapSyncDate) {
+        this.sapSyncDate = sapSyncDate;
     }
 }

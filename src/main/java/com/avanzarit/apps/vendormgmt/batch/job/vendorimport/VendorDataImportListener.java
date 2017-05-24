@@ -1,4 +1,4 @@
-package com.avanzarit.apps.vendormgmt.batch.step;
+package com.avanzarit.apps.vendormgmt.batch.job.vendorimport;
 
 import com.avanzarit.apps.vendormgmt.model.Vendor;
 import com.avanzarit.apps.vendormgmt.repository.VendorRepository;
@@ -10,12 +10,12 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 
 import java.util.List;
 
-public class Listener extends JobExecutionListenerSupport {
-	private static final Logger log = LoggerFactory.getLogger(Listener.class);
+public class VendorDataImportListener extends JobExecutionListenerSupport {
+	private static final Logger log = LoggerFactory.getLogger(VendorDataImportListener.class);
 
 	private final VendorRepository vendorRepository;
 
-	public Listener(VendorRepository vendorRepository) {
+	public VendorDataImportListener(VendorRepository vendorRepository) {
 		this.vendorRepository = vendorRepository;
 	}
 

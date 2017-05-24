@@ -29,5 +29,11 @@
 <script src="/js/jquery.dataTables.min.js"></script>
 <script src="/js/dataTables.bootstrap.min.js"></script>
 
-
+<script th:replace="${view} :: js"></script>
+<script th:replace="fragments/vendorForm/general :: generaljs"></script>
+<script th:replace="fragments/vendorForm/address :: addressjs"></script>
+<script th:replace="fragments/vendorForm/communication :: communicationjs"></script>
+<script th:replace="fragments/vendorForm/bank :: bankjs"></script>
+<script th:replace="fragments/vendorForm/gstn :: gstnjs"></script>
+<script th:replace="fragments/vendorForm/material :: materialjs"></script>
 </html>

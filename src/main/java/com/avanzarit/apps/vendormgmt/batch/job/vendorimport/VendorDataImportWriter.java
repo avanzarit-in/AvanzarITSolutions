@@ -1,4 +1,4 @@
-package com.avanzarit.apps.vendormgmt.batch.step;
+package com.avanzarit.apps.vendormgmt.batch.job.vendorimport;
 
 import com.avanzarit.apps.vendormgmt.auth.model.User;
 import com.avanzarit.apps.vendormgmt.auth.service.UserService;
@@ -8,14 +8,14 @@ import org.springframework.batch.item.ItemWriter;
 
 import java.util.List;
 
-public class Writer implements ItemWriter<Vendor> {
+public class VendorDataImportWriter implements ItemWriter<Vendor> {
 
     private VendorRepository vendorRepository;
 
     private UserService userService;
 
 
-    public Writer(VendorRepository vendorRepository, UserService userService) {
+    public VendorDataImportWriter(VendorRepository vendorRepository, UserService userService) {
         this.vendorRepository = vendorRepository;
         this.userService = userService;
     }

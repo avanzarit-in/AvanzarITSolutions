@@ -5,6 +5,6 @@ package com.avanzarit.apps.vendormgmt.auth.model;
  */
 public enum UserStatusEnum {
 
-    NEW,
+    NEW,ACTIVE,BLOCKED,SUSPENDED
 
 }

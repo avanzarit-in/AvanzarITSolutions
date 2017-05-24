@@ -1,6 +1,15 @@
 package com.avanzarit.apps.vendormgmt.auth.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.Set;
 
@@ -15,8 +24,9 @@ public class User {
     private String password;
     private String passwordConfirm;
     private Set<Role> roles;
+    private String rolesString;
     private Date lastLoginDate;
-    private UserActionEnum lastUserAction;
+    private UserStatusEnum userStatus;
 
 
     @Id
@@ -55,12 +65,39 @@ public class User {
     }
 
     @ManyToMany
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     public Set<Role> getRoles() {
-        return roles;
+      return roles;
     }
 
     public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+       this.roles = roles;
+    }
+
+    @Column(name="lastlogin")
+    public Date getLastLoginDate() {
+        return lastLoginDate;
+    }
+
+    public void setLastLoginDate(Date lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
+
+    @Column(name="userstatus")
+    public UserStatusEnum getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(UserStatusEnum userStatus) {
+        this.userStatus = userStatus;
+    }
+
+    @Transient
+    public String getRolesString() {
+        return rolesString;
+    }
+
+    public void setRolesString(String rolesString) {
+        this.rolesString = rolesString;
     }
 }

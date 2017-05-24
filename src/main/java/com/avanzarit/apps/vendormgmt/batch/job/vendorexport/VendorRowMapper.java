@@ -1,4 +1,4 @@
-package com.avanzarit.apps.vendormgmt.batch.step;
+package com.avanzarit.apps.vendormgmt.batch.job.vendorexport;
 
 import com.avanzarit.apps.vendormgmt.model.Vendor;
 import org.springframework.jdbc.core.RowMapper;
