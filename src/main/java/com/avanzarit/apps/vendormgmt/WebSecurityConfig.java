@@ -1,5 +1,6 @@
 package com.avanzarit.apps.vendormgmt;
 
+import com.avanzarit.apps.vendormgmt.auth.filter.CaptchaValidationFilter;
 import com.avanzarit.apps.vendormgmt.auth.filter.CustomFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,12 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by SPADHI on 5/4/2017.
@@ -28,39 +26,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private CaptchaValidationFilter captchaValidationFilter;
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public ExceptionMappingAuthenticationFailureHandler getFailureHandler() {
-        Map<String, String> exceptionMappings = new HashMap<>();
-        exceptionMappings.put("org.springframework.security.authentication.CredentialsExpiredException", "/passwordExpired");
-        ExceptionMappingAuthenticationFailureHandler failureHandler = new ExceptionMappingAuthenticationFailureHandler();
-        failureHandler.setExceptionMappings(exceptionMappings);
-
-        return failureHandler;
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-                http
-                        .addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class)
-
+        http
+                .addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class)
+                .addFilterAt(captchaValidationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                        .antMatchers("/updatePassword")
-                        .hasAuthority("ROLE_PASSWORD_CHANGE")
-                        .antMatchers("/images/**", "/css/**", "/js/**", "/upload", "/userupload", "/vendorDataUploadForm", "/add", "/registration", "/uploadVendor", "/vendorListView", "/webjars/**")
+                .antMatchers("/updatePassword").hasAuthority("ROLE_PASSWORD_CHANGE")
+                .antMatchers( "/upload").hasAuthority("ADMIN")
+                .antMatchers( "/vendorListView").hasAuthority("BUSINESS_OWNER")
+                .antMatchers("/userupload","/upload","/images/**", "/css/**", "/js/**", "/vendorDataUploadForm", "/webjars/**")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
+                .failureUrl("/login?error=true")
                 .permitAll()
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
-                .permitAll();
+                .invalidateHttpSession(true)
+                .permitAll()
+                .and()
+                .exceptionHandling().accessDeniedPage("/403");
     }
 
     @Autowired

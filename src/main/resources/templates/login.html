@@ -13,7 +13,7 @@
             </div>
             <div class="panel-body">
                 <div class="row view-area">
-                    <div class="col-lg-8 col-lg-offset-2">
+                    <div class="col-lg-9 col-lg-offset-2">
                         <form role="form" id="signinForm" name="signinForm" th:action="@{/login}" method="post">
                             <div class="row form-group">
 
@@ -40,15 +40,23 @@
                             </div>
 
                             <div class="row form-group">
-                                <div class="col-lg-4 col-lg-offset-4">
-                                    <button class="btn btn-primary" type="submit">
+                                <div class="col-lg-6">
+                                    <button id="submitBtn" class="btn btn-primary" type="submit" disabled>
                                         Login
                                     </button>
 
                                 </div>
 
-                            </div>
+                                <div class="col-lg-6">
+                                    <a href="forgotPassword">Forgot Password</a>
+                                </div>
 
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+                               </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -61,7 +69,16 @@
 
 </body>
 <script th:fragment="js">
+function recaptchaCallback() {
+
+    $('#submitBtn').removeAttr('disabled');
+        $('#submitBtn').removeClass('disabled');
+};
+
 $(document).ready(function() {
+
+
+
     $('#signinForm').formValidation({
         framework: 'bootstrap',
         icon: {
@@ -94,7 +111,22 @@ $(document).ready(function() {
                 }
             }
         }
-    });
+    }).on('err.field.fv', function(e, data) {
+            // $(e.target)  --> The field element
+            // data.fv      --> The FormValidation instance
+            // data.field   --> The field name
+            // data.element --> The field element
+
+            data.fv.disableSubmitButtons(true);
+        })
+        .on('success.field.fv', function(e, data) {
+            // e, data parameters are the same as in err.field.fv event handler
+            // Despite that the field is valid, by default, the submit button will be disabled if all the following conditions meet
+            // - The submit button is clicked
+            // - The form is invalid
+
+            data.fv.disableSubmitButtons(true);
+        });
 });
 </script>
 </html>

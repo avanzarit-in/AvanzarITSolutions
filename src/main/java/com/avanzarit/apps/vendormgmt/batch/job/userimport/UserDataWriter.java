@@ -5,7 +5,9 @@ import com.avanzarit.apps.vendormgmt.auth.model.User;
 import com.avanzarit.apps.vendormgmt.auth.model.UserStatusEnum;
 import com.avanzarit.apps.vendormgmt.auth.repository.RoleRepository;
 import com.avanzarit.apps.vendormgmt.auth.service.UserService;
+import com.avanzarit.apps.vendormgmt.email.EmailServiceImpl;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.mail.SimpleMailMessage;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -16,11 +18,15 @@ public class UserDataWriter implements ItemWriter<User> {
 
     private UserService userService;
     private RoleRepository roleRepository;
+    public SimpleMailMessage template;
+    public EmailServiceImpl emailService;
 
 
-    public UserDataWriter(UserService userService, RoleRepository roleRepository) {
+    public UserDataWriter(UserService userService, RoleRepository roleRepository,SimpleMailMessage template,EmailServiceImpl emailService) {
         this.userService = userService;
         this.roleRepository = roleRepository;
+        this.template=template;
+        this.emailService=emailService;
     }
 
     @Override
@@ -42,6 +48,10 @@ public class UserDataWriter implements ItemWriter<User> {
             user.setPasswordConfirm("welcome123");
             user.setUserStatus(UserStatusEnum.NEW);
             userService.save(user);
+
+            String text = String.format(template.getText(), "http://www.cool.com",user.getUsername(),"welcome123");
+            emailService.sendSimpleMessage("santosh.padhi@wipro.com","Initial Login",text);
+
         }
     }
 }

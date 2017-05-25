@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div class="container"  th:fragment="content">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            User List
+        </div>
+
+        <div class="panel-body">
+            <div class="row view-area">
+                <table id="dataTable" class="table table-hover table-striped table-bordered">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th>User ID</th>
+                        <th>Roles</th>
+                        <th>Action</th>
+                        <th></th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="mItem : ${users}">
+                        <td><label type="text"
+                                   th:text="${mItem.userid}" /></td>
+                        <td><label type="text"
+                                   th:text="${mItem.roles}" /></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script th:fragment="js">
+
+    </script>
+</html>

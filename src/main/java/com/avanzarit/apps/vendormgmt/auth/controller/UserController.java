@@ -8,6 +8,7 @@ import com.avanzarit.apps.vendormgmt.auth.service.SecurityService;
 import com.avanzarit.apps.vendormgmt.auth.service.UserService;
 import com.avanzarit.apps.vendormgmt.auth.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -16,7 +17,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.security.Principal;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -60,11 +64,6 @@ public class UserController {
     @Layout(value = "layouts/blank")
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Model model, String error, String logout) {
-        if (error != null)
-            model.addAttribute("error", "Your username and password is invalid.");
-
-        if (logout != null)
-            model.addAttribute("message", "You have been logged out successfully.");
 
         return "login";
     }
@@ -72,6 +71,8 @@ public class UserController {
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String welcome(Model model) {
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Collection<? extends GrantedAuthority> authCollection= auth.getAuthorities();
+
         String userName = auth.getUsername();
         if(userName.equals("admin")){
             return "redirect:/vendorListView";
@@ -104,6 +105,34 @@ public class UserController {
         userService.save(repUser);
         securityService.autologin(user.getUsername(), password);
         return "/logout";
+    }
+
+    // for 403 access denied page
+    @RequestMapping(value = "/403", method = RequestMethod.GET)
+    public ModelAndView accesssDenied(Principal user) {
+
+        ModelAndView model = new ModelAndView();
+
+        if (user != null) {
+            model.addObject("msg", "Hi " + user.getName()
+                    + ", you do not have permission to access this page!");
+        } else {
+            model.addObject("msg",
+                    "You do not have permission to access this page!");
+        }
+
+        model.setViewName("403");
+        return model;
+
+    }
+
+
+    // for 403 access denied page
+    @RequestMapping(value = "/404", method = RequestMethod.GET)
+    public ModelAndView pageNotFound() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("404");
+        return model;
     }
 
 }

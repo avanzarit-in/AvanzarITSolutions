@@ -15,6 +15,7 @@ import com.avanzarit.apps.vendormgmt.batch.job.vendorimport.VendorDataImportList
 import com.avanzarit.apps.vendormgmt.batch.job.vendorimport.VendorDataImportProcessor;
 import com.avanzarit.apps.vendormgmt.batch.job.vendorimport.VendorDataImportReader;
 import com.avanzarit.apps.vendormgmt.batch.job.vendorimport.VendorDataImportWriter;
+import com.avanzarit.apps.vendormgmt.email.EmailServiceImpl;
 import com.avanzarit.apps.vendormgmt.model.Vendor;
 import com.avanzarit.apps.vendormgmt.repository.VendorRepository;
 import com.avanzarit.apps.vendormgmt.storage.StorageFileNotFoundException;
@@ -32,6 +33,7 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +51,10 @@ import javax.sql.DataSource;
 public class ImportController {
     @Autowired
     JobLauncher jobLauncher;
+@Autowired
+    public SimpleMailMessage template;
+@Autowired
+    public EmailServiceImpl emailService;
 
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
@@ -110,7 +116,7 @@ public class ImportController {
         return stepBuilderFactory.get("importUserStep").<User, User>chunk(2)
                 .reader(UserDataReader.reader(storageService))
                 .processor(new UserDataProcessor())
-                .writer(new UserDataWriter(userService,roleRepository)).build();
+                .writer(new UserDataWriter(userService,roleRepository,template,emailService)).build();
     }
 
     @GetMapping("/upload")
