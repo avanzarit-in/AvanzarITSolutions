@@ -1,6 +1,6 @@
 package com.avanzarit.apps.vendormgmt;
 
-import com.avanzarit.apps.vendormgmt.auth.handler.AuthHandler;
+import com.avanzarit.apps.vendormgmt.auth.filter.CustomFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.HashMap;
@@ -26,9 +27,6 @@ import java.util.Map;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
-
-    @Autowired
-    private AuthHandler handler;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -48,17 +46,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
                 http
+                        .addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class)
+
                 .authorizeRequests()
-                .antMatchers("/updatePassword", "/passwordExpired")
-                .hasAuthority("ADMIN")
-                .antMatchers("/updatePassword", "/passwordExpired","/images/**", "/css/**", "/js/**", "/upload", "/userupload", "/vendorDataUploadForm", "/add", "/registration", "/uploadVendor", "/vendorListView", "/webjars/**")
+                        .antMatchers("/updatePassword")
+                        .hasAuthority("ROLE_PASSWORD_CHANGE")
+                        .antMatchers("/images/**", "/css/**", "/js/**", "/upload", "/userupload", "/vendorDataUploadForm", "/add", "/registration", "/uploadVendor", "/vendorListView", "/webjars/**")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .failureHandler(getFailureHandler())
-
                 .permitAll()
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")

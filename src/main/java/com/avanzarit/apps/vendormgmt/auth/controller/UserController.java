@@ -2,6 +2,8 @@ package com.avanzarit.apps.vendormgmt.auth.controller;
 
 import com.avanzarit.apps.vendormgmt.Layout;
 import com.avanzarit.apps.vendormgmt.auth.model.User;
+import com.avanzarit.apps.vendormgmt.auth.model.UserStatusEnum;
+import com.avanzarit.apps.vendormgmt.auth.repository.UserRepository;
 import com.avanzarit.apps.vendormgmt.auth.service.SecurityService;
 import com.avanzarit.apps.vendormgmt.auth.service.UserService;
 import com.avanzarit.apps.vendormgmt.auth.validator.UserValidator;
@@ -15,13 +17,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * Created by SPADHI on 5/4/2017.
  */
 @Controller
 public class UserController {
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private UserService userService;
 
@@ -77,20 +81,29 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = {"/passwordExpired"}, method = RequestMethod.GET)
-    public String changePassword(HttpServletRequest request, Model model) {
-
-            return "redirect:/updatePassword";
-
-
+    @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.GET)
+    public String updatePassword(Model model) {
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = auth.getUsername();
+        User user = new User();
+        user.setUsername(userName);
+        model.addAttribute("user", user);
+        return "updatePassword";
     }
 
-    @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.GET)
-    public String updatePassword(HttpServletRequest request, Model model) {
+    @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.POST)
+    public String changePassword(@ModelAttribute("user") User user) {
 
-        return "updatePassword";
-
-
+        String password = user.getPassword();
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = auth.getUsername();
+        User repUser = userRepository.findByUsername(userName);
+        repUser.setLastLoginDate(new Date());
+        repUser.setUserStatus(UserStatusEnum.ACTIVE);
+        repUser.setPassword(password);
+        userService.save(repUser);
+        securityService.autologin(user.getUsername(), password);
+        return "/logout";
     }
 
 }

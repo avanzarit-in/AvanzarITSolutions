@@ -33,22 +33,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("User Does not exist.");
         }
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        for (Role role : user.getRoles()) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-        }
+
         if(user.getUserStatus()== UserStatusEnum.NEW) {
-
+            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_PASSWORD_CHANGE"));
              userDetails = new org.springframework.security.core.userdetails
-                    .User(user.getUsername(), user.getPassword(), true, true,
-                    false, true, grantedAuthorities);
-
-
+                     .User(user.getUsername(), user.getPassword(), grantedAuthorities);
         }else{
+            for (Role role : user.getRoles()) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+            }
             userDetails = new org.springframework.security.core.userdetails
                     .User(user.getUsername(), user.getPassword(), grantedAuthorities);
         }
-
         return userDetails;
-
     }
 }

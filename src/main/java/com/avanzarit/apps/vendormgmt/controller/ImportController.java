@@ -62,13 +62,14 @@ public class ImportController {
     @Autowired
     public VendorRepository vendorRepository;
 
-    @Qualifier("dataSource")
+
     @Autowired
     public UserRepository userRepository;
 
     @Autowired
     public RoleRepository roleRepository;
 
+    @Qualifier("dataSource")
     @Autowired
     public DataSource dataSource;
 
