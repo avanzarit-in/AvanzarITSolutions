@@ -1,27 +1,32 @@
 package com.avanzarit.apps.vendormgmt.auth.controller;
 
 import com.avanzarit.apps.vendormgmt.Layout;
+import com.avanzarit.apps.vendormgmt.auth.exception.UserNotFoundException;
 import com.avanzarit.apps.vendormgmt.auth.model.User;
 import com.avanzarit.apps.vendormgmt.auth.model.UserStatusEnum;
 import com.avanzarit.apps.vendormgmt.auth.repository.UserRepository;
+import com.avanzarit.apps.vendormgmt.auth.response.GenericResponse;
 import com.avanzarit.apps.vendormgmt.auth.service.SecurityService;
 import com.avanzarit.apps.vendormgmt.auth.service.UserService;
 import com.avanzarit.apps.vendormgmt.auth.validator.UserValidator;
+import com.avanzarit.apps.vendormgmt.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by SPADHI on 5/4/2017.
@@ -38,6 +43,13 @@ public class UserController {
 
     @Autowired
     private UserValidator userValidator;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    SimpleMailMessage resetTokenMessage;
+
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model) {
@@ -63,8 +75,15 @@ public class UserController {
 
     @Layout(value = "layouts/blank")
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(Model model, String error, String logout) {
-
+    public String login(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            if (session.getAttribute("SPRING_SECURITY_LAST_EXCEPTION") != null)
+                model.addAttribute("error", "Your username and password is invalid.");
+        }
+      /*  if (logout != null)
+            model.addAttribute("message", "You have been logged out successfully.");
+*/
         return "login";
     }
 
@@ -105,6 +124,30 @@ public class UserController {
         userService.save(repUser);
         securityService.autologin(user.getUsername(), password);
         return "/logout";
+    }
+
+    @Layout(value = "layouts/blank")
+    @RequestMapping(value = {"/resetPassword"}, method = RequestMethod.GET)
+    public String loadResetPasswordPage(Model model) {
+
+        return "resetPassword";
+    }
+
+    @RequestMapping(value = "/resetPassword",
+            method = RequestMethod.POST)
+    @ResponseBody
+    public GenericResponse resetPassword(HttpServletRequest request,
+                                         @RequestParam("email") String userEmail) {
+        String contextPath = request.getRequestURL().toString();
+        User user = userService.findByEmail(userEmail);
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+        String token = UUID.randomUUID().toString();
+        userService.createPasswordResetTokenForUser(user, token);
+
+        emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Reset Password", resetTokenMessage, contextPath, user.getUsername(), token);
+        return new GenericResponse("Successfully sent Password Reset Email");
     }
 
     // for 403 access denied page

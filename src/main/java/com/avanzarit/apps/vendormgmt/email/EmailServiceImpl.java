@@ -18,8 +18,9 @@ import java.io.File;
 @Component
 public class EmailServiceImpl implements EmailService {
 
+
     @Autowired
-    public JavaMailSender emailSender;
+    public JavaMailSender javaMmailSender;
 
     public void sendSimpleMessage(String to, String subject, String text) {
         try {
@@ -28,7 +29,7 @@ public class EmailServiceImpl implements EmailService {
             message.setSubject(subject);
             message.setText(text);
 
-            emailSender.send(message);
+            javaMmailSender.send(message);
         } catch (MailException exception) {
             exception.printStackTrace();
         }
@@ -49,7 +50,7 @@ public class EmailServiceImpl implements EmailService {
                                           String text,
                                           String pathToAttachment) {
         try {
-            MimeMessage message = emailSender.createMimeMessage();
+            MimeMessage message = javaMmailSender.createMimeMessage();
             // pass 'true' to the constructor to create a multipart message
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
@@ -60,7 +61,7 @@ public class EmailServiceImpl implements EmailService {
             FileSystemResource file = new FileSystemResource(new File(pathToAttachment));
             helper.addAttachment("Invoice", file);
 
-            emailSender.send(message);
+            javaMmailSender.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();
         }

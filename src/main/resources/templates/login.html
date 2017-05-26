@@ -36,7 +36,11 @@
 
                             </div>
                             <div class="row form-group">
-                            <div class="col-lg-12 label label-danger" th:text="${error}"/>
+                                <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message
+                                </div>
+                                <div th:if="${error != null}" class="col-lg-12 label label-danger" th:text="${error}">
+                                    error
+                                </div>
                             </div>
 
                             <div class="row form-group">
@@ -48,7 +52,7 @@
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <a href="forgotPassword">Forgot Password</a>
+                                    <a th:href="@{/resetPassword}">Forget Password</a>
                                 </div>
 
                             </div>
@@ -57,13 +61,13 @@
                                     <div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
                                </div>
                             </div>
+
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
 

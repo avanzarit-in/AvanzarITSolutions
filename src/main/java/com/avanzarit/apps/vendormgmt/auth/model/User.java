@@ -1,15 +1,6 @@
 package com.avanzarit.apps.vendormgmt.auth.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
@@ -23,6 +14,7 @@ public class User {
     private String username;
     private String password;
     private String passwordConfirm;
+    private String email;
     private Set<Role> roles;
     private String rolesString;
     private Date lastLoginDate;
@@ -99,5 +91,13 @@ public class User {
 
     public void setRolesString(String rolesString) {
         this.rolesString = rolesString;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

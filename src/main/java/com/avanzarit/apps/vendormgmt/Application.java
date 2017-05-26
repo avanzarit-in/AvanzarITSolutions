@@ -69,15 +69,15 @@ public class Application extends WebMvcConfigurerAdapter {
         };
     }
 
-    @Bean
+    @Bean(name = "javaMmailSender")
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
         mailSender.setHost("127.0.0.1");
         mailSender.setPort(587);
 
-        mailSender.setUsername("admin@wipro.com");
-        mailSender.setPassword("rainbow");
+        mailSender.setUsername("admin@avanzarit.in");
+        mailSender.setPassword("admin");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
@@ -88,8 +88,8 @@ public class Application extends WebMvcConfigurerAdapter {
         return mailSender;
     }
 
-    @Bean
-    public SimpleMailMessage templateSimpleMessage() {
+    @Bean(name = "updatePasswordMessage")
+    public SimpleMailMessage constructUpdatePasswordEmailMessage() {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setText(
                 "Please visit %s and activate your Vendor Registration:\n\n"
@@ -99,5 +99,12 @@ public class Application extends WebMvcConfigurerAdapter {
         +"\n\n\n Please note: On successfull login to activate your registration " +
                         "you will have to change your password and login again");
         return message;
+    }
+
+    @Bean(name = "resetTokenMessage")
+    public SimpleMailMessage constructResetTokenEmailMessage() {
+        SimpleMailMessage emailMessage = new SimpleMailMessage();
+        emailMessage.setText("Please click the Link to reset password" + " \r\n" + "%s" + "/user/changePassword?id=" + "%s" + "&token=" + "%s");
+        return emailMessage;
     }
 }

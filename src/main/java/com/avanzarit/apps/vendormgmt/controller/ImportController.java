@@ -52,7 +52,7 @@ public class ImportController {
     @Autowired
     JobLauncher jobLauncher;
 @Autowired
-    public SimpleMailMessage template;
+public SimpleMailMessage updatePasswordMessage;
 @Autowired
     public EmailServiceImpl emailService;
 
@@ -116,7 +116,7 @@ public class ImportController {
         return stepBuilderFactory.get("importUserStep").<User, User>chunk(2)
                 .reader(UserDataReader.reader(storageService))
                 .processor(new UserDataProcessor())
-                .writer(new UserDataWriter(userService,roleRepository,template,emailService)).build();
+                .writer(new UserDataWriter(userService, roleRepository, updatePasswordMessage, emailService)).build();
     }
 
     @GetMapping("/upload")

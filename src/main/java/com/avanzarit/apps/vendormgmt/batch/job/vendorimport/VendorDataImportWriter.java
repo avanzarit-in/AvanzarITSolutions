@@ -22,8 +22,6 @@ public class VendorDataImportWriter implements ItemWriter<Vendor> {
 
     @Override
     public void write(List<? extends Vendor> vendors) throws Exception {
-
-
         for (Vendor vendor : vendors) {
             if (!vendor.getVendorId().equals("admin")) {
                 vendorRepository.save(vendor);
@@ -33,12 +31,9 @@ public class VendorDataImportWriter implements ItemWriter<Vendor> {
                 user.setUsername(vendor.getVendorId());
                 user.setPassword("welcome123");
                 user.setPasswordConfirm("welcome123");
+                user.setEmail(vendor.getEmail());
                 userService.save(user);
             }
-
-
         }
-
     }
-
 }

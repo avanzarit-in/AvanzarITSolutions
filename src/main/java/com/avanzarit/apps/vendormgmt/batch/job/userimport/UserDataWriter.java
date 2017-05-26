@@ -50,7 +50,7 @@ public class UserDataWriter implements ItemWriter<User> {
             userService.save(user);
 
             String text = String.format(template.getText(), "http://www.cool.com",user.getUsername(),"welcome123");
-            emailService.sendSimpleMessage("santosh.padhi@wipro.com","Initial Login",text);
+            emailService.sendSimpleMessage(user.getEmail(), "Welcome to Vendor Management Portal", text);
 
         }
     }

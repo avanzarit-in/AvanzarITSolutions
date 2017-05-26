@@ -42,9 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAt(captchaValidationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/updatePassword").hasAuthority("ROLE_PASSWORD_CHANGE")
-                .antMatchers( "/upload").hasAuthority("ADMIN")
                 .antMatchers( "/vendorListView").hasAuthority("BUSINESS_OWNER")
-                .antMatchers("/userupload","/upload","/images/**", "/css/**", "/js/**", "/vendorDataUploadForm", "/webjars/**")
+                .antMatchers("/resetPassword", "/userupload", "/upload", "/images/**", "/css/**", "/js/**", "/vendorDataUploadForm", "/webjars/**")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -63,5 +62,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+
     }
 }

@@ -9,4 +9,8 @@ public interface UserService {
     void save(User user);
 
     User findByUsername(String username);
+
+    public User findByEmail(String email);
+
+    public void createPasswordResetTokenForUser(User user, String token);
 }

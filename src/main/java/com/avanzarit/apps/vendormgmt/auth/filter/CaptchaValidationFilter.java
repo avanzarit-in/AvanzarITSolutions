@@ -39,6 +39,4 @@ public class CaptchaValidationFilter extends UsernamePasswordAuthenticationFilte
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         super.setAuthenticationManager(authenticationManager);
     }
-
-
 }

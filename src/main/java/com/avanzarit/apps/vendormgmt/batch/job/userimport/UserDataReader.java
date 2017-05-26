@@ -17,7 +17,7 @@ public class UserDataReader {
 			{
 				setLineTokenizer(new DelimitedLineTokenizer() {
 					{
-						setNames(new String[] { "username","roleString"});
+						setNames(new String[]{"username", "email", "roleString"});
 					}
 				});
 				setFieldSetMapper(new BeanWrapperFieldSetMapper<User>() {
@@ -39,7 +39,7 @@ public class UserDataReader {
 				{
 					setLineTokenizer(new DelimitedLineTokenizer() {
 						{
-							setNames(new String[]{"username", "rolesString"});
+							setNames(new String[]{"username", "email", "rolesString"});
 						}
 					});
 					setFieldSetMapper(new BeanWrapperFieldSetMapper<User>() {
