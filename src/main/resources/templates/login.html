@@ -16,6 +16,12 @@
                     <div class="col-lg-9 col-lg-offset-2">
                         <form role="form" id="signinForm" name="signinForm" th:action="@{/login}" method="post">
                             <div class="row form-group">
+                                <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message
+                                </div>
+
+                            </div>
+
+                            <div class="row form-group">
 
                                 <div >
                                     <label for="username">Login User Name</label>
@@ -36,9 +42,8 @@
 
                             </div>
                             <div class="row form-group">
-                                <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message
-                                </div>
-                                <div th:if="${error != null}" class="col-lg-12 label label-danger" th:text="${error}">
+
+                                <div th:if="${error != null}" class="alert alert-danger" th:text="${error}">
                                     error
                                 </div>
                             </div>
@@ -52,7 +57,7 @@
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <a th:href="@{/resetPassword}">Forget Password</a>
+                                    <a class="btn btn-primary" th:href="@{/resetPassword}">Forgot Password</a>
                                 </div>
 
                             </div>

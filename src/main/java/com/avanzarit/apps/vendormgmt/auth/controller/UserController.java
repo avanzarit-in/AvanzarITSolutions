@@ -1,11 +1,9 @@
 package com.avanzarit.apps.vendormgmt.auth.controller;
 
 import com.avanzarit.apps.vendormgmt.Layout;
-import com.avanzarit.apps.vendormgmt.auth.exception.UserNotFoundException;
 import com.avanzarit.apps.vendormgmt.auth.model.User;
 import com.avanzarit.apps.vendormgmt.auth.model.UserStatusEnum;
 import com.avanzarit.apps.vendormgmt.auth.repository.UserRepository;
-import com.avanzarit.apps.vendormgmt.auth.response.GenericResponse;
 import com.avanzarit.apps.vendormgmt.auth.service.SecurityService;
 import com.avanzarit.apps.vendormgmt.auth.service.UserService;
 import com.avanzarit.apps.vendormgmt.auth.validator.UserValidator;
@@ -18,8 +16,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -78,24 +80,23 @@ public class UserController {
     public String login(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
         if (session != null) {
-            if (session.getAttribute("SPRING_SECURITY_LAST_EXCEPTION") != null)
+            if (session.getAttribute("SPRING_SECURITY_LAST_EXCEPTION") != null) {
                 model.addAttribute("error", "Your username and password is invalid.");
+                session.removeAttribute("SPRING_SECURITY_LAST_EXCEPTION");
+            }
         }
-      /*  if (logout != null)
-            model.addAttribute("message", "You have been logged out successfully.");
-*/
         return "login";
     }
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String welcome(Model model) {
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Collection<? extends GrantedAuthority> authCollection= auth.getAuthorities();
+        Collection<? extends GrantedAuthority> authCollection = auth.getAuthorities();
 
         String userName = auth.getUsername();
-        if(userName.equals("admin")){
+        if (userName.equals("admin")) {
             return "redirect:/vendorListView";
-        }else{
+        } else {
             return "redirect:/get";
         }
 
@@ -135,19 +136,19 @@ public class UserController {
 
     @RequestMapping(value = "/resetPassword",
             method = RequestMethod.POST)
-    @ResponseBody
-    public GenericResponse resetPassword(HttpServletRequest request,
-                                         @RequestParam("email") String userEmail) {
+    public String resetPassword(HttpServletRequest request, RedirectAttributes redirectAttributes,
+                                @RequestParam("email") String userEmail) {
         String contextPath = request.getRequestURL().toString();
         User user = userService.findByEmail(userEmail);
         if (user == null) {
-            throw new UserNotFoundException();
+            redirectAttributes.addFlashAttribute("error", "User with this e-mail ID does not exist, please enter a valid e-mail ID");
+            return "redirect:/resetPassword";
         }
         String token = UUID.randomUUID().toString();
         userService.createPasswordResetTokenForUser(user, token);
-
+        redirectAttributes.addFlashAttribute("message", "We have sent you a mail on your registered E-mail ID with a link to reset your password");
         emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Reset Password", resetTokenMessage, contextPath, user.getUsername(), token);
-        return new GenericResponse("Successfully sent Password Reset Email");
+        return "redirect:/login";
     }
 
     // for 403 access denied page

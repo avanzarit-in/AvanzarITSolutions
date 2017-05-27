@@ -19,8 +19,6 @@ import java.util.Set;
  */
 public class CustomFilter extends GenericFilterBean {
 
-    private final String CAPTCHA_RESPONSE_FIELD = "g-recaptcha-response";
-
     @Override
     public void doFilter(
             ServletRequest request,
@@ -31,8 +29,6 @@ public class CustomFilter extends GenericFilterBean {
 
         String uri = req.getRequestURI().toString();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String reCaptchaResponse = request.getParameter(CAPTCHA_RESPONSE_FIELD);
-        String remoteAddress = request.getRemoteAddr();
         if (authentication != null) {
             Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
             if (roles.contains("ROLE_PASSWORD_CHANGE") && uri.equals("/")) {
@@ -41,6 +37,5 @@ public class CustomFilter extends GenericFilterBean {
             }
         }
         chain.doFilter(request, response);
-
     }
 }

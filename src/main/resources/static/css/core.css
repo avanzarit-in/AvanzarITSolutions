@@ -9,28 +9,6 @@ body {
 margin-top:10px;
 }
 
-.alert {
-padding: 8px 35px 8px 14px;
-margin-bottom: 0px;
-color: red;
-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-background-color: #fcf8e3;
-border: 1px solid #fbeed5;
--webkit-border-radius: 4px;
--moz-border-radius: 4px;
-border-radius: 4px;
-}
-
-.alert-heading {
-color: inherit;
-}
-
-.alert .close {
-position: relative;
-top: -2px;
-right: -21px;
-line-height: 18px;
-}
 
 .form-group.required .control-label:after {
   content:"*";
