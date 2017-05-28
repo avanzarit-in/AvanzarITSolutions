@@ -43,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/updatePassword").hasAuthority("ROLE_PASSWORD_CHANGE")
                 .antMatchers( "/vendorListView").hasAuthority("BUSINESS_OWNER")
-                .antMatchers("/resetPassword", "/userupload", "/upload", "/images/**", "/css/**", "/js/**", "/vendorDataUploadForm", "/webjars/**")
+                .antMatchers("/changePassword", "/resetPassword", "/userupload", "/upload", "/images/**", "/css/**", "/js/**", "/vendorDataUploadForm", "/webjars/**")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()

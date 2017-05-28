@@ -25,6 +25,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Date;
@@ -39,16 +41,12 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
-
     @Autowired
     private SecurityService securityService;
-
     @Autowired
     private UserValidator userValidator;
-
     @Autowired
     private EmailService emailService;
-
     @Autowired
     SimpleMailMessage resetTokenMessage;
 
@@ -99,7 +97,6 @@ public class UserController {
         } else {
             return "redirect:/get";
         }
-
     }
 
     @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.GET)
@@ -113,7 +110,7 @@ public class UserController {
     }
 
     @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.POST)
-    public String changePassword(@ModelAttribute("user") User user) {
+    public String changePassword(RedirectAttributes redirectAttributes, @ModelAttribute("user") User user) {
 
         String password = user.getPassword();
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -124,6 +121,7 @@ public class UserController {
         repUser.setPassword(password);
         userService.save(repUser);
         securityService.autologin(user.getUsername(), password);
+        redirectAttributes.addFlashAttribute("message", "Please login with the new Password");
         return "/logout";
     }
 
@@ -134,11 +132,37 @@ public class UserController {
         return "resetPassword";
     }
 
+    private String getContextPath(HttpServletRequest request) throws MalformedURLException {
+        String context = "";
+        URL url = new URL(request.getRequestURL().toString());
+        String host = url.getHost();
+        String scheme = url.getProtocol();
+        int port = url.getPort();
+
+        if (port == 80 || port == 0) {
+            context = scheme + "://" + host;
+        } else {
+            context = scheme + "://" + host + ":" + port;
+        }
+        return context;
+    }
+
+    @Layout(value = "layouts/blank")
+    @RequestMapping(value = "/changePassword", method = RequestMethod.GET)
+    public String showChangePasswordPage(RedirectAttributes redirectAttributes, @RequestParam("id") String id, @RequestParam("token") String token) {
+        String result = securityService.validatePasswordResetToken(id, token);
+        if (result != null) {
+            redirectAttributes.addFlashAttribute("error", result);
+            return "redirect:/login";
+        }
+        return "redirect:/updatePassword";
+    }
+
     @RequestMapping(value = "/resetPassword",
             method = RequestMethod.POST)
     public String resetPassword(HttpServletRequest request, RedirectAttributes redirectAttributes,
-                                @RequestParam("email") String userEmail) {
-        String contextPath = request.getRequestURL().toString();
+                                @RequestParam("email") String userEmail) throws MalformedURLException {
+        String contextPath = getContextPath(request);
         User user = userService.findByEmail(userEmail);
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "User with this e-mail ID does not exist, please enter a valid e-mail ID");
@@ -169,7 +193,6 @@ public class UserController {
         return model;
 
     }
-
 
     // for 403 access denied page
     @RequestMapping(value = "/404", method = RequestMethod.GET)

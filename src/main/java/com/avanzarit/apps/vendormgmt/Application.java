@@ -104,7 +104,7 @@ public class Application extends WebMvcConfigurerAdapter {
     @Bean(name = "resetTokenMessage")
     public SimpleMailMessage constructResetTokenEmailMessage() {
         SimpleMailMessage emailMessage = new SimpleMailMessage();
-        emailMessage.setText("Please click the Link to reset password" + " \r\n" + "%s" + "/user/changePassword?id=" + "%s" + "&token=" + "%s");
+        emailMessage.setText("Please click the Link below to reset password" + "\n\n" + "%s" + "/changePassword?id=" + "%s" + "&token=" + "%s");
         return emailMessage;
     }
 }

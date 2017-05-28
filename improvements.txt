@@ -4,3 +4,4 @@
 4) The batch jobs look at autowiring stuff into the Reader, Writer etc.
 5) Display proper error message for uploads
 6) Every Model Class should have hascode and equals method
+7) Error Page

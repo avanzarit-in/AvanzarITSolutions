@@ -32,7 +32,7 @@ public class VendorDataImportReader {
 
 	public static FlatFileItemReader<Vendor> reader(StorageService storageService) {
 		FlatFileItemReader<Vendor> reader = new FlatFileItemReader<Vendor>();
-
+		reader.setLinesToSkip(1);
 		try {
 			reader.setResource(storageService.loadAsResource("vendor-data.csv"));
 			reader.setLineMapper(new DefaultLineMapper<Vendor>() {
@@ -47,6 +47,7 @@ public class VendorDataImportReader {
 							setTargetType(Vendor.class);
 						}
 					});
+
 				}
 			});
 		}catch(Exception exception){

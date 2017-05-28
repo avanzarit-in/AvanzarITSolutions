@@ -103,7 +103,7 @@ public SimpleMailMessage updatePasswordMessage;
     public Step importVendorStep() {
         return stepBuilderFactory.get("importVendorStep").<Vendor, Vendor>chunk(2)
                 .reader(VendorDataImportReader.reader(storageService))
-                .processor(new VendorDataImportProcessor()).writer(new VendorDataImportWriter(vendorRepository, userService)).build();
+                .processor(new VendorDataImportProcessor()).writer(new VendorDataImportWriter(vendorRepository, userService, updatePasswordMessage, emailService)).build();
     }
 
     public Job importUserJob() {
