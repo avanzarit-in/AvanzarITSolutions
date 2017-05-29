@@ -4,6 +4,10 @@ import com.avanzarit.apps.gst.auth.model.User;
 import com.avanzarit.apps.gst.auth.repository.RoleRepository;
 import com.avanzarit.apps.gst.auth.repository.UserRepository;
 import com.avanzarit.apps.gst.auth.service.UserService;
+import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportListener;
+import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportProcessor;
+import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportReader;
+import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportWriter;
 import com.avanzarit.apps.gst.batch.job.userimport.UserDataListener;
 import com.avanzarit.apps.gst.batch.job.userimport.UserDataProcessor;
 import com.avanzarit.apps.gst.batch.job.userimport.UserDataReader;
@@ -16,7 +20,9 @@ import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportProcessor;
 import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportReader;
 import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportWriter;
 import com.avanzarit.apps.gst.email.EmailServiceImpl;
+import com.avanzarit.apps.gst.model.Customer;
 import com.avanzarit.apps.gst.model.Vendor;
+import com.avanzarit.apps.gst.repository.CustomerRepository;
 import com.avanzarit.apps.gst.repository.VendorRepository;
 import com.avanzarit.apps.gst.storage.StorageFileNotFoundException;
 import com.avanzarit.apps.gst.storage.StorageService;
@@ -68,6 +74,8 @@ public SimpleMailMessage updatePasswordMessage;
     @Autowired
     public VendorRepository vendorRepository;
 
+    @Autowired
+    public CustomerRepository customerRepository;
 
     @Autowired
     public UserRepository userRepository;
@@ -119,6 +127,19 @@ public SimpleMailMessage updatePasswordMessage;
                 .writer(new UserDataWriter(userService, roleRepository, updatePasswordMessage, emailService)).build();
     }
 
+    public Job importCustomerJob() {
+        return jobBuilderFactory.get("importCustomerjob").incrementer(new RunIdIncrementer()).listener(new CustomerDataImportListener(customerRepository))
+                .flow(importCustomerStep()).end().build();
+    }
+
+
+    public Step importCustomerStep() {
+        return stepBuilderFactory.get("importCustomerStep").<Customer, Customer>chunk(2)
+                .reader(CustomerDataImportReader.reader(storageService))
+                .processor(new CustomerDataImportProcessor())
+                .writer(new CustomerDataImportWriter(customerRepository, userService, updatePasswordMessage, emailService)).build();
+    }
+
     @GetMapping("/upload")
     public String getVendorDataUploadForm(){
 
@@ -147,7 +168,7 @@ public SimpleMailMessage updatePasswordMessage;
 
     @PostMapping("/userupload")
     public String handleUserFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes) {
+                                       RedirectAttributes redirectAttributes) {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
@@ -155,6 +176,26 @@ public SimpleMailMessage updatePasswordMessage;
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
             jobLauncher.run(importUserJob(), jobParameters);
+            //   storageService.deleteAll();
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        return "redirect:/upload";
+    }
+
+    @PostMapping("/customerupload")
+    public String handleCustomerFileUpload(@RequestParam("file") MultipartFile file,
+                                           RedirectAttributes redirectAttributes) {
+
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        try {
+            storageService.store(file);
+            JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+                    .toJobParameters();
+            jobLauncher.run(importCustomerJob(), jobParameters);
             //   storageService.deleteAll();
         } catch (Exception e) {
             logger.info(e.getMessage());

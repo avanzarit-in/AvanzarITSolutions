@@ -28,11 +28,8 @@ import java.util.Collection;
 class CustomerController {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
-
-
     @Autowired
     private CustomerRepository customerRepository;
-
 
     @Layout(value = "layouts/customerForm")
     @RequestMapping(path = "/add", method = RequestMethod.GET)

@@ -84,7 +84,7 @@ public class Customer {
         return customerName2;
     }
 
-    public void setCUstomerName2(String customerName2) {
+    public void setCustomerName2(String customerName2) {
         this.customerName2 = customerName2;
     }
 
@@ -343,12 +343,13 @@ public class Customer {
     }
 
 
+
     @Column(name = "customerstatus")
-    public CustomerStatusEnum getVendorStatus() {
+    public CustomerStatusEnum getCustomerStatus() {
         return customerStatus;
     }
 
-    public void setCustomerStatus(CustomerStatusEnum vendorStatus) {
+    public void setCustomerStatus(CustomerStatusEnum customerStatus) {
         this.customerStatus = customerStatus;
     }
 
