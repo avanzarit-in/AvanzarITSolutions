@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="gstn" th:object="${customer}">
+    <div class="form-group required">
+        <label class="col-xs-3  control-label">PAN</label>
+        <div class="col-xs-6">
+            <input type="text" class="form-control" th:field="*{pan}" th:disabled="*{submityn == 'Y'}"
+                   placeholder="PAN Number"/>
+        </div>
+    </div>
+
+    <div class="form-group required">
+        <label class="col-xs-3  control-label">GST Registration Status</label>
+        <div class="col-xs-3">
+            <select class="form-control" th:field="*{gstRegistrationStatus}" th:disabled="*{submityn == 'Y'}">
+                <option value="">Select a Value</option>
+                <option value="3">Registered</option>
+                <option value="0">Not Registered</option>
+                <option value="1">Compounding Scheme</option>
+                <option value="2">PSU / Government Organization</option>
+            </select>
+
+        </div>
+    </div>
+
+    <div class="form-group required">
+        <label class="col-xs-3  control-label">Number of GST Registration</label>
+        <div class="col-xs-4">
+            <input type="text" class="form-control" th:field="*{noOfGstRegistration}" th:disabled="*{submityn == 'Y'}"
+                   placeholder="GST Registration count"/>
+        </div>
+    </div>
+
+    <div class="form-group required">
+        <label class="col-xs-3  control-label">State</label>
+        <div class="col-xs-6">
+            <select th:field="*{state}" class="form-control" th:disabled="*{submityn == 'Y'}">
+                <option value="">Select a State</option>
+                <option value="01">Srinagar / Jammu</option>
+                <option value="02">Himachal Pradesh</option>
+                <option value="03">Punjab</option>
+                <option value="04">Chandigarh</option>
+                <option value="05">Uttarakhand</option>
+                <option value="06">Haryana</option>
+                <option value="07">Delhi</option>
+                <option value="08">Rajasthan</option>
+                <option value="09">Uttar Pradesh</option>
+                <option value="10">Bihar</option>
+                <option value="11">Sikkim</option>
+                <option value="12">Arunachal Pradesh</option>
+                <option value="13">Nagaland</option>
+                <option value="14">Manipur</option>
+                <option value="15">Mizoram</option>
+                <option value="16">Tripura</option>
+                <option value="17">Meghalaya</option>
+                <option value="18">Assam</option>
+                <option value="19">West Bengal</option>
+                <option value="20">Jharkhand</option>
+                <option value="21">Orissa</option>
+                <option value="22">Chhattisgarh</option>
+                <option value="23">Madhya Pradesh</option>
+                <option value="24">Gujarat</option>
+                <option value="25">Daman and Diu</option>
+                <option value="26">Dadra and Nagar Haveli</option>
+                <option value="27">Maharashtra</option>
+                <option value="28">Andhra Pradesh</option>
+                <option value="29">Karnataka</option>
+                <option value="30">Goa</option>
+                <option value="31">Lakshadweep</option>
+                <option value="32">Kerala</option>
+                <option value="33">Tamil Nadu</option>
+                <option value="34">Puducherry</option>
+                <option value="35">Andaman and Nicobar</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group required">
+        <label class="col-xs-3  control-label">GST Number</label>
+        <div class="col-xs-6">
+            <input type="text" class="form-control" th:field="*{gstNumber}" th:disabled="*{submityn == 'Y'}"
+                   placeholder="GST Number"/>
+        </div>
+    </div>
+</div>
+</body>
+<script th:fragment="gstnjs">
+
+    $(document).ready(function () {
+        $('#gstinfo-tab').formValidation({
+            framework: 'bootstrap',
+            excluded: [':disabled'],
+
+            icon: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                pan: {
+                    row: '.col-xs-6',
+                    validators: {
+                        notEmpty: {
+                            message: 'The PAN number is required'
+                        },
+                        callback: {
+                            message: 'Invalid Pan No',
+                            callback: function (value, validator, $field) {
+                                var panPat = /^([a-zA-Z]{5})(\d{4})([a-zA-Z]{1})$/;
+                                var code = /([C,P,H,F,A,T,B,L,J,G])/;
+                                var code_chk = value.substring(3, 4);
+                                if (value.search(panPat) == -1) {
+                                    return false;
+                                }
+                                if (code.test(code_chk) == false) {
+                                    return false;
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                },
+                vatNumber: {
+                    row: '.col-xs-6',
+                    validators: {
+                        stringLength: {
+                            max: 9,
+                            message: 'This field must be less than 9 digits'
+                        },
+                        digits: {
+                            message: 'Only digits allowed in this field'
+                        }
+                    }
+                },
+                gstRegistrationStatus: {
+                    row: '.col-xs-3',
+                    validators: {
+                        notEmpty: {
+                            message: 'The GST Registration Status is required'
+                        }
+                    }
+                },
+                noOfGstRegistration: {
+                    row: '.col-xs-4',
+                    validators: {
+                        notEmpty: {
+                            message: 'The number of GST Registered is required'
+                        },
+                        digits: {
+                            message: 'Only digits allowed in this field'
+                        },
+                        between: {
+                            min: 1,
+                            max: 35,
+                            message: 'The number should be between 1 and 35'
+                        }
+                    }
+                },
+                gstState: {
+                    row: '.col-xs-6',
+                    validators: {
+                        notEmpty: {
+                            message: 'The GST State is required'
+                        }
+                    }
+                },
+                gstNumber: {
+                    row: '.col-xs-6',
+                    validators: {
+                        notEmpty: {
+                            message: 'The GST Number is required'
+                        },
+                        callback: {
+                            message: 'Invalid GSTN Number',
+                            callback: function (value, validator, $field) {
+                                var state = $('#profileForm').find('[name="state"]').val(),
+                                    pan = $('#profileForm').find('[name="pan"]').val(),
+                                    numberOfGstn = $('#profileForm').find('[name="noOfGstRegistration"]').val();
+                                numberOfGstn = getValue(numberOfGstn);
+                                var gstnNumber = state + pan + numberOfGstn + 'Z';
+
+                                if (!value.startsWith(gstnNumber)) {
+                                    return false;
+                                }
+                                if (value.length != 15) {
+                                    return false;
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }).on('err.field.fv', function (e, data) {
+
+            // data.element --> The field element
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId = $tabPane.attr('id');
+            $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                .parent()
+                .find('i')
+                .removeClass('fa-check')
+                .addClass('fa-times');
+        }).on('success.field.fv', function (e, data) {
+            // data.fv      --> The FormValidation instance
+            // data.element --> The field element
+
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId = $tabPane.attr('id'),
+                $icon = $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                    .parent()
+                    .find('i')
+                    .removeClass('fa-check fa-times');
+
+            // Check if all fields in tab are valid
+            var isValidTab = data.fv.isValidContainer($tabPane);
+            if (isValidTab !== null) {
+                $icon.addClass(isValidTab ? '' : 'fa-times');
+            }
+        });
+    });
+
+
+    function getValue(value) {
+        switch (value) {
+            case "10":
+                return "A";
+                break;
+            case "11":
+                return "B";
+                break;
+            case "12":
+                return "C";
+                break;
+            case "13":
+                return "D";
+                break;
+            case "14":
+                return "E";
+                break;
+            case "15":
+                return "F";
+                break;
+            case "16":
+                return "G";
+                break;
+            case "17":
+                return "H";
+                break;
+            case "18":
+                return "I";
+                break;
+            case "19":
+                return "J";
+                break;
+            case "20":
+                return "K";
+                break;
+            case "21":
+                return "L";
+                break;
+            case "22":
+                return "M";
+                break;
+            case "23":
+                return "N";
+                break;
+            case "24":
+                return "O";
+                break;
+            case "25":
+                return "P";
+                break;
+            case "26":
+                return "Q";
+                break;
+            case "27":
+                return "R";
+                break;
+            case "28":
+                return "S";
+                break;
+            case "29":
+                return "T";
+                break;
+            case "30":
+                return "U";
+                break;
+            case "31":
+                return "V";
+                break;
+            case "32":
+                return "W";
+                break;
+            case "33":
+                return "X";
+                break;
+            case "34":
+                return "Y";
+                break;
+            case "35":
+                return "Z";
+                break;
+            default:
+                return value;
+        }
+    }
+
+
+</script>
+</html>

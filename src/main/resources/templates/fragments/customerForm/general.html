@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="general" th:object="${customer}">
+
+    <div class="form-group">
+        <label class="col-xs-2 control-label">Customer ID</label>
+        <div class="col-xs-6">
+            <input type="text" class="form-control" th:field="*{customerId}" th:disabled="*{submityn == 'Y'}"
+                   placeholder="Customer ID"/>
+        </div>
+    </div>
+
+    <div class="form-group required">
+        <label class="col-xs-2 control-label">Customer Name</label>
+        <div class="col-xs-3">
+            <input type="text" class="form-control " th:field="*{customerName1}" placeholder="Name1"
+                   th:disabled="*{submityn == 'Y'}"/>
+        </div>
+        <div class="col-xs-3">
+            <input type="text" class="form-control" th:field="*{customerName2}" placeholder="Name2"
+                   th:disabled="*{submityn == 'Y'}"/>
+        </div>
+        <div class="col-xs-3">
+            <input type="text" class="form-control" th:field="*{customerName3}" placeholder="Name3"
+                   th:disabled="*{submityn == 'Y'}"/>
+        </div>
+    </div>
+
+</div>
+</body>
+<script th:fragment="generaljs">
+
+    $(document).ready(function () {
+        $('#info-tab').formValidation({
+            framework: 'bootstrap',
+            excluded: [':disabled'],
+            icon: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                customerId: {
+                    row: '.col-xs-6',
+                    validators: {
+                        notEmpty: {
+                            message: 'The Customer Id is required'
+                        }, stringLength: {
+                            max: 35,
+                            message: 'This field must be less than 10 characters'
+                        }
+                    }
+                },
+                customerName1: {
+                    row: '.col-xs-3',
+                    validators: {
+                        notEmpty: {
+                            message: 'The Customer Name is required'
+                        }, stringLength: {
+                            max: 35,
+                            message: 'This field must be less than 35 characters'
+                        }
+                    }
+                },
+                customerName2: {
+                    row: '.col-xs-3',
+                    validators: {
+                        stringLength: {
+                            max: 35,
+                            message: 'This field must be less than 35 characters'
+                        }
+                    }
+                },
+                customerName3: {
+                    row: '.col-xs-3',
+                    validators: {
+                        stringLength: {
+                            max: 35,
+                            message: 'This field must be less than 35 characters'
+                        }
+                    }
+                }
+            }
+        }).on('err.field.fv', function (e, data) {
+
+            // data.element --> The field element
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId = $tabPane.attr('id');
+            $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                .parent()
+                .find('i')
+                .removeClass('fa-check')
+                .addClass('fa-times');
+        }).on('success.field.fv', function (e, data) {
+            // data.fv      --> The FormValidation instance
+            // data.element --> The field element
+
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId = $tabPane.attr('id'),
+                $icon = $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                    .parent()
+                    .find('i')
+                    .removeClass('fa-check fa-times');
+
+            // Check if all fields in tab are valid
+            var isValidTab = data.fv.isValidContainer($tabPane);
+            if (isValidTab !== null) {
+                $icon.addClass(isValidTab ? '' : 'fa-times');
+            }
+        });
+    });
+
+</script>
+</html>

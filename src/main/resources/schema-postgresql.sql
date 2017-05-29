@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS vendor;
 DROP TABLE IF EXISTS materialmaster;
+DROP TABLE IF EXISTS customer;
 
 CREATE TABLE vendor (
   vendorid  VARCHAR(500) PRIMARY KEY NOT NULL,
@@ -61,6 +62,52 @@ CREATE TABLE materialmaster(
     code VARCHAR(500),
     description VARCHAR(500),
     hsn  VARCHAR(500)
+);
+
+CREATE TABLE customer (
+ customerid            VARCHAR(500) PRIMARY KEY NOT NULL,
+ customername1         VARCHAR(500),
+ customername2         VARCHAR(500),
+ customername3         VARCHAR(500),
+ contactperson         VARCHAR(500),
+ telephonenumberextn   VARCHAR(500),
+ mobileno              VARCHAR(500),
+ email                 VARCHAR(500),
+ faxnumberextn         VARCHAR(500),
+ buildingno            VARCHAR(500),
+ address1              VARCHAR(500),
+ address2              VARCHAR(500),
+ address3              VARCHAR(500),
+ address4              VARCHAR(500),
+ address5              VARCHAR(500),
+ city                  VARCHAR(500),
+ postcode              VARCHAR(500),
+ region                VARCHAR(500),
+ country               VARCHAR(500),
+ pan                   VARCHAR(500),
+ gstregistrationstatus VARCHAR(500),
+ noofgstregistration   VARCHAR(500),
+ state                 VARCHAR(500),
+ gstnumber             VARCHAR(500),
+ customerstatus        VARCHAR(50),
+ modifiedby            VARCHAR(50),
+ modifiedon            TIMESTAMP,
+ submittedby           VARCHAR(500),
+ lastsubmittedon       TIMESTAMP,
+ approvedby            VARCHAR(500),
+ lastapprovedon        TIMESTAMP,
+ rejectedby            VARCHAR(500),
+ lastrejectedon        TIMESTAMP,
+ lastrevertedby        VARCHAR(500),
+ lastrevertedon        TIMESTAMP,
+ revertcount           INTEGER,
+ rejectreason          VARCHAR(500),
+ revertreason          VARCHAR(500),
+ isaccepttnc           VARCHAR(2),
+ tncacceptedby         VARCHAR(500),
+ tncacceptedon         TIMESTAMP,
+ sapsyncdate           TIMESTAMP,
+ submityn              VARCHAR(1)
 );
 
 
