@@ -5,3 +5,4 @@
 5) Display proper error message for uploads
 6) Every Model Class should have hascode and equals method
 7) Error Page
+8) SOme more changes
