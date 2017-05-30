@@ -1,6 +1,7 @@
 package com.avanzarit.apps.gst;
 
 import com.avanzarit.apps.gst.interceptor.ThymeleafLayoutInterceptor;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
@@ -25,6 +26,7 @@ import java.util.Properties;
  * Created by SPADHI on 5/3/2017.
  */
 @SpringBootApplication
+@EnableBatchProcessing
 public class Application extends WebMvcConfigurerAdapter {
 
     public static void main(String[] args) {
@@ -63,7 +65,6 @@ public class Application extends WebMvcConfigurerAdapter {
             {
                 ErrorPage error404Page = new ErrorPage(HttpStatus.NOT_FOUND, "/404");
                 ErrorPage error500Page = new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/500");
-
                 container.addErrorPages(error404Page,error500Page);
             }
         };

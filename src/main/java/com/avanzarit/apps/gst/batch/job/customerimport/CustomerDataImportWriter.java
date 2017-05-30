@@ -36,7 +36,6 @@ public class CustomerDataImportWriter implements ItemWriter<Customer> {
                 User user = new User();
                 user.setUsername(customer.getCustomerId());
                 user.setPassword("welcome123");
-                user.setPasswordConfirm("welcome123");
                 user.setEmail(customer.getEmail());
                 user.setUserStatus(UserStatusEnum.NEW);
                 userService.save(user);

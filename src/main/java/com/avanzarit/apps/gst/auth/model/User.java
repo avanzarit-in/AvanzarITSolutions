@@ -13,10 +13,8 @@ public class User {
     private Long id;
     private String username;
     private String password;
-    private String passwordConfirm;
     private String email;
     private Set<Role> roles;
-    private String rolesString;
     private Date lastLoginDate;
     private UserStatusEnum userStatus;
 
@@ -47,15 +45,6 @@ public class User {
         this.password = password;
     }
 
-    @Transient
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
-    }
-
     @ManyToMany
     @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     public Set<Role> getRoles() {
@@ -84,15 +73,7 @@ public class User {
         this.userStatus = userStatus;
     }
 
-    @Transient
-    public String getRolesString() {
-        return rolesString;
-    }
-
-    public void setRolesString(String rolesString) {
-        this.rolesString = rolesString;
-    }
-
+    @Column(name="email")
     public String getEmail() {
         return email;
     }

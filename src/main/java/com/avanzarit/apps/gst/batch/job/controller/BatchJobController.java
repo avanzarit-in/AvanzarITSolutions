@@ -1,6 +1,5 @@
-package com.avanzarit.apps.gst.controller;
+package com.avanzarit.apps.gst.batch.job.controller;
 
-import com.avanzarit.apps.gst.auth.model.User;
 import com.avanzarit.apps.gst.auth.repository.RoleRepository;
 import com.avanzarit.apps.gst.auth.repository.UserRepository;
 import com.avanzarit.apps.gst.auth.service.UserService;
@@ -8,10 +7,6 @@ import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportListene
 import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportProcessor;
 import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportReader;
 import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportWriter;
-import com.avanzarit.apps.gst.batch.job.userimport.UserDataListener;
-import com.avanzarit.apps.gst.batch.job.userimport.UserDataProcessor;
-import com.avanzarit.apps.gst.batch.job.userimport.UserDataReader;
-import com.avanzarit.apps.gst.batch.job.userimport.UserDataWriter;
 import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportProcessor;
 import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportReader;
 import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportWriter;
@@ -36,8 +31,13 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
@@ -54,41 +54,35 @@ import javax.sql.DataSource;
  * Created by SPADHI on 5/5/2017.
  */
 @Controller
-public class ImportController {
+public class BatchJobController implements BeanFactoryAware {
+
+    private BeanFactory beanFactory;
     @Autowired
     JobLauncher jobLauncher;
-@Autowired
-public SimpleMailMessage updatePasswordMessage;
-@Autowired
+    @Autowired
+    public SimpleMailMessage updatePasswordMessage;
+    @Autowired
     public EmailServiceImpl emailService;
-
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
-
     @Autowired
     public StepBuilderFactory stepBuilderFactory;
-
     @Autowired
     StorageService storageService;
-
     @Autowired
     public VendorRepository vendorRepository;
-
     @Autowired
     public CustomerRepository customerRepository;
-
     @Autowired
     public UserRepository userRepository;
-
     @Autowired
     public RoleRepository roleRepository;
-
     @Qualifier("dataSource")
     @Autowired
     public DataSource dataSource;
-
     @Autowired
     private UserService userService;
+
 
     public Job exportVendorJob() {
         return jobBuilderFactory.get("exportVendorjob").incrementer(new RunIdIncrementer())
@@ -114,18 +108,6 @@ public SimpleMailMessage updatePasswordMessage;
                 .processor(new VendorDataImportProcessor()).writer(new VendorDataImportWriter(vendorRepository, userService, updatePasswordMessage, emailService)).build();
     }
 
-    public Job importUserJob() {
-        return jobBuilderFactory.get("importUserjob").incrementer(new RunIdIncrementer()).listener(new UserDataListener(userRepository))
-                .flow(importUserStep()).end().build();
-    }
-
-
-    public Step importUserStep() {
-        return stepBuilderFactory.get("importUserStep").<User, User>chunk(2)
-                .reader(UserDataReader.reader(storageService))
-                .processor(new UserDataProcessor())
-                .writer(new UserDataWriter(userService, roleRepository, updatePasswordMessage, emailService)).build();
-    }
 
     public Job importCustomerJob() {
         return jobBuilderFactory.get("importCustomerjob").incrementer(new RunIdIncrementer()).listener(new CustomerDataImportListener(customerRepository))
@@ -141,10 +123,11 @@ public SimpleMailMessage updatePasswordMessage;
     }
 
     @GetMapping("/upload")
-    public String getVendorDataUploadForm(){
+    public String getVendorDataUploadForm() {
 
         return "upload";
     }
+
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {
@@ -173,10 +156,10 @@ public SimpleMailMessage updatePasswordMessage;
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
             storageService.store(file);
+            Job job=(Job)beanFactory.getBean("userImportJob",storageService.loadAsResource(file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
-            jobLauncher.run(importUserJob(), jobParameters);
-            //   storageService.deleteAll();
+            jobLauncher.run(job, jobParameters);
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
@@ -215,7 +198,6 @@ public SimpleMailMessage updatePasswordMessage;
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
             jobLauncher.run(exportVendorJob(), jobParameters);
-            //   storageService.deleteAll();
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
@@ -228,4 +210,8 @@ public SimpleMailMessage updatePasswordMessage;
         return ResponseEntity.notFound().build();
     }
 
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory=beanFactory;
+    }
 }

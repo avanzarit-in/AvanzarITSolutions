@@ -4,15 +4,20 @@ package com.avanzarit.apps.gst.storage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.stream.Stream;
 
 @Service
@@ -27,15 +32,22 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void store(MultipartFile file) {
+    public String store(MultipartFile file) {
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
+            try {
+                Files.delete(this.rootLocation.resolve(file.getOriginalFilename()));
+            }catch(NoSuchFileException exception){
+
+            }
             Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
+
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
+        return "";
     }
 
     @Override
@@ -55,6 +67,7 @@ public class FileSystemStorageService implements StorageService {
         return rootLocation.resolve(filename);
     }
 
+
     @Override
     public Resource loadAsResource(String filename) {
         try {
@@ -72,14 +85,17 @@ public class FileSystemStorageService implements StorageService {
         }
     }
 
+    @PreDestroy
     @Override
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 
+    @PostConstruct
     @Override
     public void init() {
         try {
+            FileSystemUtils.deleteRecursively(rootLocation.toFile());
             Files.createDirectory(rootLocation);
         } catch (IOException e) {
             throw new StorageException("Could not initialize storage", e);
