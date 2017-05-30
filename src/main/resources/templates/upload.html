@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <body>
 <div th:fragment="content">
@@ -10,14 +10,14 @@
             <h2 th:text="${message}"/>
         </div>
 
-               <div class="panel panel-default">
+               <div sec:authorize="hasAuthority('BUSINESS_OWNER')" class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Vendor Data Upload</h3>
             </div>
 
             <div class="panel-body">
                 <div class="row view-area">
-                    <form method="POST" enctype="multipart/form-data" action="/upload">
+                    <form method="POST" enctype="multipart/form-data" action="/vendorupload">
                         <div class="form-group">
                             <label class="col-xs-2 control-label">Vendor file to upload:</label>
                             <div class="col-xs-3">
@@ -37,7 +37,7 @@
         </div>
 
 
-        <div class="panel panel-default">
+        <div sec:authorize="hasAuthority('ADMIN')" class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">System User Data Upload</h3>
             </div>

@@ -74,7 +74,6 @@ class VendorController {
     @Layout(value = "layouts/vendorForm")
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public String addAlbum(@ModelAttribute Vendor vendor, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        logger.debug("in add exportVendorJob => " + vendor);
 
         List<MaterialMaster> materials = vendor.getMaterial();
         for (MaterialMaster material : materials) {

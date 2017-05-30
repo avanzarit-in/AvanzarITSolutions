@@ -8,6 +8,8 @@ import com.avanzarit.apps.gst.auth.model.User;
 public interface UserService {
     void save(User user);
 
+    void saveOnly(User user);
+
     User findByUsername(String username);
 
     public User findByEmail(String email);

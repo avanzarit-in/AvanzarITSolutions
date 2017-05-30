@@ -1,7 +1,7 @@
 body {
     padding-top: 90px;
     padding-bottom: 40px;
-    background-color: #eee;
+
 }
 
 
@@ -30,13 +30,31 @@ div.dataTables_wrapper {
     }
 
 .navbar-inverse .navbar-brand {
-    color: #ccc;
+    color: #fff;
 }
 
 .navbar-inverse .navbar-nav > li > a {
-    color: #ddd;
+    color: #fff;
 }
 
 .navbar-inverse .navbar-text {
-    color: #ddd;
+    color: #fff;
 }
+
+#footer {
+	width:100%;
+	height:auto;
+	background-image: url(/images/background.jpg);
+	background-repeat: no-repeat;
+	background-position: center bottom;
+	position:fixed;
+	_position:fixed;
+	_bottom:0;
+	bottom:0;
+}
+
+.header-bg {
+      width:100%;
+      background: url(/images/background.jpg);
+      background-size:cover;
+    }

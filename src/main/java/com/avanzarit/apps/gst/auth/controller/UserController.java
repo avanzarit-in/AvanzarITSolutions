@@ -10,6 +10,7 @@ import com.avanzarit.apps.gst.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ import java.net.URL;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -63,14 +65,25 @@ public class UserController {
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String welcome(Model model) {
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Collection<? extends GrantedAuthority> authCollection = auth.getAuthorities();
-
-        String userName = auth.getUsername();
-        if (userName.equals("admin")) {
-            return "redirect:/vendorListView";
-        } else {
+        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
+        if (roles.contains("ADMIN")) {
+            return "redirect:/adminLanding";
+        } else if(roles.contains("BUSINESS_OWNER")){
+            return "redirect:/businessOwnerLanding";
+        }else if(roles.contains("VENDOR")){
             return "redirect:/get";
         }
+        return "/404";
+    }
+
+    @RequestMapping(value = {"/adminLanding"}, method = RequestMethod.GET)
+    public String loadAdminLandingPage(Model model) {
+        return "adminLanding";
+    }
+
+    @RequestMapping(value = {"/businessOwnerLanding"}, method = RequestMethod.GET)
+    public String loadBusinessOwnerLandingPage(Model model) {
+        return "businessOwnerLanding";
     }
 
     @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.GET)
@@ -102,7 +115,6 @@ public class UserController {
     @Layout(value = "layouts/blank")
     @RequestMapping(value = {"/resetPassword"}, method = RequestMethod.GET)
     public String loadResetPasswordPage(Model model) {
-
         return "resetPassword";
     }
 
