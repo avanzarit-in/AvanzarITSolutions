@@ -10,10 +10,6 @@ import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportWriter;
 import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportProcessor;
 import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportReader;
 import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportWriter;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportListener;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportProcessor;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportReader;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportWriter;
 import com.avanzarit.apps.gst.email.EmailServiceImpl;
 import com.avanzarit.apps.gst.model.Customer;
 import com.avanzarit.apps.gst.model.Vendor;
@@ -36,8 +32,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
@@ -96,19 +90,6 @@ public class BatchJobController implements BeanFactoryAware {
                 .processor(new VendorDataExportProcessor()).writer(VendorDataExportWriter.write(storageService)).build();
     }
 
-    public Job importVendorJob() {
-        return jobBuilderFactory.get("importVendorjob").incrementer(new RunIdIncrementer()).listener(new VendorDataImportListener(vendorRepository))
-                .flow(importVendorStep()).end().build();
-    }
-
-
-    public Step importVendorStep() {
-        return stepBuilderFactory.get("importVendorStep").<Vendor, Vendor>chunk(2)
-                .reader(VendorDataImportReader.reader(storageService))
-                .processor(new VendorDataImportProcessor()).writer(new VendorDataImportWriter(vendorRepository, userService, updatePasswordMessage, emailService)).build();
-    }
-
-
     public Job importCustomerJob() {
         return jobBuilderFactory.get("importCustomerjob").incrementer(new RunIdIncrementer()).listener(new CustomerDataImportListener(customerRepository))
                 .flow(importCustomerStep()).end().build();
@@ -135,10 +116,10 @@ public class BatchJobController implements BeanFactoryAware {
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
             storageService.store(file);
+            Job job = (Job) beanFactory.getBean("vendorImportJob", storageService.loadAsResource(file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
-            jobLauncher.run(importVendorJob(), jobParameters);
-            //   storageService.deleteAll();
+            jobLauncher.run(job, jobParameters);
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
