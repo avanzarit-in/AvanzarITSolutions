@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
 <div th:fragment="header">
-    <nav class="navbar navbar-inverse navbar-fixed-top header-bg">
+    <nav class="navbar navbar-fixed-top ">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -12,7 +12,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/"><img src="/images/logo.jpg"></a>
+                <a class="navbar-brand" href="/"><img src="/images/logo-small.png"></a>
             </div>
             <div class="navbar-collapse collapse" id="navbar-main">
 
@@ -24,7 +24,7 @@
                            aria-expanded="false">Admin Actions<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="/upload">User Data Import</a></li>
-                            <li><a href="/usermgmt">User Management</a></li>
+                            <li><a href="/userListView">User Management</a></li>
                         </ul>
                     </li>
 
@@ -33,33 +33,23 @@
                            aria-expanded="false">Business Owner Actions<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="/upload">Vendor Data Import</a></li>
-                            <li><a href="/usermgmt">Vendor Management</a></li>
+                            <li><a href="/vendorListView">Vendor Management</a></li>
                         </ul>
                     </li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
-
                     <li sec:authorize="!isAuthenticated()"><a href="/login"><span
                             class="glyphicon glyphicon-log-in"></span> Login</a></li>
                     <li sec:authorize="isAuthenticated()"><p class="navbar-text">Logged in User:(<span
                             sec:authentication="name"></span>)</p></li>
                     <li sec:authorize="isAuthenticated()"><a href="#" th:href="@{/logout}"><span
                             class="glyphicon glyphicon-log-in"></span> Log Off</a></li>
-
                 </ul>
-
-                <div sec:authorize="hasRole('ADMIN')">
-                    This content is only shown to administrators.
-                </div>
-                <div sec:authorize="hasRole('ROLE_USER')">
-                    This content is only shown to users.
-                </div>
-
-
             </div>
         </div>
     </nav>
+
 </div>
 </body>
 </html>

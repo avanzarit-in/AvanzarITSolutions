@@ -1,11 +1,15 @@
 package com.avanzarit.apps.gst.auth.filter;
 
+import com.avanzarit.apps.gst.auth.handler.CustomAuthenticationSuccessHandler;
+import com.avanzarit.apps.gst.auth.service.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
@@ -25,13 +29,17 @@ public class CaptchaValidationFilter extends UsernamePasswordAuthenticationFilte
     public CaptchaValidationFilter(){
         super();
         super.setAuthenticationFailureHandler(simpleUrlAuthenticationFailureHandler);
-
-    }
+     }
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
         String reCaptchaResponse = request.getParameter(CAPTCHA_RESPONSE_FIELD);
         String remoteAddress = request.getRemoteAddr();
         return super.attemptAuthentication(request, response);
+    }
+
+    @Autowired
+    public void setCustomAuthenticationSuccessHandler(CustomAuthenticationSuccessHandler customAuthenticationSuccessHandle) {
+        super.setAuthenticationSuccessHandler(customAuthenticationSuccessHandle);
     }
 
     @Autowired

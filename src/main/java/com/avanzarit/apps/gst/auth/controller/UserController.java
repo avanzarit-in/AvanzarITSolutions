@@ -76,15 +76,7 @@ public class UserController {
         return "/404";
     }
 
-    @RequestMapping(value = {"/adminLanding"}, method = RequestMethod.GET)
-    public String loadAdminLandingPage(Model model) {
-        return "adminLanding";
-    }
 
-    @RequestMapping(value = {"/businessOwnerLanding"}, method = RequestMethod.GET)
-    public String loadBusinessOwnerLandingPage(Model model) {
-        return "businessOwnerLanding";
-    }
 
     @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.GET)
     public String updatePassword(Model model) {

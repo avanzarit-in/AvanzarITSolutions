@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +24,8 @@ import java.util.Set;
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
 
     @Override
     @Transactional(readOnly = true)
@@ -38,12 +41,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_PASSWORD_CHANGE"));
              userDetails = new org.springframework.security.core.userdetails
                      .User(user.getUsername(), user.getPassword(), grantedAuthorities);
+
         }else{
             for (Role role : user.getRoles()) {
                 grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
             }
             userDetails = new org.springframework.security.core.userdetails
                     .User(user.getUsername(), user.getPassword(), grantedAuthorities);
+
         }
         return userDetails;
     }

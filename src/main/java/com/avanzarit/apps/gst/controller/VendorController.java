@@ -1,6 +1,7 @@
 package com.avanzarit.apps.gst.controller;
 
 import com.avanzarit.apps.gst.Layout;
+import com.avanzarit.apps.gst.auth.repository.UserRepository;
 import com.avanzarit.apps.gst.model.MaterialMaster;
 import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.repository.MaterialMasterRepository;
@@ -34,6 +35,9 @@ class VendorController {
 
     @Autowired
     private VendorRepository vendorRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private MaterialMasterRepository materialMasterRepository;
@@ -99,23 +103,33 @@ class VendorController {
         return "redirect:add";
     }
 
+
+    @RequestMapping(value = {"/adminLanding"}, method = RequestMethod.GET)
+    public String loadAdminLandingPage(Model model) {
+        return "redirect:userListView";
+    }
+
+    @RequestMapping(value = {"/businessOwnerLanding"}, method = RequestMethod.GET)
+    public String loadBusinessOwnerLandingPage(Model model) {
+        return "redirect:vendorListView";
+    }
+
+    @RequestMapping(path = "/userListView", method = RequestMethod.GET)
+    public ModelAndView showUserList() {
+        logger.debug("in showUserList");
+
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("users", userRepository.findAll());
+        mav.setViewName("userListView");
+        return mav;
+    }
+
     @RequestMapping(path = "/vendorListView", method = RequestMethod.GET)
-    public ModelAndView showAlbumsList() {
+    public ModelAndView showVendorList() {
         logger.debug("in showVendorList");
 
         ModelAndView mav = new ModelAndView();
-        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userName = auth.getUsername();
-        Collection<? extends GrantedAuthority> groups=auth.getAuthorities();
-        for(GrantedAuthority authority:groups){
-            String authGroup=authority.getAuthority();
-        }
-
-        if (userName.equals("admin")) {
-            mav.addObject("vendors", vendorRepository.findAll());
-        } else {
-            mav.addObject("vendors", vendorRepository.findByVendorId(userName));
-        }
+        mav.addObject("vendors", vendorRepository.findAll());
         mav.setViewName("vendorListView");
         return mav;
     }

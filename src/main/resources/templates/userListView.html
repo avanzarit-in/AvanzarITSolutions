@@ -13,10 +13,12 @@
                 <table id="dataTable" class="table table-hover table-striped table-bordered">
                     <thead class="thead-inverse">
                     <tr>
-                        <th>User ID</th>
+                        <th>UserID</th>
+                        <th>Email</th>
                         <th>Roles</th>
-                        <th>Action</th>
-                        <th></th>
+                        <th>Status</th>
+                        <th>LastLoginDate</th>
+                        <th>Actions</th>
 
 
                     </tr>
@@ -24,9 +26,17 @@
                     <tbody>
                     <tr th:each="mItem : ${users}">
                         <td><label type="text"
-                                   th:text="${mItem.userid}" /></td>
+                                   th:text="${mItem.username}" /></td>
                         <td><label type="text"
-                                   th:text="${mItem.roles}" /></td>
+                                   th:text="${mItem.email}" /></td>
+
+                        <td><label type="text"
+                                   th:each="a, iterStat : ${mItem.roles}" th:text="!${iterStat.last} ? ${a.name} + ',': ${a.name}" /></td>
+                        <td><label type="text"
+                                   th:text="${mItem.userStatus}" /></td>
+                        <td><label type="text"
+                                   th:text="${mItem.lastLoginDate}" /></td>
+                        <td></td>
                     </tr>
                     </tbody>
                 </table>
@@ -37,6 +47,10 @@
 
 </body>
 <script th:fragment="js">
-
+$(document).ready(function(){
+   $('#dataTable').DataTable( {
+                "scrollY": 200
+            });
+});
     </script>
 </html>

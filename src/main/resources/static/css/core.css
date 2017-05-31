@@ -1,12 +1,37 @@
 body {
     padding-top: 90px;
     padding-bottom: 40px;
-
 }
+
+.navbar {
+    background-color: #f8f8f8;
+    border-color: #e7e7e7;
+    }
 
 
 .tab-pane{
 margin-top:10px;
+}
+
+@media (min-width: 768px)
+{
+    .container>.navbar-header{
+    margin-left:-100px;
+    }
+
+    .navbar-nav {
+    margin-top:15px;
+    margin-left: 70px;
+    }
+}
+
+.navbar-brand img{
+     width: 100px;
+     margin-top: -10px;
+}
+
+.navbar{
+min-height:70px;
 }
 
 
@@ -29,18 +54,6 @@ div.dataTables_wrapper {
         margin: 0 auto;
     }
 
-.navbar-inverse .navbar-brand {
-    color: #fff;
-}
-
-.navbar-inverse .navbar-nav > li > a {
-    color: #fff;
-}
-
-.navbar-inverse .navbar-text {
-    color: #fff;
-}
-
 #footer {
 	width:100%;
 	height:auto;
@@ -53,8 +66,32 @@ div.dataTables_wrapper {
 	bottom:0;
 }
 
-.header-bg {
-      width:100%;
-      background: url(/images/background.jpg);
-      background-size:cover;
-    }
+.footertext{
+
+    font-size: 11px;
+    font-weight: normal;
+    color: #FFFFFF;
+    text-decoration: none;
+
+}
+
+.footerleft {
+    width: 464px;
+    height: 16px;
+    float: left;
+}
+
+.footerright {
+    height: 16px;
+    float: right;
+}
+
+.footertext a:link {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.footertext a:visited {
+    color: #FFFFFF;
+    text-decoration: none;
+}
