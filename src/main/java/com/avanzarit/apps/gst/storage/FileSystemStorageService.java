@@ -4,7 +4,6 @@ package com.avanzarit.apps.gst.storage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.stream.Stream;
 
 @Service
@@ -47,6 +45,18 @@ public class FileSystemStorageService implements StorageService {
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
+        return "";
+    }
+
+    @Override
+    public String store(String fileName) throws IOException {
+        try {
+            Files.delete(this.rootLocation.resolve(fileName));
+
+        } catch (IOException exception) {
+            Files.createFile(this.rootLocation.resolve(fileName));
+        }
+
         return "";
     }
 

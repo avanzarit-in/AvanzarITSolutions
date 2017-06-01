@@ -1,5 +1,7 @@
 package com.avanzarit.apps.gst.model;
 
+import com.avanzarit.apps.gst.Model;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +18,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "vendor")
-public class Vendor {
+public class Vendor implements Model {
 
 
     private String vendorId;
@@ -58,7 +60,6 @@ public class Vendor {
     private String submityn="N";
     private List<ContactPersonMaster> contactPersonMaster = new ArrayList<>();
     private List<MaterialMaster> materialMaster = new ArrayList<>();
-
     private VendorStatusEnum vendorStatus;
     private String modifiedBy;
     private Date lastModifiedOn;

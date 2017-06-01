@@ -7,15 +7,13 @@ import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportListene
 import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportProcessor;
 import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportReader;
 import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportWriter;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportProcessor;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportReader;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportWriter;
+import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
 import com.avanzarit.apps.gst.email.EmailServiceImpl;
 import com.avanzarit.apps.gst.model.Customer;
-import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.repository.CustomerRepository;
 import com.avanzarit.apps.gst.repository.VendorRepository;
 import com.avanzarit.apps.gst.storage.StorageFileNotFoundException;
+import com.avanzarit.apps.gst.storage.StorageProperties;
 import com.avanzarit.apps.gst.storage.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +41,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by SPADHI on 5/5/2017.
@@ -76,19 +76,11 @@ public class BatchJobController implements BeanFactoryAware {
     public DataSource dataSource;
     @Autowired
     private UserService userService;
+    @Autowired
+    private BatchProperties batchProperties;
+    @Autowired
+    private StorageProperties storageProperties;
 
-
-    public Job exportVendorJob() {
-        return jobBuilderFactory.get("exportVendorjob").incrementer(new RunIdIncrementer())
-                .flow(exportVendorStep()).end().build();
-    }
-
-
-    public Step exportVendorStep() {
-        return stepBuilderFactory.get("exportVendorStep").<Vendor, Vendor>chunk(2)
-                .reader(VendorDataExportReader.reader(dataSource))
-                .processor(new VendorDataExportProcessor()).writer(VendorDataExportWriter.write(storageService)).build();
-    }
 
     public Job importCustomerJob() {
         return jobBuilderFactory.get("importCustomerjob").incrementer(new RunIdIncrementer()).listener(new CustomerDataImportListener(customerRepository))
@@ -137,7 +129,7 @@ public class BatchJobController implements BeanFactoryAware {
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
             storageService.store(file);
-            Job job=(Job)beanFactory.getBean("userImportJob",storageService.loadAsResource(file.getOriginalFilename()));
+            Job job = (Job) beanFactory.getBean("userImportJob", storageService.loadAsResource(file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
             jobLauncher.run(job, jobParameters);
@@ -175,10 +167,18 @@ public class BatchJobController implements BeanFactoryAware {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
-
+            storageService.store(batchProperties.getVendorExportFileName());
+            storageService.store(batchProperties.getVendorMaterialExportFileName());
+            storageService.store(batchProperties.getVendorContactPersonExportFileName());
+            Map<String, String> resourceMap = new HashMap<>();
+            resourceMap.put("VENDOR", batchProperties.getVendorExportFileName());
+            resourceMap.put("MATERIAL", batchProperties.getVendorMaterialExportFileName());
+            resourceMap.put("CONTACTPERSON", batchProperties.getVendorContactPersonExportFileName());
+            Job job = (Job) beanFactory.getBean("vendorExportJob", resourceMap);
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
-            jobLauncher.run(exportVendorJob(), jobParameters);
+            jobLauncher.run(job, jobParameters);
+
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
@@ -193,6 +193,6 @@ public class BatchJobController implements BeanFactoryAware {
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory=beanFactory;
+        this.beanFactory = beanFactory;
     }
 }

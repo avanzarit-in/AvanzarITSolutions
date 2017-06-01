@@ -1,6 +1,13 @@
 package com.avanzarit.apps.gst.auth.model;
 
-import javax.persistence.*;
+import com.avanzarit.apps.gst.Model;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.Set;
 
 /**
@@ -8,7 +15,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "role")
-public class Role {
+public class Role implements Model {
     private Long id;
     private String name;
     private Set<User> users;

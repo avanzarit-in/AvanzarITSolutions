@@ -1,6 +1,16 @@
 package com.avanzarit.apps.gst.auth.model;
 
-import javax.persistence.*;
+import com.avanzarit.apps.gst.Model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -10,7 +20,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "password_reset_token")
-public class PasswordResetToken {
+public class PasswordResetToken implements Model {
 
     private static final int EXPIRATION = 60 * 24;
 

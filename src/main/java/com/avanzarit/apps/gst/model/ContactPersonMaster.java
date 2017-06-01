@@ -1,5 +1,7 @@
 package com.avanzarit.apps.gst.model;
 
+import com.avanzarit.apps.gst.Model;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Objects;
 
 /**
@@ -15,7 +18,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "contactpersonmaster")
-public class ContactPersonMaster {
+public class ContactPersonMaster implements Model {
 
     private Long id;
     private String lastName;
@@ -24,6 +27,7 @@ public class ContactPersonMaster {
     private String mobile;
     private String telephone;
     private String email;
+    private String vendorId;
     private Vendor vendor;
 
     @Id
@@ -100,6 +104,14 @@ public class ContactPersonMaster {
         this.vendor = vendor;
     }
 
+    @Transient
+    public String getVendorId() {
+        return vendorId;
+    }
+
+    public void setVendorId(String vendorId) {
+        this.vendorId = vendorId;
+    }
 
     @Override
     public boolean equals(Object o) {

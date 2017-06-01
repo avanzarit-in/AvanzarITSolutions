@@ -1,6 +1,12 @@
 package com.avanzarit.apps.gst.model;
 
-import javax.persistence.*;
+import com.avanzarit.apps.gst.Model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -8,7 +14,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "customer")
-public class Customer {
+public class Customer implements Model {
 
 
     private String customerId;

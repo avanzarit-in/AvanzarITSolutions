@@ -1,5 +1,7 @@
 package com.avanzarit.apps.gst.model;
 
+import com.avanzarit.apps.gst.Model;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Objects;
 
 /**
@@ -15,12 +18,13 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "materialmaster")
-public class MaterialMaster {
+public class MaterialMaster implements Model {
 
     private Long id;
     private String code;
     private String desc;
     private String hsn;
+    private String vendorId;
     private Vendor vendor;
 
     @Id
@@ -83,5 +87,12 @@ public class MaterialMaster {
         return Objects.hash(getId());
     }
 
+    @Transient
+    public String getVendorId() {
+        return vendorId;
+    }
 
+    public void setVendorId(String vendorId) {
+        this.vendorId = vendorId;
+    }
 }

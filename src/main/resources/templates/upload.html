@@ -34,6 +34,44 @@
                     </form>
                 </div>
             </div>
+                   <div class="panel-body">
+                       <div class="row view-area">
+                           <form method="POST" enctype="multipart/form-data" action="/materialupload">
+                               <div class="form-group">
+                                   <label class="col-xs-2 control-label">Material file to upload:</label>
+                                   <div class="col-xs-3">
+                                       <input type="file" name="file"/>
+                                   </div>
+                                   <div class="col-xs-1">
+                                       <input type="submit" value="Upload"/>
+                                   </div>
+                               </div>
+
+                               <input type="hidden"
+                                      th:name="${_csrf.parameterName}"
+                                      th:value="${_csrf.token}"/>
+                           </form>
+                       </div>
+                   </div>
+                   <div class="panel-body">
+                       <div class="row view-area">
+                           <form method="POST" enctype="multipart/form-data" action="/contactpersonupload">
+                               <div class="form-group">
+                                   <label class="col-xs-2 control-label">Contact Person file to upload:</label>
+                                   <div class="col-xs-3">
+                                       <input type="file" name="file"/>
+                                   </div>
+                                   <div class="col-xs-1">
+                                       <input type="submit" value="Upload"/>
+                                   </div>
+                               </div>
+
+                               <input type="hidden"
+                                      th:name="${_csrf.parameterName}"
+                                      th:value="${_csrf.token}"/>
+                           </form>
+                       </div>
+                   </div>
         </div>
 
 
