@@ -10,18 +10,18 @@
         <input type="hidden" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].id}"/>
         <div class="col-xs-4" th:classappend="${rowStat.index}>0 ? col-xs-offset-1 : col-xs-offset-0">
             <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].code}"
-                   placeholder="Material Code"/>
+                   placeholder="Material Code" th:disabled="*{submityn == 'Y'}"/>
         </div>
         <div class="col-xs-4">
             <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].desc}"
-                   placeholder="Material Description"/>
+                   placeholder="Material Description" th:disabled="*{submityn == 'Y'}"/>
         </div>
         <div class="col-xs-2">
             <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].hsn}"
-                   placeholder="HSN Code"/>
+                   placeholder="HSN Code" th:disabled="*{submityn == 'Y'}"/>
         </div>
         <div class="col-xs-1">
-            <button type="button" class="btn btn-default" th:classappend="${rowStat.index}==0 ? addButton : removeButton">
+            <button type="button" th:disabled="*{submityn == 'Y'}" class="btn btn-default" th:classappend="${rowStat.index}==0 ? addButton : removeButton">
                 <i class="fa" th:classappend="${rowStat.index}==0 ? fa-plus : fa-minus"></i></button>
         </div>
     </div>
@@ -38,7 +38,7 @@
             <input type="text" class="form-control" name="hsn" placeholder="HSN Code" />
         </div>
         <div class="col-xs-1">
-            <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
+            <button type="button" th:disabled="*{submityn == 'Y'}" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
         </div>
     </div>
 

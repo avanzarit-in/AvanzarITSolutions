@@ -7,39 +7,39 @@
          th:attr="data-contact-index=${rowStat.index}">
         <div class="form-group">
             <label class="col-xs-2 control-label">Contact Details</label>
-            <input type="hidden" class="form-control" th:field="*{contactPersonMaster[__${rowStat.index}__].id}"/>
+            <input type="hidden" class="form-control" th:field="*{contactPersonMaster[__${rowStat.index}__].id}"  th:disabled="*{submityn == 'Y'}"/>
             <div class="col-xs-3">
                 <input type="text" class="form-control" th:field="*{contactPersonMaster[__${rowStat.index}__].lastName}"
-                       placeholder="Last Name"/>
+                       placeholder="Last Name"  th:disabled="*{submityn == 'Y'}"/>
             </div>
             <div class="col-xs-3">
                 <input type="text" class="form-control"
                        th:field="*{contactPersonMaster[__${rowStat.index}__].firstName}"
-                       placeholder="First Name"/>
+                       placeholder="First Name"  th:disabled="*{submityn == 'Y'}"/>
             </div>
             <div class="col-xs-3">
                 <input type="text" class="form-control"
                        th:field="*{contactPersonMaster[__${rowStat.index}__].department}"
-                       placeholder="Department Name"/>
+                       placeholder="Department Name"  th:disabled="*{submityn == 'Y'}"/>
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-2 control-label"></label>
             <div class="col-xs-3">
                 <input type="text" class="form-control" th:field="*{contactPersonMaster[__${rowStat.index}__].mobile}"
-                       placeholder="Mobile Number"/>
+                       placeholder="Mobile Number"  th:disabled="*{submityn == 'Y'}"/>
             </div>
             <div class="col-xs-3">
                 <input type="text" class="form-control"
                        th:field="*{contactPersonMaster[__${rowStat.index}__].telephone}"
-                       placeholder="Telephone Number"/>
+                       placeholder="Telephone Number"  th:disabled="*{submityn == 'Y'}"/>
             </div>
             <div class="col-xs-3">
                 <input type="text" class="form-control" th:field="*{contactPersonMaster[__${rowStat.index}__].email}"
-                       placeholder="Email ID"/>
+                       placeholder="Email ID"  th:disabled="*{submityn == 'Y'}"/>
             </div>
             <div class="col-xs-1">
-                <button type="button" class="btn btn-default"
+                <button type="button" class="btn btn-default"  th:disabled="*{submityn == 'Y'}"
                         th:classappend="${rowStat.index}==0 ? addButton : removeButton">
                     <i class="fa" th:classappend="${rowStat.index}==0 ? fa-plus : fa-minus"></i></button>
             </div>
@@ -72,7 +72,7 @@
                 <input type="text" class="form-control" name="email" placeholder="Email ID"/>
             </div>
             <div class="col-xs-1">
-                <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
+                <button type="button"  th:disabled="*{submityn == 'Y'}" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
             </div>
         </div>
     </div>
@@ -242,8 +242,6 @@ var lastNameValidators = {
         $('#contact-tab').on('click', '.removeButton', function() {
             var $row  = $(this).parents('.form-group-root'),
                 index = $row.attr('data-contact-index');
-                alert($row);
-                alert(index);
 
             // Remove fields
             $('#contact-tab')

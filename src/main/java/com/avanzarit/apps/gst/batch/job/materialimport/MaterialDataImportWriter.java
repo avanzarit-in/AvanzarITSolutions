@@ -1,6 +1,7 @@
 package com.avanzarit.apps.gst.batch.job.materialimport;
 
 import com.avanzarit.apps.gst.model.MaterialMaster;
+import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.repository.MaterialMasterRepository;
 import com.avanzarit.apps.gst.repository.VendorRepository;
 import org.springframework.batch.item.ItemWriter;
@@ -11,7 +12,6 @@ import java.util.List;
 
 @Component
 public class MaterialDataImportWriter implements ItemWriter<MaterialMaster> {
-
 
     private VendorRepository vendorRepository;
     private MaterialMasterRepository materialMasterRepository;
@@ -30,7 +30,11 @@ public class MaterialDataImportWriter implements ItemWriter<MaterialMaster> {
     @Override
     public void write(List<? extends MaterialMaster> materialMasters) throws Exception {
         for (MaterialMaster materialMaster : materialMasters) {
-
+            Vendor vendor=vendorRepository.findByVendorId(materialMaster.getVendorId());
+            if(vendor!=null){
+                materialMaster.setVendor(vendor);
+                materialMasterRepository.save(materialMaster);
+            }
 
         }
     }

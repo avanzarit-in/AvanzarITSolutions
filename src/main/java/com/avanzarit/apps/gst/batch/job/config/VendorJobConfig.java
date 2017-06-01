@@ -1,5 +1,11 @@
 package com.avanzarit.apps.gst.batch.job.config;
 
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialDataImportProcessor;
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialDataImportWriter;
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialFieldSetMapper;
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportJobListener;
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportReaderStepListener;
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportWriterStepListener;
 import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
 import com.avanzarit.apps.gst.batch.job.vendorexport.ContactPersonDataFieldExtractor;
 import com.avanzarit.apps.gst.batch.job.vendorexport.ContactPersonExportHeaderCallback;
@@ -18,6 +24,7 @@ import com.avanzarit.apps.gst.batch.job.vendorimport.VendorFieldSetMapper;
 import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportJobListener;
 import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportReaderStepListener;
 import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportWriterStepListener;
+import com.avanzarit.apps.gst.model.MaterialMaster;
 import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.storage.StorageService;
 import org.springframework.batch.core.Job;
@@ -84,6 +91,26 @@ public class VendorJobConfig {
     @Autowired
     VendorImportWriterStepListener vendorImportWriterStepListener;
 
+
+    @Autowired
+    MaterialFieldSetMapper materialFieldSetMapper;
+
+    @Autowired
+    MaterialDataImportProcessor materialDataImportProcessor;
+
+    @Autowired
+    MaterialDataImportWriter materialDataImportWriter;
+
+    @Autowired
+    MaterialImportJobListener materialImportJobListener;
+
+    @Autowired
+    MaterialImportReaderStepListener materialImportReaderStepListener;
+
+    @Autowired
+    MaterialImportWriterStepListener materialImportWriterStepListener;
+
+
     @Autowired
     VendorExportJobListener vendorExportJobListener;
 
@@ -116,6 +143,49 @@ public class VendorJobConfig {
 
     @Autowired
     EntityManagerFactory entityManagerFactory;
+
+
+    public ItemReader<MaterialMaster> materialImportReader(Resource resource) {
+        FlatFileItemReader<MaterialMaster> reader = new FlatFileItemReader<MaterialMaster>();
+        reader.setLinesToSkip(1);
+        reader.setResource(resource);
+        reader.setLineMapper(materialLineMapper());
+        return reader;
+    }
+
+    @Bean
+    public LineMapper<MaterialMaster> materialLineMapper() {
+        DefaultLineMapper<MaterialMaster> lineMapper = new DefaultLineMapper<MaterialMaster>();
+
+        DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
+        lineTokenizer.setNames(new String[]{"VENDORID", "CODE", "DESC", "HSN"});
+
+        BeanWrapperFieldSetMapper<MaterialMaster> fieldSetMapper = new BeanWrapperFieldSetMapper<MaterialMaster>();
+        fieldSetMapper.setTargetType(MaterialMaster.class);
+
+        lineMapper.setLineTokenizer(lineTokenizer);
+        lineMapper.setFieldSetMapper(materialFieldSetMapper);
+
+        return lineMapper;
+    }
+
+    @Bean(name = "materialImportJob")
+    @Scope(scopeName = "prototype")
+    public Job importMaterialJob(Resource resource) {
+        return jobBuilderFactory.get("importMaterialjob").incrementer(new RunIdIncrementer()).listener(materialImportJobListener)
+                .flow(importMaterialStep(resource)).end().build();
+    }
+
+
+    public Step importMaterialStep(Resource resource) {
+        return stepBuilderFactory.get("importMaterialStep").<MaterialMaster, MaterialMaster>chunk(1)
+                .reader(materialImportReader(resource)).listener(materialImportReaderStepListener)
+                .processor(materialDataImportProcessor)
+                .writer(materialDataImportWriter).listener(materialImportWriterStepListener).build();
+    }
+
+
+
 
     public ItemReader<Vendor> importReader(Resource resource) {
         FlatFileItemReader<Vendor> reader = new FlatFileItemReader<Vendor>();

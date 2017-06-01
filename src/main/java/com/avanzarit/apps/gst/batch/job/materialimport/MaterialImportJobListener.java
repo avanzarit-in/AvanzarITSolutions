@@ -15,22 +15,10 @@ import java.util.List;
 public class MaterialImportJobListener extends JobExecutionListenerSupport {
     private static final Logger log = LoggerFactory.getLogger(MaterialImportJobListener.class);
 
-    private final VendorRepository vendorRepository;
-
-    public MaterialImportJobListener(VendorRepository vendorRepository) {
-        this.vendorRepository = vendorRepository;
-    }
-
     @Override
     public void afterJob(JobExecution jobExecution) {
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             log.info("Finish Job! Check the results");
-
-            List<Vendor> vendors = vendorRepository.findAll();
-
-            for (Vendor vendor : vendors) {
-                log.info("Found <" + vendor + "> in the database.");
-            }
         }
     }
 }

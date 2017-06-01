@@ -3,6 +3,7 @@ terraform.tfstate.backup
 token.json
 crash.log
 .gradle
+.vscode
 *.iml
 .idea
 /devops/*/build

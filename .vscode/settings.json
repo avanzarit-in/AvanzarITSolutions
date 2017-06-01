@@ -1,0 +1,5 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "http.proxy": "kdc-proxy@wipro.com:8080",
+    "http.proxyAuthorization": "spadhi@atsdelhi%402017"
+}

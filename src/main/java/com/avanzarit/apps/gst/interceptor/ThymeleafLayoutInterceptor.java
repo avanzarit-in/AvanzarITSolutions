@@ -23,10 +23,6 @@ public class ThymeleafLayoutInterceptor extends HandlerInterceptorAdapter {
             return;
         }
 
-        //  UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        //  if (auth != null) {
-        //      modelAndView.addObject("user", auth.getUsername());
-        //  }
         String layoutName = getLayoutName(handler);
         modelAndView.setViewName(layoutName);
         modelAndView.addObject(DEFAULT_VIEW_ATTRIBUTE_NAME, originalViewName);

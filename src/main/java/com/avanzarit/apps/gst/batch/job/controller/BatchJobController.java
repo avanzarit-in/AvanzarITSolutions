@@ -121,6 +121,26 @@ public class BatchJobController implements BeanFactoryAware {
         return "redirect:/upload";
     }
 
+    @PostMapping("/materialupload")
+    public String handleMaterialFileUpload(@RequestParam("file") MultipartFile file,
+                                   RedirectAttributes redirectAttributes) {
+
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        try {
+            storageService.store(file);
+            Job job = (Job) beanFactory.getBean("materialImportJob", storageService.loadAsResource(file.getOriginalFilename()));
+            JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+                    .toJobParameters();
+            jobLauncher.run(job, jobParameters);
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        return "redirect:/upload";
+    }
+
 
     @PostMapping("/userupload")
     public String handleUserFileUpload(@RequestParam("file") MultipartFile file,
