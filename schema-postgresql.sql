@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS vendor;
 DROP TABLE IF EXISTS materialmaster;
 DROP TABLE IF EXISTS customer;
+DROP TABLE IF EXISTS contactpersonmaster;
 
 CREATE TABLE vendor (
   vendorid  VARCHAR(500) PRIMARY KEY NOT NULL,
@@ -62,6 +63,17 @@ CREATE TABLE materialmaster(
     code VARCHAR(500),
     description VARCHAR(500),
     hsn  VARCHAR(500)
+);
+
+CREATE TABLE contactpersonmaster(
+    id Bigserial PRIMARY KEY NOT NULL,
+    vendorid  VARCHAR(500) NOT NULL,
+    lastname VARCHAR(50),
+    firstname VARCHAR(50) ,
+    department VARCHAR(50),
+     mobile VARCHAR(50) ,
+    telephone VARCHAR(50) ,
+    email VARCHAR(250)
 );
 
 CREATE TABLE customer (

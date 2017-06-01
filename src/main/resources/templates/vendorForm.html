@@ -8,6 +8,7 @@
             margin-top: 15px;
         }
 
+
     </style>
 
     <div th:if="${message != null}" class="alert alert-success" id="success-alert">
@@ -27,6 +28,7 @@
                     <li class="active"><a href="#info-tab" data-toggle="tab">Basic Details<i class="fa"></i></a></li>
                     <li><a href="#address-tab" data-toggle="tab">Address Details<i class="fa"></i></a></li>
                     <li><a href="#communication-tab" data-toggle="tab">Communication Details<i class="fa"></i></a></li>
+                    <li><a href="#contact-tab" data-toggle="tab">Contact Details<i class="fa"></i></a></li>
                     <li><a href="#bankaccount-tab" data-toggle="tab">Bank Details<i class="fa"></i></a></li>
                     <li><a href="#gstinfo-tab" data-toggle="tab">GST / TAX Information<i class="fa"></i></a></li>
                     <li><a href="#material-tab" data-toggle="tab">Material / HSN Details<i class="fa"></i></a></li>
@@ -48,6 +50,12 @@
                     <div class="tab-pane" id="communication-tab">
                         <div th:replace="fragments/vendorForm/communication :: communication">
                             Communication Details goes here
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="contact-tab">
+                        <div th:replace="fragments/vendorForm/contact :: contact">
+                            Contact Details goes here
                         </div>
                     </div>
 
@@ -112,22 +120,25 @@ $(document).ready(function() {
 
     });
      $("#submitButton").click(function(e) {
-        e.preventDefault();
+
         $("#submitstatus").val("Y");
-        var infoTabValid=($('#info-tab').data('formValidation').validate().isValid());
+      /*  var infoTabValid=($('#info-tab').data('formValidation').validate().isValid());
         var addressTabValid=($('#address-tab').data('formValidation').validate().isValid());
         var communicationTabValid=($('#communication-tab').data('formValidation').validate().isValid());
         var bankTabValid=($('#bankaccount-tab').data('formValidation').validate().isValid());
         var gstTabValid=($('#gstinfo-tab').data('formValidation').validate().isValid());
         var materialTabValid=($('#material-tab').data('formValidation').validate().isValid());
+         var contactTabValid=($('#contact-tab').data('formValidation').validate().isValid()); */
 
-        if(!infoTabValid || !addressTabValid || !communicationTabValid ||  !bankTabValid || !gstTabValid || !materialTabValid ){
+      /*  if(!infoTabValid || !addressTabValid || !communicationTabValid ||  !bankTabValid || !gstTabValid || !materialTabValid || !contactTabValid){
+        e.preventDefault();
             return false;
-        }
+        }*/
         return true;
     });
 });
   /*]]>*/
+
 
 </script>
 

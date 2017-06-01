@@ -16,7 +16,7 @@ public class VendorDataExportWriter {
 
         try {
 
-            writer.setResource(storageService.loadAsResource("vendor-data-export.csv"));
+            writer.setResource(storageService.loadAsResource("vendorimport-data-export.csv"));
             writer.setLineAggregator(new DelimitedLineAggregator() {
                 {
                     setFieldExtractor(createStudentFieldExtractor());

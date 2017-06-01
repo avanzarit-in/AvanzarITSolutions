@@ -4,17 +4,21 @@
 <body>
 <div  th:fragment="material" th:object="${vendor}">
 
-    <div class="form-group" th:each="row,rowStat : *{material}" th:attr="data-material-index=${rowStat.index}">
+    <div class="form-group" th:each="row,rowStat : *{materialMaster}"
+         th:attr="data-materialMaster-index=${rowStat.index}">
         <label th:if="${rowStat.index}==0" class="col-xs-1 control-label">Material</label>
-        <input type="hidden" class="form-control"  th:field="*{material[__${rowStat.index}__].id}" />
+        <input type="hidden" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].id}"/>
         <div class="col-xs-4" th:classappend="${rowStat.index}>0 ? col-xs-offset-1 : col-xs-offset-0">
-            <input type="text" class="form-control"  th:field="*{material[__${rowStat.index}__].code}" placeholder="Material Code" />
+            <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].code}"
+                   placeholder="Material Code"/>
         </div>
         <div class="col-xs-4">
-            <input type="text" class="form-control" th:field="*{material[__${rowStat.index}__].desc}" placeholder="Material Description" />
+            <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].desc}"
+                   placeholder="Material Description"/>
         </div>
         <div class="col-xs-2">
-            <input type="text" class="form-control" th:field="*{material[__${rowStat.index}__].hsn}" placeholder="HSN Code" />
+            <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].hsn}"
+                   placeholder="HSN Code"/>
         </div>
         <div class="col-xs-1">
             <button type="button" class="btn btn-default" th:classappend="${rowStat.index}==0 ? addButton : removeButton">
@@ -48,33 +52,33 @@ $(document).ready(function() {
 var codeValidators = {
             row: '.col-xs-4',
             validators: {
-                notEmpty: {
-                    message: 'The Material Code is required'
-                }
+                stringLength: {
+                        max: 50,
+                        message: 'This field must be less than 50 characters'
+                    }
             }
         },
         descValidators = {
             row: '.col-xs-4',
             validators: {
-                notEmpty: {
-                    message: 'The Material Description is required'
-                }
+                stringLength: {
+                        max: 50,
+                        message: 'This field must be less than 50 characters'
+                    }
             }
         },
         hsnValidators = {
             row: '.col-xs-2',
             validators: {
-                notEmpty: {
-                    message: 'The HSN is required'
-                }
+                stringLength: {
+                        max: 50,
+                        message: 'This field must be less than 50 characters'
+                    }
             }
         },
         /*<![CDATA[*/
-            materialIndex = [[${#lists.size(vendor.material)-1}]];
+            materialIndex = [[${#lists.size(vendor.materialMaster)-1}]];
        /*]]>*/
-
-
-
 
          $('#material-tab')
         .formValidation({
@@ -118,9 +122,9 @@ var codeValidators = {
  /*<![CDATA[*/
                 for(index=0; index<=materialIndex; index++){
 
-                $('#material-tab').formValidation('addField', 'material[' + index + '].code', codeValidators);
-                $('#material-tab').formValidation('addField', 'material[' + index + '].desc', descValidators);
-                $('#material-tab').formValidation('addField', 'material[' + index + '].hsn', hsnValidators);
+                $('#material-tab').formValidation('addField', 'materialMaster[' + index + '].code', codeValidators);
+                $('#material-tab').formValidation('addField', 'materialMaster[' + index + '].desc', descValidators);
+                $('#material-tab').formValidation('addField', 'materialMaster[' + index + '].hsn', hsnValidators);
         }
   /*]]>*/
 
@@ -133,33 +137,33 @@ var codeValidators = {
                                 .clone()
                                 .removeClass('hide')
                                 .removeAttr('id')
-                                .attr('data-material-index', materialIndex)
+                                .attr('data-materialMaster-index', materialIndex)
                                 .insertBefore($template);
 
             // Update the name attributes
             $clone
-                .find('[name="code"]').attr('name', 'material[' + materialIndex + '].code').attr('id', 'material' + materialIndex + '.code').end()
-                .find('[name="desc"]').attr('name', 'material[' + materialIndex + '].desc').end()
-                .find('[name="hsn"]').attr('name', 'material[' + materialIndex + '].hsn').end();
+                .find('[name="code"]').attr('name', 'materialMaster[' + materialIndex + '].code').attr('id', 'materialMaster' + materialIndex + '.code').end()
+                .find('[name="desc"]').attr('name', 'materialMaster[' + materialIndex + '].desc').end()
+                .find('[name="hsn"]').attr('name', 'materialMaster[' + materialIndex + '].hsn').end();
 
             // Add new fields
             // Note that we also pass the validator rules for new field as the third parameter
             $('#material-tab')
-                .formValidation('addField', 'material[' + materialIndex + '].code', codeValidators)
-                .formValidation('addField', 'material[' + materialIndex + '].desc', descValidators)
-                .formValidation('addField', 'material[' + materialIndex + '].hsn', hsnValidators);
+                .formValidation('addField', 'materialMaster[' + materialIndex + '].code', codeValidators)
+                .formValidation('addField', 'materialMaster[' + materialIndex + '].desc', descValidators)
+                .formValidation('addField', 'materialMaster[' + materialIndex + '].hsn', hsnValidators);
         });
 
         // Remove button click handler
         $('#material-tab').on('click', '.removeButton', function() {
             var $row  = $(this).parents('.form-group'),
-                index = $row.attr('data-material-index');
+                index = $row.attr('data-materialMaster-index');
 
             // Remove fields
             $('#material-tab')
-                .formValidation('removeField', $row.find('[name="material[' + index + '].code"]'))
-                .formValidation('removeField', $row.find('[name="material[' + index + '].desc"]'))
-                .formValidation('removeField', $row.find('[name="material[' + index + '].hsn"]'));
+                .formValidation('removeField', $row.find('[name="materialMaster[' + index + '].code"]'))
+                .formValidation('removeField', $row.find('[name="materialMaster[' + index + '].desc"]'))
+                .formValidation('removeField', $row.find('[name="materialMaster[' + index + '].hsn"]'));
 
             // Remove element containing the fields
             $row.remove();

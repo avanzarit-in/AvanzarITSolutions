@@ -1,6 +1,13 @@
 package com.avanzarit.apps.gst.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.Objects;
 
 /**
@@ -15,6 +22,7 @@ public class MaterialMaster {
     private String desc;
     private String hsn;
     private Vendor vendor;
+
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     public Long getId() {
@@ -74,4 +82,6 @@ public class MaterialMaster {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
+
 }

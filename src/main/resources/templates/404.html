@@ -2,8 +2,14 @@
 <html  xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="content">
-    <h1>HTTP Status 404 - Page not found</h1>
+    <h1 th:if="${message == null}">HTTP Status 404 - Page not found</h1>
+
+    <div th:if="${message != null}" class="alert alert-info" th:text="${message}">
+        error
+    </div>
 
 </div>
 </body>
+<script th:fragment="js">
+</script>
 </html>

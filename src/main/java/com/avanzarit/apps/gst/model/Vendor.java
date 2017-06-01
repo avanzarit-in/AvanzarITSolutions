@@ -1,6 +1,12 @@
 package com.avanzarit.apps.gst.model;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,7 +56,9 @@ public class Vendor {
     private String state;
     private String gstNumber;
     private String submityn="N";
-    private List<MaterialMaster> material = new ArrayList<>();
+    private List<ContactPersonMaster> contactPersonMaster = new ArrayList<>();
+    private List<MaterialMaster> materialMaster = new ArrayList<>();
+
     private VendorStatusEnum vendorStatus;
     private String modifiedBy;
     private Date lastModifiedOn;
@@ -289,6 +297,7 @@ public class Vendor {
         this.ifscCode = ifscCode;
     }
 
+
     @Column(name="branchname")
     public String getBranchName() {
         return branchName;
@@ -427,16 +436,30 @@ public class Vendor {
     }
 
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
-    public List<MaterialMaster> getMaterial() {
-        if(material.isEmpty()){
-            material.add(new MaterialMaster());
+    public List<MaterialMaster> getMaterialMaster() {
+        if (materialMaster.isEmpty()) {
+            materialMaster.add(new MaterialMaster());
         }
-        return material;
+        return materialMaster;
     }
 
-    public void setMaterial(List<MaterialMaster> materials) {
-        this.material = materials;
+
+    public void setMaterialMaster(List<MaterialMaster> materialMaster) {
+        this.materialMaster = materialMaster;
     }
+
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
+    public List<ContactPersonMaster> getContactPersonMaster() {
+        if (contactPersonMaster.isEmpty()) {
+            contactPersonMaster.add(new ContactPersonMaster());
+        }
+        return contactPersonMaster;
+    }
+
+    public void setContactPersonMaster(List<ContactPersonMaster> contactPersonMasterList) {
+        this.contactPersonMaster = contactPersonMasterList;
+    }
+
 
     @Column(name="vendorstatus")
     public VendorStatusEnum getVendorStatus() {

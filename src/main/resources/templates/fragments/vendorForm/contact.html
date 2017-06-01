@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="contact" th:object="${vendor}">
+    <div class="form-group-root" th:each="row,rowStat : *{contactPersonMaster}"
+         th:attr="data-contact-index=${rowStat.index}">
+        <div class="form-group">
+            <label class="col-xs-2 control-label">Contact Details</label>
+            <input type="hidden" class="form-control" th:field="*{contactPersonMaster[__${rowStat.index}__].id}"/>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" th:field="*{contactPersonMaster[__${rowStat.index}__].lastName}"
+                       placeholder="Last Name"/>
+            </div>
+            <div class="col-xs-3">
+                <input type="text" class="form-control"
+                       th:field="*{contactPersonMaster[__${rowStat.index}__].firstName}"
+                       placeholder="First Name"/>
+            </div>
+            <div class="col-xs-3">
+                <input type="text" class="form-control"
+                       th:field="*{contactPersonMaster[__${rowStat.index}__].department}"
+                       placeholder="Department Name"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label"></label>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" th:field="*{contactPersonMaster[__${rowStat.index}__].mobile}"
+                       placeholder="Mobile Number"/>
+            </div>
+            <div class="col-xs-3">
+                <input type="text" class="form-control"
+                       th:field="*{contactPersonMaster[__${rowStat.index}__].telephone}"
+                       placeholder="Telephone Number"/>
+            </div>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" th:field="*{contactPersonMaster[__${rowStat.index}__].email}"
+                       placeholder="Email ID"/>
+            </div>
+            <div class="col-xs-1">
+                <button type="button" class="btn btn-default"
+                        th:classappend="${rowStat.index}==0 ? addButton : removeButton">
+                    <i class="fa" th:classappend="${rowStat.index}==0 ? fa-plus : fa-minus"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- The template for adding new field -->
+    <div class="hide form-group-root" id="contactTemplate">
+        <div class="form-group">
+            <label class="col-xs-2 control-label">Contact Details</label>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" name="lastName" placeholder="Last Name"/>
+            </div>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" name="firstName" placeholder="First Name"/>
+            </div>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" name="department" placeholder="Department Name"/>
+            </div>
+        </div>
+        <div class="form-group">
+
+            <div class="col-xs-3 col-xs-offset-2">
+                <input type="text" class="form-control" name="mobile" placeholder="Mobile Number"/>
+            </div>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" name="telephone" placeholder="Telephone Number"/>
+            </div>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" name="email" placeholder="Email ID"/>
+            </div>
+            <div class="col-xs-1">
+                <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script th:fragment="contactjs" th:inline="javascript">
+
+$(document).ready(function() {
+
+var lastNameValidators = {
+            row: '.col-xs-3',
+            validators: {
+                stringLength: {
+                        max: 50,
+                        message: 'This field must be less than 50 characters'
+                    }
+            }
+        },
+        firstNameValidators = {
+            row: '.col-xs-3',
+            validators: {
+                stringLength: {
+                        max: 50,
+                        message: 'This field must be less than 50 characters'
+                    }
+            }
+        },
+        departmentValidators = {
+            row: '.col-xs-3',
+            validators: {
+                stringLength: {
+                        max: 50,
+                        message: 'This field must be less than 50 characters'
+                    }
+            }
+        },
+        mobileValidators = {
+            row: '.col-xs-3',
+            validators: {
+                phone: {
+                       country: 'IN',
+                        message: 'The value is not a valid %s mobile number'
+                    },
+                    stringLength: {
+                        max: 13,
+                        message: 'Mobile number including the country code can not be more than 13'
+                    }
+            }
+        },
+        telephoneValidators = {
+            row: '.col-xs-3',
+            validators: {
+               phone: {
+                       country: 'IN',
+                        message: 'The value is not a valid %s mobile number'
+                    },
+                    stringLength: {
+                        max: 13,
+                        message: 'Mobile number including the country code can not be more than 13'
+                    }
+            }
+        },
+        emailValidators = {
+            row: '.col-xs-3',
+            validators: {
+                    regexp: {
+                       regexp: '^[^@\\s]+@([^@\\s]+\\.)+[^@\\s]+$',
+                       message: 'The value is not a valid email address'
+                    },
+                    stringLength: {
+                        max: 241,
+                        message: 'This field must be less than 241 characters'
+                    }
+            }
+        },
+        /*<![CDATA[*/
+            contactIndex = [[${#lists.size(vendor.contactPersonMaster)-1}]];
+       /*]]>*/
+
+
+
+
+         $('#contact-tab')
+        .formValidation({
+            framework: 'bootstrap',
+             excluded: [':disabled'],
+            icon: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+
+            }
+        }).on('err.field.fv', function(e, data) {
+             // data.element --> The field element
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId    = $tabPane.attr('id');
+            $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                .parent()
+                .find('i')
+                 .removeClass('fa-check')
+                .addClass('fa-times');
+        }).on('success.field.fv', function(e, data) {
+            // data.fv      --> The FormValidation instance
+            // data.element --> The field element
+
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId    = $tabPane.attr('id'),
+                $icon    = $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                            .parent()
+                            .find('i')
+                            .removeClass('fa-check fa-times');
+
+            // Check if all fields in tab are valid
+            var isValidTab = data.fv.isValidContainer($tabPane);
+            if (isValidTab !== null) {
+                $icon.addClass(isValidTab ? '' : 'fa-times');
+            }
+        });
+
+ /*<![CDATA[*/
+                for(index=0; index<=contactIndex; index++){
+                $('#contact-tab').formValidation('addField', 'contactPersonMaster[' + index + '].lastName', lastNameValidators);
+                $('#contact-tab').formValidation('addField', 'contactPersonMaster[' + index + '].firstName', firstNameValidators);
+                $('#contact-tab').formValidation('addField', 'contactPersonMaster[' + index + '].department', departmentValidators);
+                $('#contact-tab').formValidation('addField', 'contactPersonMaster[' + index + '].mobile', mobileValidators);
+                $('#contact-tab').formValidation('addField', 'contactPersonMaster[' + index + '].email', emailValidators);
+                $('#contact-tab').formValidation('addField', 'contactPersonMaster[' + index + '].telephone', telephoneValidators);
+        }
+  /*]]>*/
+
+        // Add button click handler
+        $('#contact-tab').on('click', '.addButton', function() {
+            contactIndex++;
+
+            var $template = $('#contactTemplate'),
+                $clone    = $template
+                                .clone()
+                                .removeClass('hide')
+                                .removeAttr('id')
+                                .attr('data-contact-index', contactIndex)
+                                .insertBefore($template);
+
+            // Update the name attributes
+            $clone
+                .find('[name="firstName"]').attr('name', 'contactPersonMaster[' + contactIndex + '].firstName').attr('id', 'contactPersonMaster' + contactIndex + '.code').end()
+                .find('[name="lastName"]').attr('name', 'contactPersonMaster[' + contactIndex + '].lastName').end()
+                .find('[name="department"]').attr('name', 'contactPersonMaster[' + contactIndex + '].department').end()
+                .find('[name="email"]').attr('name', 'contactPersonMaster[' + contactIndex + '].email').end()
+                .find('[name="telephone"]').attr('name', 'contactPersonMaster[' + contactIndex + '].telephone').end()
+                .find('[name="mobile"]').attr('name', 'contactPersonMaster[' + contactIndex + '].mobile').end();
+
+            // Add new fields
+            // Note that we also pass the validator rules for new field as the third parameter
+            $('#contact-tab')
+                .formValidation('addField', 'contactPersonMaster[' + contactIndex + '].firstName', firstNameValidators)
+                .formValidation('addField', 'contactPersonMaster[' + contactIndex + '].lastName', lastNameValidators)
+                .formValidation('addField', 'contactPersonMaster[' + contactIndex + '].department', departmentValidators)
+                .formValidation('addField', 'contactPersonMaster[' + contactIndex + '].telephone', telephoneValidators)
+                .formValidation('addField', 'contactPersonMaster[' + contactIndex + '].email', emailValidators)
+                .formValidation('addField', 'contactPersonMaster[' + contactIndex + '].mobile', mobileValidators);
+        });
+
+        // Remove button click handler
+        $('#contact-tab').on('click', '.removeButton', function() {
+            var $row  = $(this).parents('.form-group-root'),
+                index = $row.attr('data-contact-index');
+                alert($row);
+                alert(index);
+
+            // Remove fields
+            $('#contact-tab')
+                .formValidation('removeField', $row.find('[name="contactPersonMaster[' + index + '].firstName"]'))
+                .formValidation('removeField', $row.find('[name="contactPersonMaster[' + index + '].lastName"]'))
+                .formValidation('removeField', $row.find('[name="contactPersonMaster[' + index + '].department"]'))
+                .formValidation('removeField', $row.find('[name="contactPersonMaster[' + index + '].mobile"]'))
+                .formValidation('removeField', $row.find('[name="contactPersonMaster[' + index + '].telephone"]'))
+                .formValidation('removeField', $row.find('[name="contactPersonMaster[' + index + '].email"]'));
+
+            // Remove element containing the fields
+            $row.remove();
+        });
+});
+
+
+
+</script>
+</html>

@@ -1,7 +1,12 @@
 package com.avanzarit.apps.gst.batch.job.config;
 
 import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
-import com.avanzarit.apps.gst.batch.job.vendor.*;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportProcessor;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportWriter;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorFieldSetMapper;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportJobListener;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportReaderStepListener;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportWriterStepListener;
 import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.storage.StorageService;
 import org.springframework.batch.core.Job;
@@ -40,19 +45,19 @@ public class VendorJobConfig {
     VendorFieldSetMapper vendorFieldSetMapper;
 
     @Autowired
-    VendorDataProcessor vendorDataProcessor;
+    VendorDataImportProcessor vendorDataImportProcessor;
 
     @Autowired
-    VendorDataWriter vendorDataWriter;
+    VendorDataImportWriter vendorDataImportWriter;
 
     @Autowired
-    VendorJobListener vendorJobListener;
+    VendorImportJobListener vendorImportJobListener;
 
     @Autowired
-    VendorReaderStepListener vendorReaderStepListener;
+    VendorImportReaderStepListener vendorImportReaderStepListener;
 
     @Autowired
-    VendorWriterStepListener vendorWriterStepListener;
+    VendorImportWriterStepListener vendorImportWriterStepListener;
 
     public ItemReader<Vendor> reader(Resource resource) {
         FlatFileItemReader<Vendor> reader = new FlatFileItemReader<Vendor>();
@@ -84,15 +89,15 @@ public class VendorJobConfig {
     @Bean(name = "vendorImportJob")
     @Scope(scopeName = "prototype")
     public Job importVendorJob(Resource resource) {
-        return jobBuilderFactory.get("importVendorjob").incrementer(new RunIdIncrementer()).listener(vendorJobListener)
+        return jobBuilderFactory.get("importVendorjob").incrementer(new RunIdIncrementer()).listener(vendorImportJobListener)
                 .flow(importVendorStep(resource)).end().build();
     }
 
 
     public Step importVendorStep(Resource resource) {
         return stepBuilderFactory.get("importVendorStep").<Vendor, Vendor>chunk(1)
-                .reader(reader(resource)).listener(vendorReaderStepListener)
-                .processor(vendorDataProcessor)
-                .writer(vendorDataWriter).listener(vendorWriterStepListener).build();
+                .reader(reader(resource)).listener(vendorImportReaderStepListener)
+                .processor(vendorDataImportProcessor)
+                .writer(vendorDataImportWriter).listener(vendorImportWriterStepListener).build();
     }
 }

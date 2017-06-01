@@ -1,4 +1,4 @@
-package com.avanzarit.apps.gst.batch.job.vendor;
+package com.avanzarit.apps.gst.batch.job.vendorimport;
 
 import org.springframework.stereotype.Component;
 
@@ -6,7 +6,5 @@ import org.springframework.stereotype.Component;
  * Created by SPADHI on 5/30/2017.
  */
 @Component
-public class VendorReaderStepListener {
-
-
+public class VendorImportWriterStepListener {
 }

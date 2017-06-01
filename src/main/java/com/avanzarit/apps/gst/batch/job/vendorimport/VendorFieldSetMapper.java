@@ -1,4 +1,4 @@
-package com.avanzarit.apps.gst.batch.job.vendor;
+package com.avanzarit.apps.gst.batch.job.vendorimport;
 
 import com.avanzarit.apps.gst.model.Vendor;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;

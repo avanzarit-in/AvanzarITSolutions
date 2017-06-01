@@ -6,73 +6,67 @@ body {
 .navbar {
     background-color: #f8f8f8;
     border-color: #e7e7e7;
-    }
-
-
-.tab-pane{
-margin-top:10px;
 }
 
-@media (min-width: 768px)
-{
-    .container>.navbar-header{
-    margin-left:-100px;
-    }
+.tab-pane {
+    margin-top: 10px;
+}
 
+@media (min-width: 768px) {
+    .container>.navbar-header {
+        margin-left: -100px;
+    }
     .navbar-nav {
-    margin-top:15px;
-    margin-left: 70px;
+        margin-top: 15px;
+        margin-left: 70px;
     }
 }
 
-.navbar-brand img{
-     width: 100px;
-     margin-top: -10px;
+.navbar-brand img {
+    width: 100px;
+    margin-top: -10px;
 }
 
-.navbar{
-min-height:70px;
+.navbar {
+    min-height: 70px;
 }
-
 
 .form-group.required .control-label:after {
-  content:"*";
-  color:red;
+    content: "*";
+    color: red;
 }
 
 .nav-tabs>li>a>i {
-padding-left:3px;
-color:#a94442;
+    padding-left: 3px;
+    color: #a94442;
 }
 
-select+i{
-padding-right:15px;
+select+i {
+    padding-right: 15px;
 }
 
 div.dataTables_wrapper {
-        width: 95%;
-        margin: 0 auto;
-    }
-
-#footer {
-	width:100%;
-	height:auto;
-	background-image: url(/images/background.jpg);
-	background-repeat: no-repeat;
-	background-position: center bottom;
-	position:fixed;
-	_position:fixed;
-	_bottom:0;
-	bottom:0;
+    width: 95%;
+    margin: 0 auto;
 }
 
-.footertext{
+#footer {
+    width: 100%;
+    height: auto;
+    background-image: url(/images/background.jpg);
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    position: fixed;
+    _position: fixed;
+    _bottom: 0;
+    bottom: 0;
+}
 
+.footertext {
     font-size: 11px;
     font-weight: normal;
     color: #FFFFFF;
     text-decoration: none;
-
 }
 
 .footerleft {
