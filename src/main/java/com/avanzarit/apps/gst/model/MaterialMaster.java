@@ -79,12 +79,14 @@ public class MaterialMaster implements Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MaterialMaster that = (MaterialMaster) o;
-        return Objects.equals(getId(), that.getId());
+        return Objects.equals(getCode(), that.getCode()) &&
+                Objects.equals(getDesc(), that.getDesc()) &&
+                Objects.equals(getHsn(), that.getHsn());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getCode(), getDesc(), getHsn());
     }
 
     @Transient
@@ -105,4 +107,6 @@ public class MaterialMaster implements Model {
                 ", hsn='" + hsn + '\'' +
                 '}';
     }
+
+
 }

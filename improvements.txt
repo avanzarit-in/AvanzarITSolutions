@@ -5,3 +5,5 @@
 6) Every Model Class should have hascode and equals method
 7) Error Page
 8) SOme more changes
+9)FOr material/contactperson the export should not export blank Items and import should check if there
+is a blank Item then replace it with the one uploaded
