@@ -1,7 +1,6 @@
 1) Use internationalization for labels in the forms
 2) give context in the controllers like /user /vendor etc
 3) THe importal and exporter logging on results records read, processed, failed, reason for failute
-4) The batch jobs look at autowiring stuff into the Reader, Writer etc.
 5) Display proper error message for uploads
 6) Every Model Class should have hascode and equals method
 7) Error Page
