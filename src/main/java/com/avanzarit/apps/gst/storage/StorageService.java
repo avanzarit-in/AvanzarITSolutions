@@ -22,11 +22,9 @@ public interface StorageService {
 
     Stream<Path> loadAll();
 
-    Path load(String filename);
+    Path load(String type, String filename);
 
-    Resource loadAsResource(String filename);
-
-    void deleteAll();
+    Resource loadAsResource(String type, String filename);
 
 }
 

@@ -1,29 +1,9 @@
 package com.avanzarit.apps.gst.batch.job.config;
 
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialDataImportProcessor;
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialDataImportWriter;
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialFieldSetMapper;
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportJobListener;
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportReaderStepListener;
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportWriterStepListener;
+import com.avanzarit.apps.gst.batch.job.materialimport.*;
 import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
-import com.avanzarit.apps.gst.batch.job.vendorexport.ContactPersonDataFieldExtractor;
-import com.avanzarit.apps.gst.batch.job.vendorexport.ContactPersonExportHeaderCallback;
-import com.avanzarit.apps.gst.batch.job.vendorexport.CustomExtractorLineAggregator;
-import com.avanzarit.apps.gst.batch.job.vendorexport.MaterialDataFieldExtractor;
-import com.avanzarit.apps.gst.batch.job.vendorexport.MaterialExportHeaderCallback;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportProcessor;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataFieldExtractor;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportHeaderCallback;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportJobListener;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportReaderStepListener;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportWriterStepListener;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportProcessor;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportWriter;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorFieldSetMapper;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportJobListener;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportReaderStepListener;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportWriterStepListener;
+import com.avanzarit.apps.gst.batch.job.vendorexport.*;
+import com.avanzarit.apps.gst.batch.job.vendorimport.*;
 import com.avanzarit.apps.gst.model.MaterialMaster;
 import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.storage.StorageService;
@@ -246,7 +226,7 @@ public class VendorJobConfig {
     public JpaPagingItemReader<Vendor> exportReader() {
         JpaPagingItemReader<Vendor> jpaPagingItemReader = new JpaPagingItemReader<>();
         jpaPagingItemReader.setEntityManagerFactory(entityManagerFactory);
-        jpaPagingItemReader.setQueryString("SELECT v FROM Vendor v");
+        jpaPagingItemReader.setQueryString("SELECT v FROM Vendor v where v.submityn='Y'");
         jpaPagingItemReader.setPageSize(100);
         return jpaPagingItemReader;
     }
@@ -254,9 +234,9 @@ public class VendorJobConfig {
     public CompositeItemWriter<Vendor> compositItemWriter(Map<String, String> resourceMap) {
         CompositeItemWriter<Vendor> compositeItemWriter = new CompositeItemWriter<>();
         List<ItemWriter<? super Vendor>> itemWriterList = new ArrayList<>();
-        itemWriterList.add(vendorDataExportWriter(storageService.loadAsResource(resourceMap.get("VENDOR"))));
-        itemWriterList.add(contactPersonExportWriter(storageService.loadAsResource(resourceMap.get("CONTACTPERSON"))));
-        itemWriterList.add(materialExportWriter(storageService.loadAsResource(resourceMap.get("MATERIAL"))));
+        itemWriterList.add(vendorDataExportWriter(storageService.loadAsResource("export", resourceMap.get("VENDOR"))));
+        itemWriterList.add(contactPersonExportWriter(storageService.loadAsResource("export", resourceMap.get("CONTACTPERSON"))));
+        itemWriterList.add(materialExportWriter(storageService.loadAsResource("export", resourceMap.get("MATERIAL"))));
         compositeItemWriter.setDelegates(itemWriterList);
         return compositeItemWriter;
     }

@@ -12,16 +12,46 @@ import org.springframework.stereotype.Component;
 public class StorageProperties {
 
     /**
-     * Folder location for storing files
+     * Folder uploadLocation for storing files
      */
-    private String location;
+    private String uploadLocation;
+    private String exportLocation;
+    private String downloadLocation;
+    private String downloadFileName;
 
-    public String getLocation() {
-        return location;
+    public String getUploadLocation() {
+        return uploadLocation;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setUploadLocation(String uploadLocation) {
+        this.uploadLocation = uploadLocation;
     }
 
+    public String getExportLocation() {
+        return exportLocation;
+    }
+
+    public void setExportLocation(String exportLocation) {
+        this.exportLocation = exportLocation;
+    }
+
+    public String getDownloadLocation() {
+        return downloadLocation;
+    }
+
+    public void setDownloadLocation(String downloadLocation) {
+        this.downloadLocation = downloadLocation;
+    }
+
+    public String getDownloadFileName() {
+        return downloadFileName;
+    }
+
+    public void setDownloadFileName(String downloadFileName) {
+        this.downloadFileName = downloadFileName;
+    }
+
+    public String getDownloadZipFilePath() {
+        return downloadLocation + "\\" + downloadFileName;
+    }
 }

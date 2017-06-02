@@ -93,7 +93,7 @@ public class Application extends WebMvcConfigurerAdapter {
     public SimpleMailMessage constructUpdatePasswordEmailMessage() {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setText(
-                "Please visit %s and activate your Vendor Registration:\n\n"
+                "Please visit %s and activate your Registration:\n\n"
         +"Initial UserId and Password to log into the portal are:\n\n"
         +"User ID : %s\n"
         +"Initial Login Password : %s"

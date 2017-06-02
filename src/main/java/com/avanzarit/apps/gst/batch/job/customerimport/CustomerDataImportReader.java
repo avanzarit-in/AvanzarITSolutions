@@ -13,7 +13,7 @@ public class CustomerDataImportReader {
         FlatFileItemReader<Customer> reader = new FlatFileItemReader<Customer>();
         reader.setLinesToSkip(1);
         try {
-            reader.setResource(storageService.loadAsResource("customer-data.csv"));
+            reader.setResource(storageService.loadAsResource("upload", "customer-data.csv"));
             reader.setLineMapper(new DefaultLineMapper<Customer>() {
                 {
                     setLineTokenizer(new DelimitedLineTokenizer() {

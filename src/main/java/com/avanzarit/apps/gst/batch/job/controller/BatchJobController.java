@@ -13,7 +13,6 @@ import com.avanzarit.apps.gst.model.Customer;
 import com.avanzarit.apps.gst.repository.CustomerRepository;
 import com.avanzarit.apps.gst.repository.VendorRepository;
 import com.avanzarit.apps.gst.storage.StorageFileNotFoundException;
-import com.avanzarit.apps.gst.storage.StorageProperties;
 import com.avanzarit.apps.gst.storage.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +40,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by SPADHI on 5/5/2017.
@@ -78,8 +75,6 @@ public class BatchJobController implements BeanFactoryAware {
     private UserService userService;
     @Autowired
     private BatchProperties batchProperties;
-    @Autowired
-    private StorageProperties storageProperties;
 
 
     public Job importCustomerJob() {
@@ -108,7 +103,7 @@ public class BatchJobController implements BeanFactoryAware {
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
             storageService.store(file);
-            Job job = (Job) beanFactory.getBean("vendorImportJob", storageService.loadAsResource(file.getOriginalFilename()));
+            Job job = (Job) beanFactory.getBean("vendorImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
             jobLauncher.run(job, jobParameters);
@@ -128,7 +123,7 @@ public class BatchJobController implements BeanFactoryAware {
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
             storageService.store(file);
-            Job job = (Job) beanFactory.getBean("materialImportJob", storageService.loadAsResource(file.getOriginalFilename()));
+            Job job = (Job) beanFactory.getBean("materialImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
             jobLauncher.run(job, jobParameters);
@@ -149,7 +144,7 @@ public class BatchJobController implements BeanFactoryAware {
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
             storageService.store(file);
-            Job job = (Job) beanFactory.getBean("userImportJob", storageService.loadAsResource(file.getOriginalFilename()));
+            Job job = (Job) beanFactory.getBean("userImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
             jobLauncher.run(job, jobParameters);
@@ -180,30 +175,6 @@ public class BatchJobController implements BeanFactoryAware {
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
         return "redirect:/upload";
-    }
-
-    @GetMapping("/download")
-    public String handleFileDownload(RedirectAttributes redirectAttributes) {
-
-        Logger logger = LoggerFactory.getLogger(this.getClass());
-        try {
-            storageService.store(batchProperties.getVendorExportFileName());
-            storageService.store(batchProperties.getVendorMaterialExportFileName());
-            storageService.store(batchProperties.getVendorContactPersonExportFileName());
-            Map<String, String> resourceMap = new HashMap<>();
-            resourceMap.put("VENDOR", batchProperties.getVendorExportFileName());
-            resourceMap.put("MATERIAL", batchProperties.getVendorMaterialExportFileName());
-            resourceMap.put("CONTACTPERSON", batchProperties.getVendorContactPersonExportFileName());
-            Job job = (Job) beanFactory.getBean("vendorExportJob", resourceMap);
-            JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
-                    .toJobParameters();
-            jobLauncher.run(job, jobParameters);
-
-        } catch (Exception e) {
-            logger.info(e.getMessage());
-        }
-
-        return "redirect:/vendorListView";
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)

@@ -13,7 +13,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Vendor List &nbsp;&nbsp;&nbsp;&nbsp;
-                    <button class="btn btn-primary" type="submit">Export as CSV</button>
+                    <button class="btn btn-primary" id="exportButton" type="submit">Export as CSV</button>
                     &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input checked="checked" type="radio" value="1" name="filter"/>Show All</label>
                     &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="2" name="filter"/>Submitted</label>
                     &nbsp;&nbsp;&nbsp;&nbsp; <label class="radio-inline"><input type="radio" value="3" name="filter"/>Saved</label>
@@ -120,6 +120,13 @@ $(document).ready(function () {
             , index = $row.attr('data-vendorid');
 
         $('#resetVendorId').val(index);
+
+    });
+
+    $('#viewVendorDetailsForm').on('click', '#exportButton', function () {
+        alert('download');
+        $('#viewVendorDetailsForm').attr('action', '/download');
+
 
     });
 });
