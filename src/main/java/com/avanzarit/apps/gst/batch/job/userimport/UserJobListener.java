@@ -25,12 +25,6 @@ public class UserJobListener extends JobExecutionListenerSupport {
 	public void afterJob(JobExecution jobExecution) {
 		if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 			log.info("Finish Job! Check the results");
-
-			List<User> users = userRepository.findAll();
-
-			for (User user : users) {
-				log.info("Found <" + user + "> in the database.");
-			}
 		}
 	}
 }

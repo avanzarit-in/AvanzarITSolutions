@@ -95,4 +95,14 @@ public class MaterialMaster implements Model {
     public void setVendorId(String vendorId) {
         this.vendorId = vendorId;
     }
+
+    @Override
+    public String toString() {
+        return "MaterialMaster{" +
+                "vendorId='" + vendorId + '\'' +
+                "code='" + code + '\'' +
+                ", desc='" + desc + '\'' +
+                ", hsn='" + hsn + '\'' +
+                '}';
+    }
 }

@@ -32,9 +32,6 @@ import java.util.Map;
 @Controller
 public class FileDownloadController implements BeanFactoryAware {
 
-    private static final String INTERNAL_FILE = "irregular-verbs-list.pdf";
-    private static final String EXTERNAL_FILE_PATH = "C:/mytemp/SpringMVCHibernateManyToManyCRUDExample.zip";
-
     private BeanFactory beanFactory;
     @Autowired
     JobLauncher jobLauncher;
@@ -97,9 +94,9 @@ public class FileDownloadController implements BeanFactoryAware {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
-            storageService.store(batchProperties.getVendorExportFileName());
-            storageService.store(batchProperties.getVendorMaterialExportFileName());
-            storageService.store(batchProperties.getVendorContactPersonExportFileName());
+            storageService.store("export",batchProperties.getVendorExportFileName());
+            storageService.store("export",batchProperties.getVendorMaterialExportFileName());
+            storageService.store("export",batchProperties.getVendorContactPersonExportFileName());
             Map<String, String> resourceMap = new HashMap<>();
             resourceMap.put("VENDOR", batchProperties.getVendorExportFileName());
             resourceMap.put("MATERIAL", batchProperties.getVendorMaterialExportFileName());

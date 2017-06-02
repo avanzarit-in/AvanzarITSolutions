@@ -18,6 +18,7 @@ public class StorageProperties {
     private String exportLocation;
     private String downloadLocation;
     private String downloadFileName;
+    private String batchjobLogLocation;
 
     public String getUploadLocation() {
         return uploadLocation;
@@ -53,5 +54,13 @@ public class StorageProperties {
 
     public String getDownloadZipFilePath() {
         return downloadLocation + "\\" + downloadFileName;
+    }
+
+    public String getBatchjobLogLocation() {
+        return batchjobLogLocation;
+    }
+
+    public void setBatchjobLogLocation(String batchjobLogLocation) {
+        this.batchjobLogLocation = batchjobLogLocation;
     }
 }

@@ -623,4 +623,12 @@ public class Vendor implements Model {
     public void setSapSyncDate(Date sapSyncDate) {
         this.sapSyncDate = sapSyncDate;
     }
+
+    @Override
+    public String toString() {
+        return "Vendor{" +
+                "vendorId='" + vendorId + '\'' +
+                ", vendorName1='" + vendorName1 + '\'' +
+                '}';
+    }
 }

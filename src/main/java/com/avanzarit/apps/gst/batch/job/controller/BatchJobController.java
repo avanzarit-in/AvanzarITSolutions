@@ -17,6 +17,7 @@ import com.avanzarit.apps.gst.storage.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
@@ -40,6 +42,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.sql.DataSource;
+import java.io.PrintWriter;
 
 /**
  * Created by SPADHI on 5/5/2017.
@@ -102,11 +105,18 @@ public class BatchJobController implements BeanFactoryAware {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
-            storageService.store(file);
+            storageService.store("upload",file);
             Job job = (Job) beanFactory.getBean("vendorImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
-            jobLauncher.run(job, jobParameters);
+            JobExecution execution=jobLauncher.run(job, jobParameters);
+            String logInfo=(String)execution.getExecutionContext().get("log");
+            storageService.store("batchlog","vendoruploadbatch.log");
+            Resource logFile=storageService.loadAsResource("batchlog","vendoruploadbatch.log");
+            PrintWriter out = new PrintWriter( logFile.getFile());
+            out.print(logInfo);
+            out.flush();
+            out.close();
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
@@ -122,11 +132,18 @@ public class BatchJobController implements BeanFactoryAware {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
-            storageService.store(file);
+            storageService.store("upload",file);
             Job job = (Job) beanFactory.getBean("materialImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
-            jobLauncher.run(job, jobParameters);
+            JobExecution execution=jobLauncher.run(job, jobParameters);
+            String logInfo=(String)execution.getExecutionContext().get("log");
+            storageService.store("batchlog","materialuploadbatch.log");
+            Resource logFile=storageService.loadAsResource("batchlog","materialuploadbatch.log");
+            PrintWriter out = new PrintWriter( logFile.getFile());
+            out.print(logInfo);
+            out.flush();
+            out.close();
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
@@ -143,11 +160,18 @@ public class BatchJobController implements BeanFactoryAware {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
-            storageService.store(file);
+            storageService.store("upload",file);
             Job job = (Job) beanFactory.getBean("userImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
-            jobLauncher.run(job, jobParameters);
+            JobExecution execution=jobLauncher.run(job, jobParameters);
+            String logInfo=(String)execution.getExecutionContext().get("log");
+            storageService.store("batchlog","useruploadbatch.log");
+            Resource logFile=storageService.loadAsResource("batchlog","useruploadbatch.log");
+            PrintWriter out = new PrintWriter( logFile.getFile());
+            out.print(logInfo);
+            out.flush();
+            out.close();
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
@@ -163,7 +187,7 @@ public class BatchJobController implements BeanFactoryAware {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
-            storageService.store(file);
+            storageService.store("upload",file);
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
             jobLauncher.run(importCustomerJob(), jobParameters);

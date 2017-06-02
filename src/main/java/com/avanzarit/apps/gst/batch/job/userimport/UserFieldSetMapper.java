@@ -3,10 +3,12 @@ package com.avanzarit.apps.gst.batch.job.userimport;
 import com.avanzarit.apps.gst.auth.model.Role;
 import com.avanzarit.apps.gst.auth.model.User;
 import com.avanzarit.apps.gst.auth.repository.RoleRepository;
+import com.avanzarit.apps.gst.batch.job.exception.SkippableReadException;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 
 import java.util.Arrays;
@@ -37,8 +39,12 @@ public class UserFieldSetMapper implements FieldSetMapper<User> {
     @Override
     public User mapFieldSet(FieldSet fieldSet) throws BindException {
         User user=new User();
+        String email=fieldSet.readString("EMAIL");
+        if(StringUtils.isEmpty(email)){
+            throw new SkippableReadException("Email can not be empty skip processing");
+        }
         user.setUsername(fieldSet.readString("USERNAME"));
-        user.setEmail(fieldSet.readString("EMAIL"));
+        user.setEmail(email);
         List<String> applicableRoles = Arrays.asList(fieldSet.readString("ROLES").split(":"));
         Set<Role> roles = new HashSet<>();
         for (String roleName : applicableRoles) {

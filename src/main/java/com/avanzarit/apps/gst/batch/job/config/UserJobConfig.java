@@ -1,6 +1,7 @@
 package com.avanzarit.apps.gst.batch.job.config;
 
 import com.avanzarit.apps.gst.auth.model.User;
+import com.avanzarit.apps.gst.batch.job.policy.SkipPolicy;
 import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
 import com.avanzarit.apps.gst.batch.job.userimport.*;
 import com.avanzarit.apps.gst.storage.StorageService;
@@ -9,6 +10,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
@@ -66,16 +68,12 @@ public class UserJobConfig {
     @Bean
     public LineMapper<User> userLineMapper() {
         DefaultLineMapper<User> lineMapper = new DefaultLineMapper<User>();
-
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setNames(new String[]{"USERNAME", "EMAIL", "ROLES"});
-
         BeanWrapperFieldSetMapper<User> fieldSetMapper = new BeanWrapperFieldSetMapper<User>();
         fieldSetMapper.setTargetType(User.class);
-
         lineMapper.setLineTokenizer(lineTokenizer);
         lineMapper.setFieldSetMapper(userFieldSetMapper);
-
         return lineMapper;
     }
 
@@ -89,6 +87,7 @@ public class UserJobConfig {
 
     public Step importUserStep(Resource resource) {
         return stepBuilderFactory.get("importUserStep").<User, User>chunk(1)
+             .faultTolerant().skipPolicy(new SkipPolicy())
                 .reader(reader(resource)).listener(userReaderStepListener)
                 .processor(userDataProcessor)
                 .writer(userDataWriter).listener(userWriterStepListener).build();
