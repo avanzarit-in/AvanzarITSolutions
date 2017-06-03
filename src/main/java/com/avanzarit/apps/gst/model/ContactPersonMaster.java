@@ -1,6 +1,7 @@
 package com.avanzarit.apps.gst.model;
 
 import com.avanzarit.apps.gst.Model;
+import com.avanzarit.apps.gst.batch.job.annotations.Export;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -13,12 +14,19 @@ import java.util.Objects;
 public class ContactPersonMaster implements Model {
 
     private Long id;
+    @Export(order = 2, title = "LASTNAME")
     private String lastName;
+    @Export(order = 3, title = "FIRSTNAME")
     private String firstName;
+    @Export(order = 4, title = "DEPT")
     private String department;
+    @Export(order = 5, title = "MOBILE")
     private String mobile;
+    @Export(order = 6, title = "TELEPHONE")
     private String telephone;
+    @Export(order = 7, title = "EMAIL")
     private String email;
+    @Export(order = 1, title = "VENDORID")
     private String vendorId;
     private Vendor vendor;
 

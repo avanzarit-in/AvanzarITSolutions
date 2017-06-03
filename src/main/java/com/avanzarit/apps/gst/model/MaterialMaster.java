@@ -1,6 +1,7 @@
 package com.avanzarit.apps.gst.model;
 
 import com.avanzarit.apps.gst.Model;
+import com.avanzarit.apps.gst.batch.job.annotations.Export;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -13,9 +14,13 @@ import java.util.Objects;
 public class MaterialMaster implements Model {
 
     private Long id;
+    @Export(order = 2, title = "CODE")
     private String code;
+    @Export(order = 3, title = "DESCRIPTION")
     private String desc;
+    @Export(order = 4, title = "HSN")
     private String hsn;
+    @Export(order = 1, title = "VENDORID")
     private String vendorId;
     private Vendor vendor;
 

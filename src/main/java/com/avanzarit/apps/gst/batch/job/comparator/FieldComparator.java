@@ -18,6 +18,8 @@ public class FieldComparator implements Comparator<Field> {
         int order2 = export2.order();
         if (order1 > order2) {
             return 1;
+        } else if (order1 < order2) {
+            return -1;
         }
         return 0;
     }

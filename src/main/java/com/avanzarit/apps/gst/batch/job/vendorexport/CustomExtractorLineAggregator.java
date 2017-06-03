@@ -17,7 +17,6 @@ public class CustomExtractorLineAggregator<T> extends ExtractorLineAggregator<T>
         StringBuilder sb = new StringBuilder();
         for (int counter = 0; counter < fields.length; counter++) {
             sb.append("\"").append(fields[counter]).append("\",");
-
         }
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();

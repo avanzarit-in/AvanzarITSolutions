@@ -32,7 +32,6 @@ public class VendorDataFieldExtractor implements FieldExtractor<Vendor> {
             fieldNames.add(field.getName());
         }
         String[] fieldNameArray = new String[fieldNames.size()];
-        //extractor.setNames(new String[]{"vendorId", "vendorName1", "vendorName2", "vendorName3", "telephoneNumberExtn", "mobileNo", "email", "faxNumberExtn", "buildingNo", "address1", "address2", "address3", "address4", "address5", "city", "postCode", "region", "country", "accountHolderName", "accountNumber", "pan", "vatNumber"});
         extractor.setNames(fieldNames.toArray(fieldNameArray));
         return extractor.extract(item);
     }

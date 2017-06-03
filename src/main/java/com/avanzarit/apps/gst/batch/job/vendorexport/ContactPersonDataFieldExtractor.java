@@ -1,12 +1,17 @@
 package com.avanzarit.apps.gst.batch.job.vendorexport;
 
+import com.avanzarit.apps.gst.batch.job.annotations.Export;
+import com.avanzarit.apps.gst.batch.job.comparator.FieldComparator;
 import com.avanzarit.apps.gst.model.ContactPersonMaster;
 import com.avanzarit.apps.gst.model.Vendor;
+import com.avanzarit.apps.gst.utils.Utils;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.FieldExtractor;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,7 +27,14 @@ public class ContactPersonDataFieldExtractor implements FieldExtractor<Vendor> {
     public Object[] extract(Vendor item) {
         List<Object> values = new ArrayList<Object>();
         BeanWrapperFieldExtractor<ContactPersonMaster> extractor = new BeanWrapperFieldExtractor<>();
-        extractor.setNames(new String[]{"vendorId", "lastName", "firstName", "department", "mobile", "telephone", "email"});
+        List<Field> fields = Utils.findFields(ContactPersonMaster.class, Export.class);
+        List<String> fieldNames = new ArrayList<>();
+        Collections.sort(fields, new FieldComparator());
+        for (Field field : fields) {
+            fieldNames.add(field.getName());
+        }
+        String[] fieldNameArray = new String[fieldNames.size()];
+        extractor.setNames(fieldNames.toArray(fieldNameArray));
         for (ContactPersonMaster contactPersonMaster : item.getContactPersonMaster()) {
             contactPersonMaster.setVendorId(item.getVendorId());
             values.add(extractor.extract(contactPersonMaster));
