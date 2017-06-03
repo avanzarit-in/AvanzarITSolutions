@@ -7,8 +7,6 @@ import com.avanzarit.apps.gst.auth.properties.UserProperties;
 import com.avanzarit.apps.gst.auth.repository.RoleRepository;
 import com.avanzarit.apps.gst.auth.service.UserService;
 import com.avanzarit.apps.gst.email.EmailServiceImpl;
-import com.avanzarit.apps.gst.model.ContactPersonMaster;
-import com.avanzarit.apps.gst.model.MaterialMaster;
 import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.properties.AppProperties;
 import com.avanzarit.apps.gst.repository.VendorRepository;
@@ -18,7 +16,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -74,7 +71,7 @@ public class VendorDataImportWriter implements ItemWriter<Vendor> {
     public void write(List<? extends Vendor> vendors) throws Exception {
         for (Vendor vendor : vendors) {
 
-            List<MaterialMaster> materialMasterList = new ArrayList<>();
+       /*     List<MaterialMaster> materialMasterList = new ArrayList<>();
             MaterialMaster materialMaster = new MaterialMaster();
             materialMaster.setVendor(vendor);
             materialMasterList.add(materialMaster);
@@ -85,7 +82,7 @@ public class VendorDataImportWriter implements ItemWriter<Vendor> {
             contactPersonMasterList.add(contactPersonMaster);
 
             vendor.setMaterialMaster(materialMasterList);
-            vendor.setContactPersonMaster(contactPersonMasterList);
+            vendor.setContactPersonMaster(contactPersonMasterList);*/
             vendorRepository.save(vendor);
 
             if (userService.findByUsername(vendor.getVendorId()) == null) {

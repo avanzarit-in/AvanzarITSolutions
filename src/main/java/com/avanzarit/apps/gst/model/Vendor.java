@@ -1,14 +1,9 @@
 package com.avanzarit.apps.gst.model;
 
 import com.avanzarit.apps.gst.Model;
+import com.avanzarit.apps.gst.batch.job.annotations.Export;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,37 +16,60 @@ import java.util.List;
 public class Vendor implements Model {
 
 
+    @Export(order = 1, title = "LFA1#LIFNR")
     private String vendorId;
+    @Export(order = 2, title = "LFA1#NAME1")
     private String vendorName1;
+    @Export(order = 3, title = "LFA1#NAME2")
     private String vendorName2;
+    @Export(order = 4, title = "LFA1#NAME3")
     private String vendorName3;
+
     private String contactPerson;
+    @Export(order = 5, title = "LFA1#TELF1")
     private String telephoneNumberExtn;
     private String telephoneNumber;
     private String telephoneExtn;
+    @Export(order = 6, title = "LFA1#TELF2")
     private String mobileNo;
+    @Export(order = 7, title = "ADR6#SMTP_ADDR")
     private String email;
     private String faxNumber;
     private String faxExtn;
+    @Export(order = 8, title = "LFA1#TELFX")
     private String faxNumberExtn;
+    @Export(order = 9, title = "ADRC#BUILDING")
     private String buildingNo;
+    @Export(order = 10, title = "LFA1#STRAS")
     private String address1;
+    @Export(order = 11, title = "ADRC#STR_SUPPL1")
     private String address2;
+    @Export(order = 12, title = "ADRC#STR_SUPPL2")
     private String address3;
+    @Export(order = 13, title = "ADRC#STR_SUPPL3")
     private String address4;
+    @Export(order = 14, title = "ADRC#LOCATION")
     private String address5;
+    @Export(order = 15, title = "LFA1#ORT01")
     private String city;
+    @Export(order = 16, title = "LFA1#PSTLZ")
     private String postCode;
+    @Export(order = 17, title = "LFA1#REGIO")
     private String region;
+    @Export(order = 18, title = "LFA1#LAND1")
     private String country;
     private String railwayStation;
+    @Export(order = 19, title = "LFBK#KOINH")
     private String accountHolderName;
+    @Export(order = 20, title = "LFBK#BANKN")
     private String accountNumber;
     private String bankName;
     private String ifscCode;
     private String branchName;
     private String branchLocation;
+    @Export(order = 21, title = "J_1IMOVEND#J_1IPANNO")
     private String pan;
+    @Export(order = 22, title = "LFA1#STCEG")
     private String vatNumber;
     private String gstRegistrationStatus;
     private String noOfGstRegistration;
@@ -436,11 +454,9 @@ public class Vendor implements Model {
         this.faxExtn = faxExtn;
     }
 
-    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.REMOVE)
     public List<MaterialMaster> getMaterialMaster() {
-        if (materialMaster.isEmpty()) {
-            materialMaster.add(new MaterialMaster());
-        }
+
         return materialMaster;
     }
 
@@ -449,11 +465,9 @@ public class Vendor implements Model {
         this.materialMaster = materialMaster;
     }
 
-    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.REMOVE)
     public List<ContactPersonMaster> getContactPersonMaster() {
-        if (contactPersonMaster.isEmpty()) {
-            contactPersonMaster.add(new ContactPersonMaster());
-        }
+
         return contactPersonMaster;
     }
 

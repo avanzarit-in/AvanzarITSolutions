@@ -20,7 +20,6 @@ import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.support.CompositeItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -244,10 +243,9 @@ public class VendorJobConfig {
     public ItemWriter<Vendor> vendorDataExportWriter(Resource resource) {
         FlatFileItemWriter<Vendor> flatFileItemWriter = new FlatFileItemWriter<>();
         flatFileItemWriter.setHeaderCallback(vendorExportHeaderCallback);
-        flatFileItemWriter.setLineAggregator((new DelimitedLineAggregator() {
+        flatFileItemWriter.setLineAggregator((new CustomExtractorLineAggregator<Vendor>() {
             {
                 setFieldExtractor(vendorDataFieldExtractor);
-                setDelimiter(",");
             }
         }));
         flatFileItemWriter.setResource(resource);
@@ -257,10 +255,9 @@ public class VendorJobConfig {
     public ItemWriter<Vendor> contactPersonExportWriter(Resource resource) {
         FlatFileItemWriter<Vendor> flatFileItemWriter = new FlatFileItemWriter<>();
         flatFileItemWriter.setHeaderCallback(contactPersonExportHeaderCallback);
-        flatFileItemWriter.setLineAggregator((new CustomExtractorLineAggregator<Vendor>() {
+        flatFileItemWriter.setLineAggregator((new CustomArrayExtractorLineAggregator<Vendor>() {
             {
                 setFieldExtractor(contactPersonDataFieldExtractor);
-
             }
         }));
         flatFileItemWriter.setResource(resource);
@@ -270,7 +267,7 @@ public class VendorJobConfig {
     public ItemWriter<Vendor> materialExportWriter(Resource resource) {
         FlatFileItemWriter<Vendor> flatFileItemWriter = new FlatFileItemWriter<>();
         flatFileItemWriter.setHeaderCallback(materialExportHeaderCallback);
-        flatFileItemWriter.setLineAggregator((new CustomExtractorLineAggregator<Vendor>() {
+        flatFileItemWriter.setLineAggregator((new CustomArrayExtractorLineAggregator<Vendor>() {
             {
                 setFieldExtractor(materialDataFieldExtractor);
             }

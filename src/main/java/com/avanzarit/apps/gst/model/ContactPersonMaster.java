@@ -2,15 +2,7 @@ package com.avanzarit.apps.gst.model;
 
 import com.avanzarit.apps.gst.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -118,18 +110,17 @@ public class ContactPersonMaster implements Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ContactPersonMaster that = (ContactPersonMaster) o;
-        return Objects.equals(getId(), that.getId()) &&
-                Objects.equals(getLastName(), that.getLastName()) &&
-                Objects.equals(getFirstName(), that.getFirstName()) &&
-                Objects.equals(getDepartment(), that.getDepartment()) &&
-                Objects.equals(getMobile(), that.getMobile()) &&
-                Objects.equals(getTelephone(), that.getTelephone()) &&
-                Objects.equals(getEmail(), that.getEmail()) &&
-                Objects.equals(getVendor(), that.getVendor());
+        return Objects.equals(id, that.id) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(department, that.department) &&
+                Objects.equals(mobile, that.mobile) &&
+                Objects.equals(telephone, that.telephone) &&
+                Objects.equals(email, that.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getLastName(), getFirstName(), getDepartment(), getMobile(), getTelephone(), getEmail(), getVendor());
+        return Objects.hash(id, lastName, firstName, department, mobile, telephone, email);
     }
 }

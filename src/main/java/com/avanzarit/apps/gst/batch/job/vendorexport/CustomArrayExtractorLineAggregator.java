@@ -2,10 +2,13 @@ package com.avanzarit.apps.gst.batch.job.vendorexport;
 
 import org.springframework.batch.item.file.transform.ExtractorLineAggregator;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by SPADHI on 6/1/2017.
  */
-public class CustomExtractorLineAggregator<T> extends ExtractorLineAggregator<T> {
+public class CustomArrayExtractorLineAggregator<T> extends ExtractorLineAggregator<T> {
     /**
      * Aggregate provided fields into single String.
      *
@@ -16,8 +19,12 @@ public class CustomExtractorLineAggregator<T> extends ExtractorLineAggregator<T>
     protected String doAggregate(Object[] fields) {
         StringBuilder sb = new StringBuilder();
         for (int counter = 0; counter < fields.length; counter++) {
-            sb.append("\"").append(fields[counter]).append("\",");
-
+            List<Object> data = Arrays.asList((Object[]) fields[counter]);
+            for (Object item : data) {
+                sb.append("\"").append(item).append("\",");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append("\n");
         }
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();

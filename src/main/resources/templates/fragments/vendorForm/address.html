@@ -7,52 +7,52 @@
 <div class="form-group">
     <label class="col-xs-2 control-label">Building Number</label>
     <div class="col-xs-3">
-        <input type="text" class="form-control" th:field="*{buildingNo}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Building Number"/>
+        <input type="text" class="form-control" th:field="*{buildingNo}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Building Number':''}"/>
     </div>
 </div>
 
 <div class="form-group required">
     <label class="col-xs-2 control-label">Address Line 1</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{address1}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Address Line 1"/>
+        <input type="text" class="form-control" th:field="*{address1}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Address Line 1':''}"/>
     </div>
 </div>
 <div class="form-group">
     <label class="col-xs-2 control-label">Address Line 2</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{address2}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Address Line 2"/>
+        <input type="text" class="form-control" th:field="*{address2}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Address Line 2':''}"/>
     </div>
 </div>
 <div class="form-group">
     <label class="col-xs-2 control-label">Address Line 3</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{address3}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Address Line 3"/>
+        <input type="text" class="form-control" th:field="*{address3}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Address Line 3':''}"/>
     </div>
 </div>
 <div class="form-group">
     <label class="col-xs-2 control-label">Address Line 4</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{address4}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Address Line 4"/>
+        <input type="text" class="form-control" th:field="*{address4}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Address Line 4':''}"/>
     </div>
 </div>
 <div class="form-group">
     <label class="col-xs-2 control-label">Address Line 5</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{address5}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Address Line 5"/>
+        <input type="text" class="form-control" th:field="*{address5}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Address Line 5':''}"/>
     </div>
 </div>
 
 <div class="form-group required">
     <label class="col-xs-2 control-label">PostCode</label>
     <div class="col-xs-2">
-        <input type="text" class="form-control" th:field="*{postCode}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="PostCode"/>
+        <input type="text" class="form-control" th:field="*{postCode}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'PostCode':''}"/>
     </div>
 
 </div>
@@ -357,16 +357,16 @@
     <label class="col-xs-1 control-label">City</label>
     <div class="col-xs-2">
 
-        <input type="text" class="form-control" th:field="*{city}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="City"/>
+        <input type="text" class="form-control" th:field="*{city}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'City':''}"/>
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-xs-2 control-label">Nearest Railway Station</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{railwayStation}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Nearest Railway Station"/>
+        <input type="text" class="form-control" th:field="*{railwayStation}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Nearest Railway Station':''}"/>
     </div>
 </div>
 
@@ -447,7 +447,7 @@ $(document).ready(function() {
                     }
                 }
             },
-            postcode:{
+         postCode: {
                 row: '.col-xs-2',
                 validators: {
                     notEmpty: {

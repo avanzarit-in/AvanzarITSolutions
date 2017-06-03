@@ -17,16 +17,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by SPADHI on 5/3/2017.
@@ -114,26 +111,48 @@ class VendorController {
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public String addAlbum(@ModelAttribute Vendor vendor, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
+        String email = vendor.getEmail();
+        if (email != null && email.indexOf(",") > 0) {
+            email = email.substring(0, email.indexOf(","));
+            vendor.setEmail(email);
+        }
         List<MaterialMaster> materials = vendor.getMaterialMaster();
+        List<MaterialMaster> cleanedMaterailList = materials.stream()
+                .filter(line -> line.getId() != null)
+                .collect(Collectors.toList());
+
         List<ContactPersonMaster> contactPersonMasters = vendor.getContactPersonMaster();
-        for (MaterialMaster material : materials) {
+        List<ContactPersonMaster> cleanedContactPersonMasters = contactPersonMasters.stream()
+                .filter(line -> line.getId() != null)
+                .collect(Collectors.toList());
+
+        for (MaterialMaster material : cleanedMaterailList) {
+            if (material.getId().equals(999L)) {
+                material.setId(null);
+            }
             material.setVendor(vendor);
+            materialMasterRepository.save(material);
         }
-        for (ContactPersonMaster contactPersonMaster : contactPersonMasters) {
+        for (ContactPersonMaster contactPersonMaster : cleanedContactPersonMasters) {
+            if (contactPersonMaster.getId().equals(999L)) {
+                contactPersonMaster.setId(null);
+            }
             contactPersonMaster.setVendor(vendor);
+            contactPersonMasterRepository.save(contactPersonMaster);
         }
+
         vendor = vendorRepository.save(vendor);
 
         List<MaterialMaster> materialList = materialMasterRepository.findByVendor(vendor);
         for (MaterialMaster material : materialList) {
-            if (!materials.contains(material)) {
+            if (!cleanedMaterailList.contains(material)) {
                 materialMasterRepository.delete(material);
             }
         }
 
         List<ContactPersonMaster> contactPersonMasterList = contactPersonMasterRepository.findByVendor(vendor);
         for (ContactPersonMaster contactPersonMaster : contactPersonMasterList) {
-            if (!contactPersonMasters.contains(contactPersonMaster)) {
+            if (!cleanedContactPersonMasters.contains(contactPersonMaster)) {
                 contactPersonMasterRepository.delete(contactPersonMaster);
             }
         }

@@ -7,7 +7,7 @@
     <label class="col-xs-2 control-label">Contact Person</label>
     <div class="col-xs-6">
         <input type="text" class="form-control" th:field="*{contactPersonMaster}" th:disabled="*{submityn == 'Y'}"
-               placeholder="Contact Person"/>
+               th:placeholder="*{submityn != 'Y' ? 'Contact Person':''}"/>
     </div>
 </div>
 <div class="form-group required">
@@ -15,11 +15,11 @@
     <div class="col-xs-6">
         <div class="input-group">
 
-            <input type="text" class="form-control" th:field="*{telephoneNumber}"  th:disabled="*{submityn == 'Y'}"
-                   placeholder="TelephoneNo"/>
+            <input type="text" class="form-control" th:field="*{telephoneNumber}" th:disabled="*{submityn == 'Y'}"
+                   th:placeholder="*{submityn != 'Y' ? 'TelephoneNo':''}"/>
             <span class="input-group-addon">-</span>
-            <input type="text" class="form-control" th:field="*{telephoneExtn}"  th:disabled="*{submityn == 'Y'}"
-                   placeholder="Extension"/>
+            <input type="text" class="form-control" th:field="*{telephoneExtn}" th:disabled="*{submityn == 'Y'}"
+                   th:placeholder="*{submityn != 'Y' ? 'Extension':''}"/>
             <input type="hidden" th:field="*{telephoneNumberExtn}"/>
 
         </div>
@@ -28,16 +28,16 @@
 <div class="form-group">
     <label class="col-xs-2  control-label">Mobile Number</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{mobileNo}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Mobile Number"/>
+        <input type="text" class="form-control" th:field="*{mobileNo}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Mobile Number':''}"/>
     </div>
 </div>
 <div class="form-group required">
     <label class="col-xs-2  control-label">E-mail Address</label>
     <div class="col-xs-6">
 
-        <input type="text" class="form-control" th:field="*{email}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Email Address"/>
+        <input type="text" class="form-control" th:field="*{email}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Email Address':''}"/>
 
     </div>
 </div>
@@ -45,11 +45,11 @@
     <label class="col-xs-2  control-label">Fax Number</label>
     <div class="col-xs-6">
         <div class="input-group">
-            <input type="text" class="form-control" th:field="*{faxNumber}"  th:disabled="*{submityn == 'Y'}"
-                   placeholder="Fax Number"/>
+            <input type="text" class="form-control" th:field="*{faxNumber}" th:disabled="*{submityn == 'Y'}"
+                   th:placeholder="*{submityn != 'Y' ? 'Fax Number':''}"/>
             <span class="input-group-addon">-</span>
-            <input type="text" class="form-control" th:field="*{faxExtn}"  th:disabled="*{submityn == 'Y'}"
-                   placeholder="Extension"/>
+            <input type="text" class="form-control" th:field="*{faxExtn}" th:disabled="*{submityn == 'Y'}"
+                   th:placeholder="*{submityn != 'Y' ? 'Extension':''}"/>
             <input type="hidden" th:field="*{faxNumberExtn}"/>
         </div>
     </div>

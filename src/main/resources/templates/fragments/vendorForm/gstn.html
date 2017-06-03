@@ -6,16 +6,16 @@
 <div class="form-group required">
     <label class="col-xs-3  control-label">PAN</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{pan}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="PAN Number"/>
+        <input type="text" class="form-control" th:field="*{pan}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'PAN Number':''}"/>
     </div>
 </div>
 
 <div class="form-group">
     <label class="col-xs-3  control-label">VAT Registration No</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{vatNumber}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="VAT Registration No"/>
+        <input type="text" class="form-control" th:field="*{vatNumber}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'VAT Registration No':''}"/>
     </div>
 </div>
 
@@ -36,8 +36,8 @@
 <div class="form-group required">
     <label class="col-xs-3  control-label">Number of GST Registration</label>
     <div class="col-xs-4">
-        <input type="text" class="form-control" th:field="*{noOfGstRegistration}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="GST Registration count"/>
+        <input type="text" class="form-control" th:field="*{noOfGstRegistration}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'GST Registration count':''}"/>
     </div>
 </div>
 
@@ -88,8 +88,8 @@
 <div class="form-group required">
     <label class="col-xs-3  control-label">GST Number</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{gstNumber}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="GST Number"/>
+        <input type="text" class="form-control" th:field="*{gstNumber}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'GST Number':''}"/>
     </div>
 </div>
 </div>

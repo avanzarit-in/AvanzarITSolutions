@@ -74,7 +74,7 @@ public class FileSystemStorageService implements StorageService {
         Path location=getPath(type);
         try {
             Files.delete(location.resolve(fileName));
-
+            Files.createFile(location.resolve(fileName));
         } catch (IOException exception) {
             Files.createFile(location.resolve(fileName));
         }

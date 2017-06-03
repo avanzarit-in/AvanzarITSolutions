@@ -6,48 +6,48 @@
 <div class="form-group required">
     <label class="col-xs-3  control-label">Name of the Account Holder</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{accountHolderName}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Name of the Account Holder"/>
+        <input type="text" class="form-control" th:field="*{accountHolderName}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Name of the Account Holder':''}"/>
     </div>
 </div>
 
 <div class="form-group required">
     <label class="col-xs-3  control-label">Bank A/c Number</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{accountNumber}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Bank A/c Number"/>
+        <input type="text" class="form-control" th:field="*{accountNumber}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Bank A/c Number':''}"/>
     </div>
 </div>
 
 <div class="form-group required">
     <label class="col-xs-3  control-label">Bank Name</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{bankName}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Bank Name"/>
+        <input type="text" class="form-control" th:field="*{bankName}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Bank Name':''}"/>
     </div>
 </div>
 
 <div class="form-group required">
     <label class="col-xs-3  control-label">IFSC Code</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{ifscCode}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="IFSC Code"/>
+        <input type="text" class="form-control" th:field="*{ifscCode}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'IFSC Code':''}"/>
     </div>
 </div>
 
 <div class="form-group required">
     <label class="col-xs-3  control-label">Branch Name</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{branchName}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Branch Name"/>
+        <input type="text" class="form-control" th:field="*{branchName}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Branch Name':''}"/>
     </div>
 </div>
 
 <div class="form-group required">
     <label class="col-xs-3  control-label">Branch Location</label>
     <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{branchLocation}"  th:disabled="*{submityn == 'Y'}"
-               placeholder="Branch Location"/>
+        <input type="text" class="form-control" th:field="*{branchLocation}" th:disabled="*{submityn == 'Y'}"
+               th:placeholder="*{submityn != 'Y' ? 'Branch Location':''}"/>
     </div>
 </div>
 </div>

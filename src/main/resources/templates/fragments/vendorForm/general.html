@@ -15,13 +15,16 @@
 <div class="form-group required">
     <label class="col-xs-2 control-label">Vendor Name</label>
     <div class="col-xs-3">
-        <input type="text" class="form-control " th:field="*{vendorName1}" placeholder="Name1"  th:disabled="*{submityn == 'Y'}" />
+        <input type="text" class="form-control " th:field="*{vendorName1}"
+               th:placeholder="*{submityn != 'Y' ? 'Name1':''}" th:disabled="*{submityn == 'Y'}"/>
     </div>
     <div class="col-xs-3">
-        <input type="text" class="form-control" th:field="*{vendorName2}" placeholder="Name2"  th:disabled="*{submityn == 'Y'}" />
+        <input type="text" class="form-control" th:field="*{vendorName2}"
+               th:placeholder="*{submityn != 'Y' ? 'Name2':''}" th:disabled="*{submityn == 'Y'}"/>
     </div>
     <div class="col-xs-3">
-        <input type="text" class="form-control" th:field="*{vendorName3}" placeholder="Name3"  th:disabled="*{submityn == 'Y'}" />
+        <input type="text" class="form-control" th:field="*{vendorName3}"
+               th:placeholder="*{submityn != 'Y' ? 'Name3':''}" th:disabled="*{submityn == 'Y'}"/>
     </div>
 </div>
 

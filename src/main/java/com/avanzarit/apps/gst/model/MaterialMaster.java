@@ -2,15 +2,7 @@ package com.avanzarit.apps.gst.model;
 
 import com.avanzarit.apps.gst.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -79,14 +71,15 @@ public class MaterialMaster implements Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MaterialMaster that = (MaterialMaster) o;
-        return Objects.equals(getCode(), that.getCode()) &&
-                Objects.equals(getDesc(), that.getDesc()) &&
-                Objects.equals(getHsn(), that.getHsn());
+        return Objects.equals(id, that.id) &&
+                Objects.equals(code, that.code) &&
+                Objects.equals(desc, that.desc) &&
+                Objects.equals(hsn, that.hsn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCode(), getDesc(), getHsn());
+        return Objects.hash(id, code, desc, hsn);
     }
 
     @Transient

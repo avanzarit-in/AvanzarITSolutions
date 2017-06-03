@@ -94,22 +94,22 @@ CREATE TABLE vendor (
 );
 
 CREATE TABLE materialmaster(
-    id Bigserial PRIMARY KEY NOT NULL,
-    vendorid  VARCHAR(500) NOT NULL,
-    code VARCHAR(500),
-    description VARCHAR(500),
-    hsn  VARCHAR(500)
+  id          Bigserial PRIMARY KEY NOT NULL,
+  vendorid    VARCHAR(500),
+  code        VARCHAR(500),
+  description VARCHAR(500),
+  hsn         VARCHAR(500)
 );
 
 CREATE TABLE contactpersonmaster(
-    id Bigserial PRIMARY KEY NOT NULL,
-    vendorid  VARCHAR(500) NOT NULL,
-    lastname VARCHAR(50),
-    firstname VARCHAR(50) ,
-    department VARCHAR(50),
-     mobile VARCHAR(50) ,
-    telephone VARCHAR(50) ,
-    email VARCHAR(250)
+  id         Bigserial PRIMARY KEY NOT NULL,
+  vendorid   VARCHAR(500),
+  lastname   VARCHAR(50),
+  firstname  VARCHAR(50) ,
+  department VARCHAR(50),
+  mobile     VARCHAR(50) ,
+  telephone  VARCHAR(50) ,
+  email      VARCHAR(250)
 );
 
 CREATE TABLE customer (

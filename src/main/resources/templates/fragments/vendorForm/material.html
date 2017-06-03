@@ -4,38 +4,50 @@
 <body>
 <div  th:fragment="material" th:object="${vendor}">
 
+    <div class="form-group">
+        <div class="col-xs-12">
+            <button type="button" th:if="*{submityn != 'Y'}" class="btn btn-default addButton">
+                <i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add Material Information
+            </button>
+        </div>
+
+    </div>
+
     <div class="form-group" th:each="row,rowStat : *{materialMaster}"
          th:attr="data-materialMaster-index=${rowStat.index}">
-        <label th:if="${rowStat.index}==0" class="col-xs-1 control-label">Material</label>
         <input type="hidden" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].id}"/>
-        <div class="col-xs-4" th:classappend="${rowStat.index}>0 ? col-xs-offset-1 : col-xs-offset-0">
+        <div class="col-xs-4">
             <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].code}"
-                   placeholder="Material Code" th:disabled="*{submityn == 'Y'}"/>
+                   th:placeholder="*{submityn != 'Y' ? 'Material Code':''}" th:disabled="*{submityn == 'Y'}"/>
         </div>
         <div class="col-xs-4">
             <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].desc}"
-                   placeholder="Material Description" th:disabled="*{submityn == 'Y'}"/>
+                   th:placeholder="*{submityn != 'Y' ? 'Material Description':''}" th:disabled="*{submityn == 'Y'}"/>
         </div>
-        <div class="col-xs-2">
+        <div class="col-xs-3">
             <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].hsn}"
-                   placeholder="HSN Code" th:disabled="*{submityn == 'Y'}"/>
+                   th:placeholder="*{submityn != 'Y' ? 'HSN Code':''}" th:disabled="*{submityn == 'Y'}"/>
         </div>
         <div class="col-xs-1">
-            <button type="button" th:disabled="*{submityn == 'Y'}" class="btn btn-default" th:classappend="${rowStat.index}==0 ? addButton : removeButton">
-                <i class="fa" th:classappend="${rowStat.index}==0 ? fa-plus : fa-minus"></i></button>
+            <button type="button" th:if="*{submityn != 'Y'}" class="btn btn-default removeButton">
+                <i class="fa fa-minus"></i></button>
         </div>
+
     </div>
 
     <!-- The template for adding new field -->
     <div class="form-group hide" id="materailTemplate">
-        <div class="col-xs-4 col-xs-offset-1">
-            <input type="text" class="form-control" name="code" placeholder="Material Code" />
+        <input type="hidden" class="form-control" name="id" value="999"/>
+        <div class="col-xs-4 ">
+            <input type="text" class="form-control" name="code"
+                   th:placeholder="*{submityn != 'Y' ? 'Material Code':''}"/>
         </div>
         <div class="col-xs-4">
-            <input type="text" class="form-control" name="desc" placeholder="Material Description" />
+            <input type="text" class="form-control" name="desc"
+                   th:placeholder="*{submityn != 'Y' ? 'Material Description':''}"/>
         </div>
-        <div class="col-xs-2">
-            <input type="text" class="form-control" name="hsn" placeholder="HSN Code" />
+        <div class="col-xs-3">
+            <input type="text" class="form-control" name="hsn" th:placeholder="*{submityn != 'Y' ? 'HSN Code':''}"/>
         </div>
         <div class="col-xs-1">
             <button type="button" th:disabled="*{submityn == 'Y'}" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
@@ -68,7 +80,7 @@ var codeValidators = {
             }
         },
         hsnValidators = {
-            row: '.col-xs-2',
+            row: '.col-xs-3',
             validators: {
                 stringLength: {
                         max: 50,
@@ -142,7 +154,8 @@ var codeValidators = {
 
             // Update the name attributes
             $clone
-                .find('[name="code"]').attr('name', 'materialMaster[' + materialIndex + '].code').attr('id', 'materialMaster' + materialIndex + '.code').end()
+                .find('[name="id"]').attr('name', 'materialMaster[' + materialIndex + '].id').end()
+                .find('[name="code"]').attr('name', 'materialMaster[' + materialIndex + '].code').end()
                 .find('[name="desc"]').attr('name', 'materialMaster[' + materialIndex + '].desc').end()
                 .find('[name="hsn"]').attr('name', 'materialMaster[' + materialIndex + '].hsn').end();
 
