@@ -16,11 +16,7 @@ import com.avanzarit.apps.gst.storage.StorageFileNotFoundException;
 import com.avanzarit.apps.gst.storage.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -33,6 +29,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -105,9 +103,12 @@ public class BatchJobController implements BeanFactoryAware {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
+            UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String userName = auth.getUsername();
             storageService.store("upload",file);
             Job job = (Job) beanFactory.getBean("vendorImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+                    .addString("user", userName)
                     .toJobParameters();
             JobExecution execution=jobLauncher.run(job, jobParameters);
             String logInfo=(String)execution.getExecutionContext().get("log");
@@ -132,6 +133,8 @@ public class BatchJobController implements BeanFactoryAware {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
+            UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String userName = auth.getUsername();
             storageService.store("upload",file);
             Job job = (Job) beanFactory.getBean("materialImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())

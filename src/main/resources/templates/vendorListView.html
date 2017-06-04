@@ -9,15 +9,15 @@
     <div th:if="${error != null}" class="alert alert-danger" id="failure-alert">
         <strong>Error!</strong> <span th:text="${error}"/>
     </div>
-    <form id="viewVendorDetailsForm" th:action="@{/reset}" class="form-horizontal" method="post">
+    <form id="viewVendorDetailsForm" th:action="@{/action}" class="form-horizontal" method="post">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Vendor List &nbsp;&nbsp;&nbsp;&nbsp;
-                    <button class="btn btn-primary" id="exportButton" type="submit">Export as CSV</button>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input checked="checked" type="radio" value="1" name="filter"/>Show All</label>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="2" name="filter"/>Submitted</label>
-                    &nbsp;&nbsp;&nbsp;&nbsp; <label class="radio-inline"><input type="radio" value="3" name="filter"/>Saved</label>
-                </h3>
+            <div class="panel-heading">Vendor List&nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-primary" id="exportButton" type="submit">Export as CSV</button>
+
+                &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input checked="checked" type="radio" value="1"
+                                                                           name="filter"/>Show All</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="2" name="filter"/>Submitted</label>
+                &nbsp;&nbsp;&nbsp;&nbsp; <label class="radio-inline"><input type="radio" value="3" name="filter"/>Saved</label>
             </div>
 
             <div class="panel-body">
@@ -25,22 +25,23 @@
                     <table id="dataTable" class="table table-hover table-striped table-bordered">
                         <thead class="thead-inverse">
                         <tr>
-                            <th>Submitted (Y/N)</th>
+                            <th>Status</th>
                             <th>Vendor ID</th>
                             <th>Vendor Name</th>
                             <th>Telephone-Extn</th>
                             <th>Email</th>
                             <th>Address</th>
-                            <th>Bank Account Holder Name</th>
                             <th>GST Number</th>
                             <th>Action</th>
+
 
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="mItem : ${vendors}">
+
                             <td><label type="text"
-                                       th:text="${mItem.submityn}" /></td>
+                                       th:text="${mItem.vendorStatus}"/></td>
                             <td><a th:href="@{'/get/{paramsKey}'(paramsKey=${mItem.vendorId})}"
                                    th:text="${mItem.vendorId}"/></td>
                             <td><label type="text"
@@ -52,16 +53,18 @@
                             <td><label type="text"
                                        th:text="${mItem.address1}" /></td>
                             <td><label type="text"
-                                       th:text="${mItem.accountHolderName}" /></td>
-                            <td><label type="text"
                                        th:text="${mItem.gstNumber}" /></td>
                             <td>
-                                <button th:attr="data-vendorId=${mItem.vendorId}" th:if="*{mItem.submityn == 'Y'}"
-                                        type="submit" class="btn btn-primary resetButton">
-                                    Reset To Edit
-                                </button>
+                                <button type="submit" th:attr="data-vendorId=${mItem.vendorId}" class="approveButton"
+                                        th:if="*{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) != 'APPROVED'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) != 'SYNC'}">
+                                    <i title="Approve" class="fa  fa-thumbs-up"></i></button>
+                                <button type="submit" th:attr="data-vendorId=${mItem.vendorId}" class="rejectButton"
+                                        th:if="*{mItem.submityn == 'Y'}"><i title="Reject"
+                                                                            class="fa  fa-thumbs-down"></i></button>
+                                <button type="submit" th:attr="data-vendorId=${mItem.vendorId}" class="resetButton"
+                                        th:if="*{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) !='APPROVED'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) !='SYNC'}">
+                                    <i title="Revert" class="fa  fa-undo"></i></button>
                             </td>
-
                         </tr>
                         </tbody>
                     </table>
@@ -69,7 +72,9 @@
             </div>
 
         </div>
-        <input type="hidden" name="resetVendorId" id="resetVendorId"/>
+        <input type="hidden" name="vendorId" id="vendorId"/>
+        <input type="hidden" name="action" id="action"/>
+
     </form>
 
 </div>
@@ -81,16 +86,16 @@ $.fn.dataTable.ext.search.push(
     function (settings, data, dataIndex) {
 
         var selected = $('input[name=filter]:checked').val();
-        var age = data[0];
+        var vendorStatus = data[0];
 
         if (selected == '2') {
-            return age == 'Y' ? true : false;
+            return vendorStatus == 'SUBMITTED' ? true : false;
         }
         if (selected == '1') {
             return true;
         }
         if (selected == '3') {
-            return age == 'N' ? true : false;
+            return vendorStatus == 'NEW' ? true : false;
         }
     });
 
@@ -98,7 +103,10 @@ $(document).ready(function () {
 
     $('#dataTable').DataTable({
         "scrollY": 200
-        , "scrollX": true
+        , "scrollX": true,
+        "columnDefs": [
+            {"width": "15%", "targets": 7}
+        ]
     });
 
     $('input:radio[name="filter"]').change(function () {
@@ -115,19 +123,91 @@ $(document).ready(function () {
         $("#failure-alert").slideUp(500);
     });
 
-    $('#viewVendorDetailsForm').on('click', '.resetButton', function () {
+    $('#viewVendorDetailsForm').on('click', '.resetButton', function (e) {
+        $('#viewVendorDetailsForm').attr('action', '/action');
+        e.preventDefault();
         var $row = $(this)
             , index = $row.attr('data-vendorid');
+        $('#vendorId').val(index);
+        $('#action').val("RESET");
+        bootbox.confirm({
+            title: "Reset Vendor Data",
+            message: "Do you really want to Reset Vendor Submitted Data? This will enable vendor to edit there details again.",
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Cancel'
+                },
+                confirm: {
+                    label: '<i class="fa fa-check"></i> Confirm'
+                }
+            },
+            callback: function (result) {
 
-        $('#resetVendorId').val(index);
+                if (result) {
+                    $('#viewVendorDetailsForm').submit();
+                }
 
+            }
+        });
+
+    });
+    $('#viewVendorDetailsForm').on('click', '.approveButton', function (e) {
+        $('#viewVendorDetailsForm').attr('action', '/action');
+        e.preventDefault();
+        var $row = $(this)
+            , index = $row.attr('data-vendorid');
+        $('#vendorId').val(index);
+        $('#action').val("APPROVE");
+        bootbox.confirm({
+            title: "Reset Vendor Data",
+            message: "Do you really want to Approve Vendor Data? This will enable vendor data to be exported and imported into SAP.",
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Cancel'
+                },
+                confirm: {
+                    label: '<i class="fa fa-check"></i> Confirm'
+                }
+            },
+            callback: function (result) {
+
+                if (result) {
+                    $('#viewVendorDetailsForm').submit();
+                }
+
+            }
+        });
+    });
+    $('#viewVendorDetailsForm').on('click', '.rejectButton', function (e) {
+        $('#viewVendorDetailsForm').attr('action', '/action');
+        e.preventDefault();
+        var $row = $(this)
+            , index = $row.attr('data-vendorid');
+        $('#vendorId').val(index);
+        $('#action').val("REJECT");
+        bootbox.confirm({
+            title: "Reset Vendor Data",
+            message: "Do you really want to Reject Vendor Submitted Data? This will enable vendor to edit there details again.",
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Cancel'
+                },
+                confirm: {
+                    label: '<i class="fa fa-check"></i> Confirm'
+                }
+            },
+            callback: function (result) {
+
+                if (result) {
+                    $('#viewVendorDetailsForm').submit();
+                }
+
+            }
+        });
     });
 
     $('#viewVendorDetailsForm').on('click', '#exportButton', function () {
-
         $('#viewVendorDetailsForm').attr('action', '/download');
-
-
     });
 });
     </script>

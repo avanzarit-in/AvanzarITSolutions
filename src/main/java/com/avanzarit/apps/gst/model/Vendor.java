@@ -1,6 +1,7 @@
 package com.avanzarit.apps.gst.model;
 
 import com.avanzarit.apps.gst.Model;
+import com.avanzarit.apps.gst.annotations.CopyOver;
 import com.avanzarit.apps.gst.batch.job.annotations.Export;
 
 import javax.persistence.*;
@@ -78,23 +79,55 @@ public class Vendor implements Model {
     private String submityn="N";
     private List<ContactPersonMaster> contactPersonMaster = new ArrayList<>();
     private List<MaterialMaster> materialMaster = new ArrayList<>();
+    @CopyOver
     private VendorStatusEnum vendorStatus;
+    @CopyOver
+    private String createdBy;
+    @CopyOver
+    private Date createdOn;
+    @CopyOver
     private String modifiedBy;
+    @CopyOver
     private Date lastModifiedOn;
+    @CopyOver
     private String submittedBy;
+    @CopyOver
     private Date lastSubmittedOn;
+
+    @CopyOver
     private String approvedBy;
+    @CopyOver
     private Date lastApprovedOn;
+    @CopyOver
+    private int approveCount;
+    @CopyOver
+    private String approveReason;
+
+    @CopyOver
     private String rejectedBy;
+    @CopyOver
     private Date lastRejectedOn;
-    private String lastRevertedBy;
-    private Date lastRevertedOevertedOn;
-    private int revertCount;
+    @CopyOver
     private String rejectReason;
+    @CopyOver
+    private int rejectCount;
+
+    @CopyOver
+    private String lastRevertedBy;
+    @CopyOver
+    private Date lastRevertedOn;
+    @CopyOver
+    private int revertCount;
+    @CopyOver
     private String revertReason;
+
+    @CopyOver
     private String acceptTermsAndCondition;
+    @CopyOver
     private String tncAcceptBy;
+    @CopyOver
     private Date tncAcceptedOn;
+    @CopyOver
     private Date sapSyncDate;
 
 
@@ -475,7 +508,7 @@ public class Vendor implements Model {
         this.contactPersonMaster = contactPersonMasterList;
     }
 
-
+    @Enumerated(EnumType.STRING)
     @Column(name="vendorstatus")
     public VendorStatusEnum getVendorStatus() {
         return vendorStatus;
@@ -484,6 +517,25 @@ public class Vendor implements Model {
     public void setVendorStatus(VendorStatusEnum vendorStatus) {
         this.vendorStatus = vendorStatus;
     }
+
+    @Column(name = "createdby")
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    @Column(name = "createdon")
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
 
     @Column(name="modifiedby")
     public String getModifiedBy() {
@@ -567,12 +619,12 @@ public class Vendor implements Model {
     }
 
     @Column(name="lastrevertedon")
-    public Date getLastRevertedOevertedOn() {
-        return lastRevertedOevertedOn;
+    public Date getLastRevertedOn() {
+        return lastRevertedOn;
     }
 
-    public void setLastRevertedOevertedOn(Date lastRevertedOevertedOn) {
-        this.lastRevertedOevertedOn = lastRevertedOevertedOn;
+    public void setLastRevertedOn(Date lastRevertedOn) {
+        this.lastRevertedOn = lastRevertedOn;
     }
 
     @Column(name="revertcount")
@@ -636,6 +688,33 @@ public class Vendor implements Model {
 
     public void setSapSyncDate(Date sapSyncDate) {
         this.sapSyncDate = sapSyncDate;
+    }
+
+    @Column(name = "approvecount")
+    public int getApproveCount() {
+        return approveCount;
+    }
+
+    public void setApproveCount(int approveCount) {
+        this.approveCount = approveCount;
+    }
+
+    @Column(name = "approvereason")
+    public String getApproveReason() {
+        return approveReason;
+    }
+
+    public void setApproveReason(String approveReason) {
+        this.approveReason = approveReason;
+    }
+
+    @Column(name = "rejectcount")
+    public int getRejectCount() {
+        return rejectCount;
+    }
+
+    public void setRejectCount(int rejectCount) {
+        this.rejectCount = rejectCount;
     }
 
     @Override

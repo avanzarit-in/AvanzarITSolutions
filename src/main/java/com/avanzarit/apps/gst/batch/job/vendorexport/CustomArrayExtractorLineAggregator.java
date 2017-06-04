@@ -26,7 +26,9 @@ public class CustomArrayExtractorLineAggregator<T> extends ExtractorLineAggregat
             sb.deleteCharAt(sb.length() - 1);
             sb.append("\n");
         }
-        sb.deleteCharAt(sb.length() - 1);
+        if (sb.length() > 1) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
         return sb.toString();
     }
 }

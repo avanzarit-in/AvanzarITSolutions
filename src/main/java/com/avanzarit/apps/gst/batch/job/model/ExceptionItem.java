@@ -1,7 +1,5 @@
 package com.avanzarit.apps.gst.batch.job.model;
 
-import com.avanzarit.apps.gst.Model;
-
 import java.util.Date;
 
 /**
@@ -9,34 +7,12 @@ import java.util.Date;
  */
 
 public class ExceptionItem {
-
+    private int id;
     private ENTITY_TYPE entityType;
-    private Model model;
+    private int rowid;
     private String exceptionReason;
-    private String jobId;
+    private String rejectedFileName;
     private Date jobRunDate;
 
-    public ENTITY_TYPE getEntityType() {
-        return entityType;
-    }
 
-    public void setEntityType(ENTITY_TYPE entityType) {
-        this.entityType = entityType;
-    }
-
-    public Model getModel() {
-        return model;
-    }
-
-    public void setModel(Model model) {
-        this.model = model;
-    }
-
-    public String getExceptionReason() {
-        return exceptionReason;
-    }
-
-    public void setExceptionReason(String exceptionReason) {
-        this.exceptionReason = exceptionReason;
-    }
 }

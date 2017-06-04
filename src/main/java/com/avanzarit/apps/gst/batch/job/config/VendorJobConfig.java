@@ -1,6 +1,7 @@
 package com.avanzarit.apps.gst.batch.job.config;
 
 import com.avanzarit.apps.gst.batch.job.materialimport.*;
+import com.avanzarit.apps.gst.batch.job.policy.SkipPolicy;
 import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
 import com.avanzarit.apps.gst.batch.job.vendorexport.*;
 import com.avanzarit.apps.gst.batch.job.vendorimport.*;
@@ -18,7 +19,6 @@ import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.LineMapper;
-import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.support.CompositeItemWriter;
@@ -139,9 +139,6 @@ public class VendorJobConfig {
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setNames(new String[]{"VENDORID", "CODE", "DESC", "HSN"});
 
-        BeanWrapperFieldSetMapper<MaterialMaster> fieldSetMapper = new BeanWrapperFieldSetMapper<MaterialMaster>();
-        fieldSetMapper.setTargetType(MaterialMaster.class);
-
         lineMapper.setLineTokenizer(lineTokenizer);
         lineMapper.setFieldSetMapper(materialFieldSetMapper);
 
@@ -184,11 +181,9 @@ public class VendorJobConfig {
                 "address4", "address5", "city", "postcode", "region", "country", "accountholdername",
                 "accountnumber", "pan", "vatnumber"});
 
-        BeanWrapperFieldSetMapper<Vendor> fieldSetMapper = new BeanWrapperFieldSetMapper<Vendor>();
-        fieldSetMapper.setTargetType(Vendor.class);
-
         lineMapper.setLineTokenizer(lineTokenizer);
         lineMapper.setFieldSetMapper(vendorFieldSetMapper);
+
 
         return lineMapper;
     }
@@ -203,7 +198,9 @@ public class VendorJobConfig {
 
     public Step importVendorStep(Resource resource) {
         return stepBuilderFactory.get("importVendorStep").<Vendor, Vendor>chunk(1)
+                .faultTolerant().skipPolicy(new SkipPolicy())
                 .reader(importReader(resource)).listener(vendorImportReaderStepListener)
+                .listener(vendorFieldSetMapper)
                 .processor(vendorDataImportProcessor)
                 .writer(vendorDataImportWriter).listener(vendorImportWriterStepListener).build();
     }
@@ -225,7 +222,7 @@ public class VendorJobConfig {
     public JpaPagingItemReader<Vendor> exportReader() {
         JpaPagingItemReader<Vendor> jpaPagingItemReader = new JpaPagingItemReader<>();
         jpaPagingItemReader.setEntityManagerFactory(entityManagerFactory);
-        jpaPagingItemReader.setQueryString("SELECT v FROM Vendor v where v.submityn='Y'");
+        jpaPagingItemReader.setQueryString("SELECT v FROM Vendor v where v.vendorStatus='APPROVED'");
         jpaPagingItemReader.setPageSize(100);
         return jpaPagingItemReader;
     }

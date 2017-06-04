@@ -1,10 +1,15 @@
 package com.avanzarit.apps.gst.batch.job.vendorimport;
 
 import com.avanzarit.apps.gst.model.Vendor;
+import com.avanzarit.apps.gst.model.VendorStatusEnum;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
+
+import java.util.Date;
 
 /**
  * Created by SPADHI on 5/30/2017.
@@ -12,6 +17,7 @@ import org.springframework.validation.BindException;
 @Component
 public class VendorFieldSetMapper implements FieldSetMapper<Vendor> {
 
+    private String user;
 
     /**
      * Method used to map data obtained from a {@link FieldSet} into an object.
@@ -45,6 +51,16 @@ public class VendorFieldSetMapper implements FieldSetMapper<Vendor> {
         result.setAccountHolderName(fieldSet.readString("accountholdername"));
         result.setAccountNumber(fieldSet.readString("accountnumber"));
         result.setVatNumber(fieldSet.readString("vatnumber"));
+        result.setCreatedBy(user);
+        result.setCreatedOn(new Date());
+        result.setVendorStatus(VendorStatusEnum.NEW);
         return result;
     }
+
+    @BeforeStep
+    public void beforeStep(StepExecution stepExecution) {
+        this.user = stepExecution.getJobParameters().getString("user");
+    }
+
+
 }

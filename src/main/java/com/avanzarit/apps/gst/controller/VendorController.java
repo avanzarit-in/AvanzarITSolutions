@@ -1,13 +1,16 @@
 package com.avanzarit.apps.gst.controller;
 
 import com.avanzarit.apps.gst.Layout;
+import com.avanzarit.apps.gst.annotations.CopyOver;
 import com.avanzarit.apps.gst.auth.repository.UserRepository;
 import com.avanzarit.apps.gst.model.ContactPersonMaster;
 import com.avanzarit.apps.gst.model.MaterialMaster;
 import com.avanzarit.apps.gst.model.Vendor;
+import com.avanzarit.apps.gst.model.VendorStatusEnum;
 import com.avanzarit.apps.gst.repository.ContactPersonMasterRepository;
 import com.avanzarit.apps.gst.repository.MaterialMasterRepository;
 import com.avanzarit.apps.gst.repository.VendorRepository;
+import com.avanzarit.apps.gst.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,15 +71,41 @@ class VendorController {
         return "vendorForm";
     }
 
-    @RequestMapping(path = "/reset", method = RequestMethod.POST)
-    public String resetVendorStatus(RedirectAttributes redirectAttributes, @RequestParam("resetVendorId") String vendorId) {
+    @RequestMapping(path = "/action", method = RequestMethod.POST)
+    public String resetVendorStatus(RedirectAttributes redirectAttributes,
+                                    @RequestParam("vendorId") String vendorId,
+                                    @RequestParam("action") String action) {
 
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = auth.getUsername();
         Vendor vendor = vendorRepository.findByVendorId(vendorId);
         if (vendor != null) {
-            vendor.setSubmityn("N");
-            vendorRepository.save(vendor);
-            redirectAttributes.addFlashAttribute("message", "Vendor Data Reset Successful");
+            if (action.equalsIgnoreCase("APPROVE")) {
+                vendor.setSubmityn("Y");
+                vendor.setApprovedBy(userName);
+                vendor.setLastApprovedOn(new Date());
+                vendor.setVendorStatus(VendorStatusEnum.APPROVED);
+                vendorRepository.save(vendor);
+                redirectAttributes.addFlashAttribute("message", "Vendor Data Approved Successfully");
 
+            } else if (action.equalsIgnoreCase("REJECT")) {
+                vendor.setSubmityn("N");
+                vendor.setRejectedBy(userName);
+                vendor.setLastRejectedOn(new Date());
+                vendor.setVendorStatus(VendorStatusEnum.REJECTED);
+                vendorRepository.save(vendor);
+                redirectAttributes.addFlashAttribute("message", "Vendor Data Rejected Successfully");
+
+            } else if (action.equalsIgnoreCase("RESET")) {
+                vendor.setSubmityn("N");
+                vendor.setLastRevertedBy(userName);
+                vendor.setLastRevertedOn(new Date());
+                vendor.setRevertCount(vendor.getRevertCount() + 1);
+                vendor.setRevertReason("Manual Action");
+                vendor.setVendorStatus(VendorStatusEnum.REVERTED);
+                vendorRepository.save(vendor);
+                redirectAttributes.addFlashAttribute("message", "Vendor Data Reset Successfully");
+            }
         } else {
             redirectAttributes.addFlashAttribute("error", "Vendor Data could not be Reset contact support");
         }
@@ -111,6 +142,9 @@ class VendorController {
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public String addAlbum(@ModelAttribute Vendor vendor, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = auth.getUsername();
+
         String email = vendor.getEmail();
         if (email != null && email.indexOf(",") > 0) {
             email = email.substring(0, email.indexOf(","));
@@ -141,7 +175,28 @@ class VendorController {
             contactPersonMasterRepository.save(contactPersonMaster);
         }
 
-        vendor = vendorRepository.save(vendor);
+        if (vendor.getSubmityn().equalsIgnoreCase("Y")) {
+            vendor.setSubmittedBy(userName);
+            vendor.setLastSubmittedOn(new Date());
+        } else {
+            vendor.setModifiedBy(userName);
+            vendor.setLastModifiedOn(new Date());
+        }
+
+        Vendor oldVendor = vendorRepository.findByVendorId(vendor.getVendorId());
+        copyOverProperties(vendor, oldVendor);
+        if (vendor.getSubmityn().equalsIgnoreCase("Y")) {
+            vendor.setSubmittedBy(userName);
+            vendor.setLastSubmittedOn(new Date());
+            vendor.setVendorStatus(VendorStatusEnum.SUBMITTED);
+        } else {
+            vendor.setModifiedBy(userName);
+            vendor.setLastModifiedOn(new Date());
+            vendor.setVendorStatus(VendorStatusEnum.MODIFIED);
+        }
+
+        vendorRepository.save(vendor);
+
 
         List<MaterialMaster> materialList = materialMasterRepository.findByVendor(vendor);
         for (MaterialMaster material : materialList) {
@@ -197,5 +252,18 @@ class VendorController {
         mav.addObject("vendors", vendorRepository.findAll());
         mav.setViewName("vendorListView");
         return mav;
+    }
+
+    private void copyOverProperties(Vendor newVendor, Vendor oldVendor) {
+        List<Field> fields = Utils.findFields(Vendor.class, CopyOver.class);
+        try {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                Object value = field.get(oldVendor);
+                field.set(newVendor, value);
+            }
+        } catch (Exception exception) {
+
+        }
     }
 }

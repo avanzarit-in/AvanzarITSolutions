@@ -5,5 +5,5 @@ package com.avanzarit.apps.gst.model;
  */
 public enum VendorStatusEnum {
 
-    SYSTEMCREATED, MODIFIED, SUBMITTED, APPROVED, REJECTED, REVERTED, SYNC
+    NEW, MODIFIED, SUBMITTED, APPROVED, REJECTED, REVERTED, SYNC
 }
