@@ -3,13 +3,6 @@
 
 <body>
 <div th:fragment="communication" th:object="${vendor}">
-<div class="form-group">
-    <label class="col-xs-2 control-label">Contact Person</label>
-    <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{contactPersonMaster}" th:disabled="*{submityn == 'Y'}"
-               th:placeholder="*{submityn != 'Y' ? 'Contact Person':''}"/>
-    </div>
-</div>
 <div class="form-group required">
     <label class="col-xs-2  control-label">Telephone-Extn</label>
     <div class="col-xs-6">
@@ -195,32 +188,52 @@ $(document).ready(function() {
 
 
      $('#communication-tab').on('keyup', '[name="faxNumber"], [name="faxExtn"]', function(e) {
-            var faxNumber = $('#profileForm').find('[name="faxNumber"]').val(),
-                extension = $('#profileForm').find('[name="faxExtn"]').val();
-            $('#profileForm')
+         var faxNumber = $('#communication-tab').find('[name="faxNumber"]').val(),
+             extension = $('#communication-tab').find('[name="faxExtn"]').val();
+
+         if (extension == "") {
+             $('#communication-tab')
                 // Update the value for hidden field
-                .find('[name="faxNumberExtn"]')
-                    .val(faxNumber+'-'+extension)
+                 .find('[name="faxNumberExtn"]')
+                 .val(faxNumber)
+                 .end()
+                 // Revalidate it
+                 .formValidation('revalidateField', 'faxNumberExtn');
+         } else {
+             $('#communication-tab')
+             // Update the value for hidden field
+                 .find('[name="faxNumberExtn"]')
+                 .val(faxNumber + '-' + extension)
                     .end()
-                // Revalidate it
-                .formValidation('revalidateField', 'faxNumberExtn');
+                    // Revalidate it
+                 .formValidation('revalidateField', 'faxNumberExtn');
+         }
      });
 
      $('#communication-tab').on('keyup', '[name="telephoneNumber"], [name="telephoneExtn"]', function(e) {
-            var telephone = $('#profileForm').find('[name="telephoneNumber"]').val(),
-                extension = $('#profileForm').find('[name="telephoneExtn"]').val();
+         var telephone = $('#communication-tab').find('[name="telephoneNumber"]').val(),
+             extension = $('#communication-tab').find('[name="telephoneExtn"]').val();
 
-            $('#profileForm')
+         if (extension == "") {
+
+             $('#communication-tab')
+             // Update the value for hidden field
+                 .find('[name="telephoneNumberExtn"]')
+                 .val(telephone)
+                 .end()
+                 // Revalidate it
+                 .formValidation('revalidateField', 'telephoneNumberExtn');
+
+         } else {
+             $('#communication-tab')
                 // Update the value for hidden field
-                .find('[name="telephoneNumberExtn"]')
+                 .find('[name="telephoneNumberExtn"]')
                     .val(telephone+'-'+extension)
                     .end()
-                // Revalidate it
-                .formValidation('revalidateField', 'telephoneNumberExtn');
-
-
+                    // Revalidate it
+                 .formValidation('revalidateField', 'telephoneNumberExtn');
+         }
         });
-
 });
 
 </script>

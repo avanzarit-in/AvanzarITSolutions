@@ -25,8 +25,6 @@ public class Vendor implements Model {
     private String vendorName2;
     @Export(order = 4, title = "LFA1#NAME3")
     private String vendorName3;
-
-    private String contactPerson;
     @Export(order = 5, title = "LFA1#TELF1")
     private String telephoneNumberExtn;
     private String telephoneNumber;
@@ -167,15 +165,6 @@ public class Vendor implements Model {
 
     public void setVendorName3(String vendorName3) {
         this.vendorName3 = vendorName3;
-    }
-
-    @Column(name="contactperson")
-    public String getContactPerson() {
-        return contactPerson;
-    }
-
-    public void setContactPerson(String contactPerson) {
-        this.contactPerson = contactPerson;
     }
 
     @Column(name="telephonenumberextn")

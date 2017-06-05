@@ -44,7 +44,6 @@ CREATE TABLE vendor (
  vendorname1 VARCHAR(500),
  vendorname2 VARCHAR(500),
  vendorname3 VARCHAR(500),
- contactperson VARCHAR(500),
  telephonenumberextn VARCHAR(500),
  mobileno VARCHAR(500),
  email VARCHAR(500),

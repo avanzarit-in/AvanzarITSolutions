@@ -6,9 +6,9 @@
 
     <div class="form-group">
         <div class="col-xs-12">
-            <button type="button" th:if="*{submityn != 'Y'}" class="btn btn-default addButton">
-                <i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add Material Information
-            </button>
+            <!--  <button type="button" th:if="*{submityn != 'Y'}" class="btn btn-default addButton">
+                  <i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add Material Information
+              </button> -->
         </div>
 
     </div>
@@ -18,20 +18,20 @@
         <input type="hidden" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].id}"/>
         <div class="col-xs-4">
             <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].code}"
-                   th:placeholder="*{submityn != 'Y' ? 'Material Code':''}" th:disabled="*{submityn == 'Y'}"/>
+                   th:placeholder="*{submityn != 'Y' ? 'Material Code':''}" th:disabled="true"/>
         </div>
         <div class="col-xs-4">
             <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].desc}"
-                   th:placeholder="*{submityn != 'Y' ? 'Material Description':''}" th:disabled="*{submityn == 'Y'}"/>
+                   th:placeholder="*{submityn != 'Y' ? 'Material Description':''}" th:disabled="true"/>
         </div>
         <div class="col-xs-3">
             <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].hsn}"
                    th:placeholder="*{submityn != 'Y' ? 'HSN Code':''}" th:disabled="*{submityn == 'Y'}"/>
         </div>
-        <div class="col-xs-1">
-            <button type="button" th:if="*{submityn != 'Y'}" class="btn btn-default removeButton">
-                <i class="fa fa-minus"></i></button>
-        </div>
+        <!--  <div class="col-xs-1">
+              <button type="button" th:if="*{submityn != 'Y'}" class="btn btn-default removeButton">
+                  <i class="fa fa-minus"></i></button>
+          </div> -->
 
     </div>
 
@@ -49,9 +49,9 @@
         <div class="col-xs-3">
             <input type="text" class="form-control" name="hsn" th:placeholder="*{submityn != 'Y' ? 'HSN Code':''}"/>
         </div>
-        <div class="col-xs-1">
-            <button type="button" th:disabled="*{submityn == 'Y'}" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
-        </div>
+        <!--   <div class="col-xs-1">
+               <button type="button" th:disabled="*{submityn == 'Y'}" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
+           </div> -->
     </div>
 
 </div>

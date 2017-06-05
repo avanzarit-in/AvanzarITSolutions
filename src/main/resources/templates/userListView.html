@@ -17,10 +17,8 @@
                         <th>Email</th>
                         <th>Roles</th>
                         <th>Status</th>
-                        <th>LastLoginDate</th>
+                        <th>UserLastLogin</th>
                         <th>Actions</th>
-
-
                     </tr>
                     </thead>
                     <tbody>
@@ -29,7 +27,6 @@
                                    th:text="${mItem.username}" /></td>
                         <td><label type="text"
                                    th:text="${mItem.email}" /></td>
-
                         <td><label type="text"
                                    th:each="a, iterStat : ${mItem.roles}" th:text="!${iterStat.last} ? ${a.name} + ',': ${a.name}" /></td>
                         <td><label type="text"
@@ -47,8 +44,10 @@
 
 </body>
 <script th:fragment="js">
-$(document).ready(function(){
-   $('#dataTable').DataTable( {
+
+    $(document).ready(function(){
+
+        $('#dataTable').DataTable( {
                 "scrollY": 200
             });
 });

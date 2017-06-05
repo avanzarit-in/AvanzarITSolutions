@@ -128,7 +128,12 @@ $(document).ready(function() {
                                 return true;
                             }
                     }
-                }
+                },
+                   onSuccess: function (e, data) {
+
+                       data.fv.revalidateField('gstNumber');
+
+                   }
             },
             vatNumber:{
                 row: '.col-xs-6',
@@ -164,6 +169,11 @@ $(document).ready(function() {
                         max: 35,
                         message: 'The number should be between 1 and 35'
                     }
+                },
+                onSuccess: function (e, data) {
+
+                    data.fv.revalidateField('gstNumber');
+
                 }
             },
             gstState:{
@@ -172,6 +182,11 @@ $(document).ready(function() {
                     notEmpty: {
                         message: 'The GST State is required'
                     }
+                },
+                onSuccess: function (e, data) {
+
+                    data.fv.revalidateField('gstNumber');
+
                 }
             },
             gstNumber:{
@@ -183,9 +198,9 @@ $(document).ready(function() {
                     callback: {
                             message: 'Invalid GSTN Number',
                             callback: function (value, validator, $field) {
-                                    var state = $('#profileForm').find('[name="state"]').val(),
-                                    pan = $('#profileForm').find('[name="pan"]').val(),
-                                    numberOfGstn=$('#profileForm').find('[name="noOfGstRegistration"]').val();
+                                var state = $('#gstinfo-tab').find('[name="state"]').val(),
+                                    pan = $('#gstinfo-tab').find('[name="pan"]').val(),
+                                    numberOfGstn = $('#gstinfo-tab').find('[name="noOfGstRegistration"]').val();
                                     numberOfGstn=getValue(numberOfGstn);
                                     var gstnNumber=state+pan+numberOfGstn+'Z';
 

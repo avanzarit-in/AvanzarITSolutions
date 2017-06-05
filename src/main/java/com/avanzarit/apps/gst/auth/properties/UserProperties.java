@@ -17,6 +17,7 @@ public class UserProperties {
     private String adminId;
     private String adminEmailId;
     private boolean adminPasswordResetOnStartup;
+    private boolean sendEmailOnCreate;
 
     public String getDefaultPassword() {
         return defaultPassword;
@@ -48,5 +49,13 @@ public class UserProperties {
 
     public void setAdminPasswordResetOnStartup(boolean adminPasswordResetOnStartup) {
         this.adminPasswordResetOnStartup = adminPasswordResetOnStartup;
+    }
+
+    public boolean isSendEmailOnCreate() {
+        return sendEmailOnCreate;
+    }
+
+    public void setSendEmailOnCreate(boolean sendEmailOnCreate) {
+        this.sendEmailOnCreate = sendEmailOnCreate;
     }
 }
