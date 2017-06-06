@@ -25,13 +25,14 @@
             <div class="panel-body">
 
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#info-tab" data-toggle="tab">Basic Details<i class="fa"></i></a></li>
-                    <li><a href="#address-tab" data-toggle="tab">Address Details<i class="fa"></i></a></li>
-                    <li><a href="#communication-tab" data-toggle="tab">Communication Details<i class="fa"></i></a></li>
-                    <li><a href="#contact-tab" data-toggle="tab">Contact Person Details<i class="fa"></i></a></li>
+                    <li class="active"><a href="#info-tab" data-toggle="tab">Basic<i class="fa"></i></a></li>
+                    <li><a href="#address-tab" data-toggle="tab">Address<i class="fa"></i></a></li>
+                    <li><a href="#communication-tab" data-toggle="tab">Communication<i class="fa"></i></a></li>
+                    <li><a href="#contact-tab" data-toggle="tab">Contact Person<i class="fa"></i></a></li>
                     <li><a href="#bankaccount-tab" data-toggle="tab">Bank Details<i class="fa"></i></a></li>
                     <li><a href="#gstinfo-tab" data-toggle="tab">GSTN/Tax Info<i class="fa"></i></a></li>
-                    <li><a href="#material-tab" data-toggle="tab">Material/HSN Details<i class="fa"></i></a></li>
+                    <li><a href="#material-tab" data-toggle="tab">Material/HSN<i class="fa"></i></a></li>
+                    <li><a href="#service-tab" data-toggle="tab">Service/SAC<i class="fa"></i></a></li>
                 </ul>
                 <div class="tab-content">
 
@@ -74,6 +75,12 @@
                     <div class="tab-pane" id="material-tab">
                         <div th:replace="fragments/vendorForm/material :: material">
                             Material Details goes here
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="service-tab">
+                        <div th:replace="fragments/vendorForm/service :: service">
+                            Service SAC Details goes here
                         </div>
                     </div>
 
@@ -129,8 +136,10 @@ $(document).ready(function() {
         var gstTabValid=($('#gstinfo-tab').data('formValidation').validate().isValid());
         var materialTabValid=($('#material-tab').data('formValidation').validate().isValid());
          var contactTabValid = ($('#contact-tab').data('formValidation').validate().isValid());
+         var serviceTabValid = ($('#service-tab').data('formValidation').validate().isValid());
 
-         if (!infoTabValid || !addressTabValid || !communicationTabValid || !bankTabValid || !gstTabValid || !materialTabValid || !contactTabValid) {
+         if (!infoTabValid || !addressTabValid || !communicationTabValid || !bankTabValid
+             || !gstTabValid || !materialTabValid || !contactTabValid || !serviceTabValid) {
         e.preventDefault();
             return false;
          }
@@ -138,9 +147,5 @@ $(document).ready(function() {
     });
 });
   /*]]>*/
-
-
 </script>
-
-
 </html>

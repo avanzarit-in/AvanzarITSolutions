@@ -3,12 +3,10 @@ package com.avanzarit.apps.gst.controller;
 import com.avanzarit.apps.gst.Layout;
 import com.avanzarit.apps.gst.annotations.CopyOver;
 import com.avanzarit.apps.gst.auth.repository.UserRepository;
-import com.avanzarit.apps.gst.model.ContactPersonMaster;
-import com.avanzarit.apps.gst.model.MaterialMaster;
-import com.avanzarit.apps.gst.model.Vendor;
-import com.avanzarit.apps.gst.model.VendorStatusEnum;
+import com.avanzarit.apps.gst.model.*;
 import com.avanzarit.apps.gst.repository.ContactPersonMasterRepository;
 import com.avanzarit.apps.gst.repository.MaterialMasterRepository;
+import com.avanzarit.apps.gst.repository.ServiceSacMasterRepository;
 import com.avanzarit.apps.gst.repository.VendorRepository;
 import com.avanzarit.apps.gst.utils.Utils;
 import org.slf4j.Logger;
@@ -47,6 +45,9 @@ class VendorController {
 
     @Autowired
     private MaterialMasterRepository materialMasterRepository;
+
+    @Autowired
+    private ServiceSacMasterRepository serviceSacMasterRepository;
 
     @Autowired
     private ContactPersonMasterRepository contactPersonMasterRepository;
@@ -155,6 +156,11 @@ class VendorController {
                 .filter(line -> line.getId() != null)
                 .collect(Collectors.toList());
 
+        List<ServiceSacMaster> serviceSacMasters = vendor.getServiceSacMaster();
+        List<ServiceSacMaster> cleanedServiceSaclList = serviceSacMasters.stream()
+                .filter(line -> line.getId() != null)
+                .collect(Collectors.toList());
+
         List<ContactPersonMaster> contactPersonMasters = vendor.getContactPersonMaster();
         List<ContactPersonMaster> cleanedContactPersonMasters = contactPersonMasters.stream()
                 .filter(line -> line.getId() != null)
@@ -166,6 +172,13 @@ class VendorController {
             }
             material.setVendor(vendor);
             materialMasterRepository.save(material);
+        }
+        for (ServiceSacMaster serviceSacMaster : cleanedServiceSaclList) {
+            if (serviceSacMaster.getId().equals(999L)) {
+                serviceSacMaster.setId(null);
+            }
+            serviceSacMaster.setVendor(vendor);
+            serviceSacMasterRepository.save(serviceSacMaster);
         }
         for (ContactPersonMaster contactPersonMaster : cleanedContactPersonMasters) {
             if (contactPersonMaster.getId().equals(999L)) {
@@ -202,6 +215,13 @@ class VendorController {
         for (MaterialMaster material : materialList) {
             if (!cleanedMaterailList.contains(material)) {
                 materialMasterRepository.delete(material);
+            }
+        }
+
+        List<ServiceSacMaster> serviceSacMasterList = serviceSacMasterRepository.findByVendor(vendor);
+        for (ServiceSacMaster serviceSacMaster : serviceSacMasterList) {
+            if (!cleanedServiceSaclList.contains(serviceSacMaster)) {
+                serviceSacMasterRepository.delete(serviceSacMaster);
             }
         }
 

@@ -109,6 +109,13 @@ CREATE TABLE materialmaster(
   hsn         VARCHAR(500)
 );
 
+CREATE TABLE servicesacmaster (
+  id          BIGSERIAL PRIMARY KEY NOT NULL,
+  vendorid    VARCHAR(500),
+  code        VARCHAR(500),
+  description VARCHAR(500)
+);
+
 CREATE TABLE contactpersonmaster(
   id         Bigserial PRIMARY KEY NOT NULL,
   vendorid   VARCHAR(500),

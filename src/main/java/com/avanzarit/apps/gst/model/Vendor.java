@@ -77,6 +77,7 @@ public class Vendor implements Model {
     private String submityn="N";
     private List<ContactPersonMaster> contactPersonMaster = new ArrayList<>();
     private List<MaterialMaster> materialMaster = new ArrayList<>();
+    private List<ServiceSacMaster> serviceSacMaster = new ArrayList<>();
     @CopyOver
     private VendorStatusEnum vendorStatus;
     @CopyOver
@@ -485,6 +486,15 @@ public class Vendor implements Model {
 
     public void setMaterialMaster(List<MaterialMaster> materialMaster) {
         this.materialMaster = materialMaster;
+    }
+
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.REMOVE)
+    public List<ServiceSacMaster> getServiceSacMaster() {
+        return serviceSacMaster;
+    }
+
+    public void setServiceSacMaster(List<ServiceSacMaster> serviceSacMaster) {
+        this.serviceSacMaster = serviceSacMaster;
     }
 
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.REMOVE)

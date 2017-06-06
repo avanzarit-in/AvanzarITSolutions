@@ -127,6 +127,35 @@ public class BatchJobController implements BeanFactoryAware {
         return "redirect:/upload";
     }
 
+    @PostMapping("/contactpersonupload")
+    public String handleContactPersonFileUpload(@RequestParam("file") MultipartFile file,
+                                                RedirectAttributes redirectAttributes) {
+
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        try {
+            UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String userName = auth.getUsername();
+            storageService.store("upload", file);
+            Job job = (Job) beanFactory.getBean("contactPersonImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
+            JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+                    .toJobParameters();
+            JobExecution execution = jobLauncher.run(job, jobParameters);
+            String logInfo = (String) execution.getExecutionContext().get("log");
+            storageService.store("batchlog", "contactpersonuploadbatch.log");
+            Resource logFile = storageService.loadAsResource("batchlog", "contactpersonuploadbatch.log");
+            PrintWriter out = new PrintWriter(logFile.getFile());
+            out.print(logInfo);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        return "redirect:/upload";
+    }
+
     @PostMapping("/materialupload")
     public String handleMaterialFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="service" th:object="${vendor}">
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <button type="button" th:if="*{submityn != 'Y'}" class="btn btn-default addButton">
+                <i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add Service/SAC Information
+            </button>
+        </div>
+
+    </div>
+
+    <div class="form-group" th:each="row,rowStat : *{serviceSacMaster}"
+         th:attr="data-serviceSacMaster-index=${rowStat.index}">
+        <input type="hidden" class="form-control" th:field="*{serviceSacMaster[__${rowStat.index}__].id}"/>
+        <div class="col-xs-5">
+            <input type="text" class="form-control" th:field="*{serviceSacMaster[__${rowStat.index}__].code}"
+                   th:placeholder="*{submityn != 'Y' ? 'SAC Code':''}" th:disabled="*{submityn == 'Y'}"/>
+        </div>
+        <div class="col-xs-5">
+            <input type="text" class="form-control" th:field="*{serviceSacMaster[__${rowStat.index}__].desc}"
+                   th:placeholder="*{submityn != 'Y' ? 'SAC Description':''}" th:disabled="*{submityn == 'Y'}"/>
+        </div>
+        <div class="col-xs-1">
+            <button type="button" th:if="*{submityn != 'Y'}" class="btn btn-default removeButton">
+                <i class="fa fa-minus"></i></button>
+        </div>
+
+    </div>
+
+    <!-- The template for adding new field -->
+    <div class="form-group hide" id="serviceSacTemplate">
+        <input type="hidden" class="form-control" name="id" value="999"/>
+        <div class="col-xs-5">
+            <input type="text" class="form-control" name="code"
+                   th:placeholder="*{submityn != 'Y' ? 'SAC Code':''}"/>
+        </div>
+        <div class="col-xs-5">
+            <input type="text" class="form-control" name="desc"
+                   th:placeholder="*{submityn != 'Y' ? 'SAC Description':''}"/>
+        </div>
+        <div class="col-xs-1">
+            <button type="button" th:disabled="*{submityn == 'Y'}" class="btn btn-default removeButton">
+                <i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<script th:fragment="servicejs" th:inline="javascript">
+
+    $(document).ready(function () {
+
+        var codeValidators = {
+                row: '.col-xs-5',
+                validators: {
+                    stringLength: {
+                        max: 50,
+                        message: 'This field must be less than 50 characters'
+                    }
+                }
+            },
+            descValidators = {
+                row: '.col-xs-5',
+                validators: {
+                    stringLength: {
+                        max: 50,
+                        message: 'This field must be less than 50 characters'
+                    }
+                }
+            },
+                /*<![CDATA[*/
+            serviceSacIndex = [[${#lists.size(vendor.serviceSacMaster)-1}]];
+        /*]]>*/
+
+        $('#service-tab')
+            .formValidation({
+                framework: 'bootstrap',
+                excluded: [':disabled'],
+                icon: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {}
+            }).on('err.field.fv', function (e, data) {
+            // data.element --> The field element
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId = $tabPane.attr('id');
+            $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                .parent()
+                .find('i')
+                .removeClass('fa-check')
+                .addClass('fa-times');
+        }).on('success.field.fv', function (e, data) {
+            // data.fv      --> The FormValidation instance
+            // data.element --> The field element
+
+            var $tabPane = data.element.parents('.tab-pane'),
+                tabId = $tabPane.attr('id'),
+                $icon = $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                    .parent()
+                    .find('i')
+                    .removeClass('fa-check fa-times');
+
+            // Check if all fields in tab are valid
+            var isValidTab = data.fv.isValidContainer($tabPane);
+            if (isValidTab !== null) {
+                $icon.addClass(isValidTab ? '' : 'fa-times');
+            }
+        });
+
+        /*<![CDATA[*/
+        for (index = 0; index <= serviceSacIndex; index++) {
+
+            $('#service-tab').formValidation('addField', 'serviceSacMaster[' + index + '].code', codeValidators);
+            $('#service-tab').formValidation('addField', 'serviceSacMaster[' + index + '].desc', descValidators);
+        }
+        /*]]>*/
+
+        // Add button click handler
+        $('#service-tab').on('click', '.addButton', function () {
+            serviceSacIndex++;
+            var $template = $('#serviceSacTemplate'),
+                $clone = $template
+                    .clone()
+                    .removeClass('hide')
+                    .removeAttr('id')
+                    .attr('data-serviceSacMaster-index', serviceSacIndex)
+                    .insertBefore($template);
+
+            // Update the name attributes
+            $clone
+                .find('[name="id"]').attr('name', 'serviceSacMaster[' + serviceSacIndex + '].id').end()
+                .find('[name="code"]').attr('name', 'serviceSacMaster[' + serviceSacIndex + '].code').end()
+                .find('[name="desc"]').attr('name', 'serviceSacMaster[' + serviceSacIndex + '].desc').end()
+
+            // Add new fields
+            // Note that we also pass the validator rules for new field as the third parameter
+            $('#service-tab')
+                .formValidation('addField', 'serviceSacMaster[' + serviceSacIndex + '].code', codeValidators)
+                .formValidation('addField', 'serviceSacMaster[' + serviceSacIndex + '].desc', descValidators)
+        });
+
+        // Remove button click handler
+        $('#service-tab').on('click', '.removeButton', function () {
+            var $row = $(this).parents('.form-group'),
+                index = $row.attr('data-serviceSacMaster-index');
+
+            // Remove fields
+            $('#service-tab')
+                .formValidation('removeField', $row.find('[name="serviceSacMaster[' + index + '].code"]'))
+                .formValidation('removeField', $row.find('[name="serviceSacMaster[' + index + '].desc"]'));
+
+            // Remove element containing the fields
+            $row.remove();
+        });
+    });
+</script>
+</html>

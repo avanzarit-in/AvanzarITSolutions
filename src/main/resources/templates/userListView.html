@@ -6,10 +6,12 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             User List
+
         </div>
 
         <div class="panel-body">
             <div class="row view-area">
+
                 <table id="dataTable" class="table table-hover table-striped table-bordered">
                     <thead class="thead-inverse">
                     <tr>
@@ -33,7 +35,11 @@
                                    th:text="${mItem.userStatus}" /></td>
                         <td><label type="text"
                                    th:text="${mItem.lastLoginDate}" /></td>
-                        <td></td>
+                        <td>
+                            <button th:if="${#strings.toString(mItem.userStatus) == 'NEW'}" class="btn btn-primary"
+                                    id="reminderButton" type="submit">Send Reminder
+                            </button>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -48,7 +54,7 @@
     $(document).ready(function(){
 
         $('#dataTable').DataTable( {
-                "scrollY": 200
+            "scrollY": 300
             });
 });
     </script>

@@ -1,10 +1,12 @@
 package com.avanzarit.apps.gst.batch.job.config;
 
+import com.avanzarit.apps.gst.batch.job.contactpersonimport.*;
 import com.avanzarit.apps.gst.batch.job.materialimport.*;
 import com.avanzarit.apps.gst.batch.job.policy.SkipPolicy;
 import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
 import com.avanzarit.apps.gst.batch.job.vendorexport.*;
 import com.avanzarit.apps.gst.batch.job.vendorimport.*;
+import com.avanzarit.apps.gst.model.ContactPersonMaster;
 import com.avanzarit.apps.gst.model.MaterialMaster;
 import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.storage.StorageService;
@@ -70,7 +72,6 @@ public class VendorJobConfig {
     @Autowired
     VendorImportWriterStepListener vendorImportWriterStepListener;
 
-
     @Autowired
     MaterialFieldSetMapper materialFieldSetMapper;
 
@@ -89,6 +90,23 @@ public class VendorJobConfig {
     @Autowired
     MaterialImportWriterStepListener materialImportWriterStepListener;
 
+    @Autowired
+    ContactPersonFieldSetMapper contactPersonFieldSetMapper;
+
+    @Autowired
+    ContactPersonDataImportProcessor contactPersonDataImportProcessor;
+
+    @Autowired
+    ContactPersonDataImportWriter contactPersonDataImportWriter;
+
+    @Autowired
+    ContactPersonImportJobListener contactPersonImportJobListener;
+
+    @Autowired
+    ContactPersonImportReaderStepListener contactPersonImportReaderStepListener;
+
+    @Autowired
+    ContactPersonImportWriterStepListener contactPersonImportWriterStepListener;
 
     @Autowired
     VendorExportJobListener vendorExportJobListener;
@@ -123,6 +141,40 @@ public class VendorJobConfig {
     @Autowired
     EntityManagerFactory entityManagerFactory;
 
+    @Bean(name = "contactPersonImportJob")
+    @Scope(scopeName = "prototype")
+    public Job importContactPersonJob(Resource resource) {
+        return jobBuilderFactory.get("importContactPErsonjob").incrementer(new RunIdIncrementer()).listener(contactPersonImportJobListener)
+                .flow(importContactPersonStep(resource)).end().build();
+    }
+
+    public Step importContactPersonStep(Resource resource) {
+        return stepBuilderFactory.get("importContactPersonStep").<ContactPersonMaster, ContactPersonMaster>chunk(1)
+                .reader(contactPersonImportReader(resource)).listener(contactPersonImportReaderStepListener)
+                .processor(contactPersonDataImportProcessor)
+                .writer(contactPersonDataImportWriter).listener(contactPersonImportWriterStepListener).build();
+    }
+
+    public ItemReader<ContactPersonMaster> contactPersonImportReader(Resource resource) {
+        FlatFileItemReader<ContactPersonMaster> reader = new FlatFileItemReader<ContactPersonMaster>();
+        reader.setLinesToSkip(1);
+        reader.setResource(resource);
+        reader.setLineMapper(contactPersonLineMapper());
+        return reader;
+    }
+
+    @Bean
+    public LineMapper<ContactPersonMaster> contactPersonLineMapper() {
+        DefaultLineMapper<ContactPersonMaster> lineMapper = new DefaultLineMapper<ContactPersonMaster>();
+
+        DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
+        lineTokenizer.setNames(new String[]{"VENDORID", "LASTNAME", "FIRSTNAME", "DEPARTMENT", "TELEPHONE", "MOBILE", "EMAIL"});
+
+        lineMapper.setLineTokenizer(lineTokenizer);
+        lineMapper.setFieldSetMapper(contactPersonFieldSetMapper);
+
+        return lineMapper;
+    }
 
     public ItemReader<MaterialMaster> materialImportReader(Resource resource) {
         FlatFileItemReader<MaterialMaster> reader = new FlatFileItemReader<MaterialMaster>();
