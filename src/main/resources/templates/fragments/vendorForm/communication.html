@@ -6,7 +6,8 @@
 <div class="form-group required">
     <label class="col-xs-2  control-label">Telephone-Extn</label>
     <div class="col-xs-6">
-        <div class="input-group">
+
+        <div class="input-group ">
 
             <input type="text" class="form-control" th:field="*{telephoneNumber}" th:disabled="*{submityn == 'Y'}"
                    th:placeholder="*{submityn != 'Y' ? 'TelephoneNo':''}"/>
@@ -14,6 +15,7 @@
             <input type="text" class="form-control" th:field="*{telephoneExtn}" th:disabled="*{submityn == 'Y'}"
                    th:placeholder="*{submityn != 'Y' ? 'Extension':''}"/>
             <input type="hidden" th:field="*{telephoneNumberExtn}"/>
+
 
         </div>
     </div>
@@ -53,7 +55,9 @@
 <script th:fragment="communicationjs">
 
 $(document).ready(function() {
-     $('#communication-tab').formValidation({
+
+
+    $('#communication-tab').formValidation({
         framework: 'bootstrap',
             excluded: [':disabled'],
       icon: {
@@ -96,9 +100,8 @@ $(document).ready(function() {
                     }
             },
             faxNumber:{
-                row: '.col-xs-8',
+                row: '.col-xs-6',
                 validators: {
-
                     phone: {
                        country: 'IN',
                         message: 'The value is not valid %s phone number'

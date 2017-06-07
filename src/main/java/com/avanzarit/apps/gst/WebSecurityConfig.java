@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/vendorListView","/vendorupload").hasAuthority("BUSINESS_OWNER")
                 .antMatchers( "/userListView","/userupload").hasAuthority("ADMIN")
                 .antMatchers("/upload").hasAnyAuthority("ADMIN","BUSINESS_OWNER")
-                .antMatchers("/download", "/changePassword", "/resetPassword", "/images/**", "/css/**", "/js/**", "/vendorDataUploadForm", "/webjars/**")
+                .antMatchers("/download", "/changePassword", "/resetPassword", "/master/**", "/images/**", "/css/**", "/js/**", "/vendorDataUploadForm", "/webjars/**")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()

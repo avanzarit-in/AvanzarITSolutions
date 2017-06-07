@@ -173,4 +173,11 @@ CREATE TABLE customer (
  submityn              VARCHAR(1)
 );
 
+CREATE TABLE hsnmaster (
+  id   BIGSERIAL PRIMARY KEY NOT NULL,
+  code VARCHAR(500)
+);
+
+INSERT INTO hsnmaster VALUES (1000, 'HSN1');
+INSERT INTO hsnmaster VALUES (1001, 'HSN2');
 
