@@ -50,6 +50,30 @@
 
 $(document).ready(function() {
 
+    var items = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('code'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        limit: 10,
+        prefetch: {
+
+            url: 'http://localhost:8080/master/hsn',
+
+            filter: function (list) {
+
+                return $.map(list, function (item) {
+
+                    return {
+                        code: item.code
+
+                    };
+                });
+            }
+        }
+    });
+
+    items.initialize();
+
+
     var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
         'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
         'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
@@ -167,20 +191,16 @@ var codeValidators = {
                             highlight: true,
                             minLength: 1
                         }, {
-                            name: 'states',
-                            displayKey: 'value',
-                            source: substringMatcher(states)
+                            name: 'items',
+                            displayKey: 'code',
+                            source: items.ttAdapter()
                         })
                         .on('typeahead:selected', function (e, suggestion, dataSetName) {
-
-
                             $('#material-tab').formValidation('revalidateField', 'materialMaster[' + index + '].hsn');
                         })
                         .on('typeahead:closed', function (e) {
-
                             $('#material-tab').formValidation('revalidateField', 'materialMaster[' + index + '].hsn');
                         });
-
                     $('#material-tab').formValidation('addField', 'materialMaster[' + index + '].hsn', hsnValidators);
 
                 }
