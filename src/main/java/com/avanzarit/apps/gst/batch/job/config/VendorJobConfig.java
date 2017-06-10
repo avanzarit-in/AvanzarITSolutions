@@ -1,11 +1,37 @@
 package com.avanzarit.apps.gst.batch.job.config;
 
-import com.avanzarit.apps.gst.batch.job.contactpersonimport.*;
-import com.avanzarit.apps.gst.batch.job.materialimport.*;
+import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonDataImportProcessor;
+import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonDataImportWriter;
+import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonFieldSetMapper;
+import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonImportJobListener;
+import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonImportReaderStepListener;
+import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonImportWriterStepListener;
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialDataImportProcessor;
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialDataImportWriter;
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialFieldSetMapper;
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportJobListener;
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportReaderStepListener;
+import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportWriterStepListener;
 import com.avanzarit.apps.gst.batch.job.policy.SkipPolicy;
 import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
-import com.avanzarit.apps.gst.batch.job.vendorexport.*;
-import com.avanzarit.apps.gst.batch.job.vendorimport.*;
+import com.avanzarit.apps.gst.batch.job.vendorexport.ContactPersonDataFieldExtractor;
+import com.avanzarit.apps.gst.batch.job.vendorexport.ContactPersonExportHeaderCallback;
+import com.avanzarit.apps.gst.batch.job.vendorexport.CustomArrayExtractorLineAggregator;
+import com.avanzarit.apps.gst.batch.job.vendorexport.CustomExtractorLineAggregator;
+import com.avanzarit.apps.gst.batch.job.vendorexport.MaterialDataFieldExtractor;
+import com.avanzarit.apps.gst.batch.job.vendorexport.MaterialExportHeaderCallback;
+import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportProcessor;
+import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataFieldExtractor;
+import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportHeaderCallback;
+import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportJobListener;
+import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportReaderStepListener;
+import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportWriterStepListener;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportProcessor;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportWriter;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorFieldSetMapper;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportJobListener;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportReaderStepListener;
+import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportWriterStepListener;
 import com.avanzarit.apps.gst.model.ContactPersonMaster;
 import com.avanzarit.apps.gst.model.MaterialMaster;
 import com.avanzarit.apps.gst.model.Vendor;
@@ -189,7 +215,7 @@ public class VendorJobConfig {
         DefaultLineMapper<MaterialMaster> lineMapper = new DefaultLineMapper<MaterialMaster>();
 
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-        lineTokenizer.setNames(new String[]{"VENDORID", "CODE", "DESC", "HSN"});
+        lineTokenizer.setNames(new String[]{"VENDORID", "CODE", "DESC"});
 
         lineMapper.setLineTokenizer(lineTokenizer);
         lineMapper.setFieldSetMapper(materialFieldSetMapper);

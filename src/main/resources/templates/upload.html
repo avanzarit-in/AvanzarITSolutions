@@ -6,11 +6,13 @@
 
 
     <div class="container" th:fragment="content">
-        <div th:if="${message}">
-            <h2 th:text="${message}"/>
+
+        <div th:if="${message != null}" class="alert alert-success" id="success-alert">
+            <strong>Success!</strong> <span th:text="${message}"/>
         </div>
 
-               <div sec:authorize="hasAuthority('BUSINESS_OWNER')" class="panel panel-default">
+
+        <div sec:authorize="hasAuthority('BUSINESS_OWNER')" class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Vendor Data Upload</h3>
             </div>

@@ -10,16 +10,20 @@
 
     <div class="form-group" th:each="row,rowStat : *{materialMaster}"
          th:attr="data-materialMaster-index=${rowStat.index}">
+
         <input type="hidden" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].id}"/>
         <div class="col-xs-4">
+            <label th:if="${rowStat.index}==0" class="control-label">Material Code</label>
             <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].code}"
                    th:placeholder="*{submityn != 'Y' ? 'Material Code':''}" th:disabled="true"/>
         </div>
         <div class="col-xs-4">
+            <label th:if="${rowStat.index}==0" class="control-label">Material Description</label>
             <input type="text" class="form-control" th:field="*{materialMaster[__${rowStat.index}__].desc}"
                    th:placeholder="*{submityn != 'Y' ? 'Material Description':''}" th:disabled="true"/>
         </div>
         <div class="col-xs-3">
+            <label th:if="${rowStat.index}==0" class="control-label">HSN Number</label>
             <input type="text" class="form-control " th:field="*{materialMaster[__${rowStat.index}__].hsn}"
                    th:placeholder="*{submityn != 'Y' ? 'HSN Code':''}" th:disabled="*{submityn == 'Y'}"/>
         </div>
@@ -48,163 +52,110 @@
 
 <script th:fragment="materialjs"  th:inline="javascript">
 
-$(document).ready(function() {
+$(document).ready(function () {
 
     var items = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('code'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        limit: 10,
-        prefetch: {
-
-            url: 'http://localhost:8080/master/hsn',
-
-            filter: function (list) {
-
-                return $.map(list, function (item) {
-
-                    return {
-                        code: item.code
-
-                    };
-                });
-            }
+        datumTokenizer: function (d) {
+            var test = Bloodhound.tokenizers.whitespace(d.code);
+            $.each(test, function (k, v) {
+                i = 0;
+                while (i < v.length) {
+                    test.push(v.substr(i, v.length));
+                    i++;
+                }
+            })
+            return test;
+        }
+        , queryTokenizer: Bloodhound.tokenizers.whitespace
+        , limit: 10
+        , prefetch: {
+            url: 'http://localhost:8080/master/hsn'
+            , cache: false
         }
     });
 
     items.initialize();
 
-
-    var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-        'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-        'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-        'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-        'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-        'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-        'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-        'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-        'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-    ];
-    var substringMatcher = function (strs) {
-        return function findMatches(q, cb) {
-            var matches, substrRegex;
-            /* an array that will be populated with substring matches */
-            matches = [];
-            /* regex used to determine if a string contains the substring `q` */
-            substrRegex = new RegExp(q, 'i');
-            /**
-             * iterate through the pool of strings and for any string that
-             * contains the substring `q`, add it to the `matches` array
-             */
-            $.each(strs, function (i, str) {
-                if (substrRegex.test(str)) {
-                    /**
-                     * the typeahead jQuery plugin expects suggestions to a
-                     * JavaScript object, refer to typeahead docs for more info
-                     */
-                    matches.push({value: str});
+    var hsnValidators = {
+            row: '.col-xs-3'
+            , validators: {
+                remote: {
+                    url: 'http://localhost:8080/master/hsn/validate'
+                    , type: 'POST'
+                    , data: function (validator, $field, value) {
+                        return {
+                            hsn: value
+                            , _csrf: $('[name="_csrf"]').val()
+                        };
+                    }
                 }
-            });
-            cb(matches);
-        };
-    };
+                , stringLength: {
+                    max: 50
+                    , message: 'This field must be less than 50 characters'
+                }
+                 ,notEmpty: {
+                        message: 'The HSN Code is required'
+                    }
+            }
+        },
 
-var codeValidators = {
-            row: '.col-xs-4',
-            validators: {
-                stringLength: {
-                        max: 50,
-                        message: 'This field must be less than 50 characters'
-                    }
-            }
-        },
-        descValidators = {
-            row: '.col-xs-4',
-            validators: {
-                stringLength: {
-                        max: 50,
-                        message: 'This field must be less than 50 characters'
-                    }
-            }
-        },
-        hsnValidators = {
-            row: '.col-xs-3',
-            validators: {
-                stringLength: {
-                        max: 50,
-                        message: 'This field must be less than 50 characters'
-                    }
-            }
-        },
         /*<![CDATA[*/
-            materialIndex = [[${#lists.size(vendor.materialMaster)-1}]];
-       /*]]>*/
+        materialIndex = [[${#lists.size(vendor.materialMaster) - 1}]];
+    /*]]>*/
 
-         $('#material-tab')
+    $('#material-tab')
         .formValidation({
-            framework: 'bootstrap',
-             excluded: [':disabled'],
-            icon: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
+            framework: 'bootstrap'
+            , excluded: [':disabled']
+            , icon: {
+                valid: 'glyphicon glyphicon-ok'
+                , invalid: 'glyphicon glyphicon-remove'
+                , validating: 'glyphicon glyphicon-refresh'
+            }
+            , fields: {
 
             }
-        }).on('err.field.fv', function(e, data) {
-             // data.element --> The field element
-            var $tabPane = data.element.parents('.tab-pane'),
-                tabId    = $tabPane.attr('id');
+        }).on('err.field.fv', function (e, data) {
+            // data.element --> The field element
+            var $tabPane = data.element.parents('.tab-pane')
+                , tabId = $tabPane.attr('id');
             $('a[href="#' + tabId + '"][data-toggle="tab"]')
                 .parent()
                 .find('i')
-                 .removeClass('fa-check')
+                .removeClass('fa-check')
                 .addClass('fa-times');
-        }).on('success.field.fv', function(e, data) {
+        }).on('success.field.fv', function (e, data) {
             // data.fv      --> The FormValidation instance
             // data.element --> The field element
 
-            var $tabPane = data.element.parents('.tab-pane'),
-                tabId    = $tabPane.attr('id'),
-                $icon    = $('a[href="#' + tabId + '"][data-toggle="tab"]')
-                            .parent()
-                            .find('i')
-                            .removeClass('fa-check fa-times');
-
-            // Check if all fields in tab are valid
-            var isValidTab = data.fv.isValidContainer($tabPane);
-            if (isValidTab !== null) {
-                $icon.addClass(isValidTab ? '' : 'fa-times');
-            }
+            var $tabPane = data.element.parents('.tab-pane')
+                , tabId = $tabPane.attr('id')
+                , $icon = $('a[href="#' + tabId + '"][data-toggle="tab"]')
+                .parent()
+                .find('i')
+                .removeClass('fa-check fa-times');
         });
 
- /*<![CDATA[*/
-                for(index=0; index<=materialIndex; index++){
 
-                $('#material-tab').formValidation('addField', 'materialMaster[' + index + '].code', codeValidators);
-                $('#material-tab').formValidation('addField', 'materialMaster[' + index + '].desc', descValidators);
-
-                    $('#material-tab')
-                        .find('input[name="materialMaster[' + index + '].hsn"]')
-                        .typeahead({
-                            hint: true,
-                            highlight: true,
-                            minLength: 1
-                        }, {
-                            name: 'items',
-                            displayKey: 'code',
-                            source: items.ttAdapter()
-                        })
-                        .on('typeahead:selected', function (e, suggestion, dataSetName) {
-                            $('#material-tab').formValidation('revalidateField', 'materialMaster[' + index + '].hsn');
-                        })
-                        .on('typeahead:closed', function (e) {
-                            $('#material-tab').formValidation('revalidateField', 'materialMaster[' + index + '].hsn');
-                        });
-                    $('#material-tab').formValidation('addField', 'materialMaster[' + index + '].hsn', hsnValidators);
-
-                }
-  /*]]>*/
+    for (index = 0; index <= materialIndex; index++) {
+        $('#material-tab')
+            .find('input[name="materialMaster[' + index + '].hsn"]')
+            .typeahead({
+                hint: true
+                , highlight: true
+                , minLength: 1
+            }, {
+                name: 'items'
+                , displayKey: 'code'
+                , source: items.ttAdapter()
+            }).on('typeahead:close', function(e) {
+                 $('#material-tab').formValidation('revalidateField', $(this).attr('name'), hsnValidators);
+            }).on('typeahead:select', function(e,obj) {
+                 $(this).val(obj.code);
+                 $('#material-tab').formValidation('revalidateField', $(this).attr('name'), hsnValidators);
+            });
+        $('#material-tab').formValidation('addField', 'materialMaster[' + index + '].hsn', hsnValidators);
+    }
 });
 </script>
 </html>

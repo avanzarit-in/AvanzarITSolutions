@@ -10,7 +10,7 @@ import java.util.List;
  * Created by SPADHI on 5/4/2017.
  */
 public interface MaterialMasterRepository extends JpaRepository<MaterialMaster, String> {
-    MaterialMaster findById(String id);
+    MaterialMaster findById(long id);
 
     List<MaterialMaster> findByVendor(Vendor vendor);
 }

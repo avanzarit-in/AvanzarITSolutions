@@ -26,12 +26,12 @@
                         <thead class="thead-inverse">
                         <tr>
                             <th>Status</th>
-                            <th>Vendor ID</th>
-                            <th>Vendor Name</th>
-                            <th>Telephone-Extn</th>
+                            <th>Vendor&nbsp;ID</th>
+                            <th>Vendor&nbsp;Name</th>
+                            <th>Telephone&nbsp;Extn</th>
                             <th>Email</th>
                             <th>Address</th>
-                            <th>GST Number</th>
+                            <th>GST&nbsp;Number</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -101,10 +101,6 @@ $(document).ready(function () {
 
     $('#dataTable').DataTable({
         "scrollY": 200
-        , "scrollX": true,
-        "columnDefs": [
-            {"width": "15%", "targets": 7}
-        ]
     });
 
     $('input:radio[name="filter"]').change(function () {
@@ -144,7 +140,6 @@ $(document).ready(function () {
                 if (result) {
                     $('#viewVendorDetailsForm').submit();
                 }
-
             }
         });
 
@@ -172,7 +167,6 @@ $(document).ready(function () {
                 if (result) {
                     $('#viewVendorDetailsForm').submit();
                 }
-
             }
         });
     });
@@ -199,7 +193,6 @@ $(document).ready(function () {
                 if (result) {
                     $('#viewVendorDetailsForm').submit();
                 }
-
             }
         });
     });

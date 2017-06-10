@@ -17,10 +17,12 @@
          th:attr="data-serviceSacMaster-index=${rowStat.index}">
         <input type="hidden" class="form-control" th:field="*{serviceSacMaster[__${rowStat.index}__].id}"/>
         <div class="col-xs-5">
+            <label th:if="${rowStat.index}==0 and *{submityn == 'Y'}" class="control-label">SAC Code</label>
             <input type="text" class="form-control" th:field="*{serviceSacMaster[__${rowStat.index}__].code}"
                    th:placeholder="*{submityn != 'Y' ? 'SAC Code':''}" th:disabled="*{submityn == 'Y'}"/>
         </div>
         <div class="col-xs-5">
+            <label th:if="${rowStat.index}==0 and *{submityn == 'Y'}" class="control-label">SAC Description</label>
             <input type="text" class="form-control" th:field="*{serviceSacMaster[__${rowStat.index}__].desc}"
                    th:placeholder="*{submityn != 'Y' ? 'SAC Description':''}" th:disabled="*{submityn == 'Y'}"/>
         </div>
@@ -55,12 +57,47 @@
 
     $(document).ready(function () {
 
+     var sacitems = new Bloodhound({
+        datumTokenizer: function (d) {
+            var test = Bloodhound.tokenizers.whitespace(d.code);
+            $.each(test, function (k, v) {
+                i = 0;
+                while (i < v.length) {
+                    test.push(v.substr(i, v.length));
+                    i++;
+                }
+            })
+            return test;
+        }
+        , queryTokenizer: Bloodhound.tokenizers.whitespace
+        , limit: 10
+        , prefetch: {
+            url: 'http://localhost:8080/master/sac'
+            , cache: false
+        }
+    });
+
+    sacitems.initialize();
+
         var codeValidators = {
                 row: '.col-xs-5',
                 validators: {
                     stringLength: {
                         max: 50,
                         message: 'This field must be less than 50 characters'
+                    },
+                    notEmpty: {
+                        message: 'The SAC Code is required'
+                    },
+                    remote: {
+                        url: 'http://localhost:8080/master/sac/validate'
+                        , type: 'POST'
+                        , data: function (validator, $field, value) {
+                            return {
+                                sac: value
+                                , _csrf: $('[name="_csrf"]').val()
+                            };
+                        }
                     }
                 }
             },
@@ -70,6 +107,9 @@
                     stringLength: {
                         max: 50,
                         message: 'This field must be less than 50 characters'
+                    },
+                    notEmpty: {
+                        message: 'The SAC Description is required'
                     }
                 }
             },
@@ -106,17 +146,27 @@
                     .parent()
                     .find('i')
                     .removeClass('fa-check fa-times');
-
-            // Check if all fields in tab are valid
-            var isValidTab = data.fv.isValidContainer($tabPane);
-            if (isValidTab !== null) {
-                $icon.addClass(isValidTab ? '' : 'fa-times');
-            }
         });
 
         /*<![CDATA[*/
         for (index = 0; index <= serviceSacIndex; index++) {
 
+            $('#service-tab')
+            .find('input[name="serviceSacMaster[' + index + '].code"]')
+            .typeahead({
+                hint: true
+                , highlight: true
+                , minLength: 1
+            }, {
+                name: 'sacitems'
+                , displayKey: 'code'
+                , source: sacitems.ttAdapter()
+            }).on('typeahead:close', function(e) {
+                 $('#service-tab').formValidation('revalidateField', $(this).attr('name'), codeValidators);
+            }).on('typeahead:select', function(e,obj) {
+                 $(this).val(obj.code);
+                 $('#service-tab').formValidation('revalidateField', $(this).attr('name'), codeValidators);
+            });
             $('#service-tab').formValidation('addField', 'serviceSacMaster[' + index + '].code', codeValidators);
             $('#service-tab').formValidation('addField', 'serviceSacMaster[' + index + '].desc', descValidators);
         }
@@ -138,6 +188,25 @@
                 .find('[name="id"]').attr('name', 'serviceSacMaster[' + serviceSacIndex + '].id').end()
                 .find('[name="code"]').attr('name', 'serviceSacMaster[' + serviceSacIndex + '].code').end()
                 .find('[name="desc"]').attr('name', 'serviceSacMaster[' + serviceSacIndex + '].desc').end()
+
+
+            $('#service-tab')
+            .find('input[name="serviceSacMaster[' + serviceSacIndex + '].code"]')
+            .typeahead({
+                hint: true
+                , highlight: true
+                , minLength: 1
+            }, {
+                name: 'sacitems'
+                , displayKey: 'code'
+                , source: sacitems.ttAdapter()
+            }).on('typeahead:close', function(e) {
+                 $('#service-tab').formValidation('revalidateField', $(this).attr('name'), codeValidators);
+            }).on('typeahead:select', function(e,obj) {
+                 $(this).val(obj.code);
+                 $('#service-tab').formValidation('revalidateField', $(this).attr('name'), codeValidators);
+            });
+
 
             // Add new fields
             // Note that we also pass the validator rules for new field as the third parameter

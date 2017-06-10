@@ -9,7 +9,7 @@ import java.util.List;
  * Created by SPADHI on 5/4/2017.
  */
 public interface HsnMasterRepository extends JpaRepository<HsnMaster, String> {
-    HsnMaster findById(String id);
+    HsnMaster findByCode(String code);
 
     List<HsnMaster> findAll();
 }

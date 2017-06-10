@@ -1,7 +1,6 @@
 package com.avanzarit.apps.gst.batch.job.materialimport;
 
 import com.avanzarit.apps.gst.model.MaterialMaster;
-import com.avanzarit.apps.gst.model.Vendor;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.stereotype.Component;
@@ -28,7 +27,7 @@ public class MaterialFieldSetMapper implements FieldSetMapper<MaterialMaster> {
         result.setVendorId(fieldSet.readString("VENDORID"));
         result.setCode(fieldSet.readString("CODE"));
         result.setDesc(fieldSet.readString("DESC"));
-        result.setHsn(fieldSet.readString("HSN"));
+        //   result.setHsn(fieldSet.readString("HSN"));
         return result;
     }
 }
