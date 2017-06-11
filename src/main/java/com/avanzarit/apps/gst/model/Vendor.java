@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.avanzarit.apps.gst.model.Attachment.PAN;
+
 /**
  * Created by SPADHI on 5/4/2017.
  */
 @Entity
 @Table(name = "vendor")
 public class Vendor implements Model {
-
 
     @Export(order = 1, title = "LFA1#LIFNR")
     private String vendorId;
@@ -78,6 +79,8 @@ public class Vendor implements Model {
     private List<ContactPersonMaster> contactPersonMaster = new ArrayList<>();
     private List<MaterialMaster> materialMaster = new ArrayList<>();
     private List<ServiceSacMaster> serviceSacMaster = new ArrayList<>();
+    private List<Attachment> attachments = new ArrayList<>();
+    private String documentName;
     @CopyOver
     private VendorStatusEnum vendorStatus;
     @CopyOver
@@ -507,6 +510,15 @@ public class Vendor implements Model {
         this.contactPersonMaster = contactPersonMasterList;
     }
 
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.REMOVE)
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
     @Enumerated(EnumType.STRING)
     @Column(name="vendorstatus")
     public VendorStatusEnum getVendorStatus() {
@@ -723,4 +735,15 @@ public class Vendor implements Model {
                 ", vendorName1='" + vendorName1 + '\'' +
                 '}';
     }
+
+    @Transient
+    public String getDocumentName() {
+        for (Attachment attachment : attachments) {
+            if (attachment.getDocType().equals(PAN)) {
+                return attachment.getDocName();
+            }
+        }
+        return "";
+    }
+
 }

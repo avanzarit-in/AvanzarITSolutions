@@ -60,6 +60,9 @@ class VendorController {
     @Autowired
     StorageService storageService;
 
+    @Autowired
+    AttachmentRepository attachmentRepository;
+
 
     @Layout(value = "layouts/vendorForm")
     @RequestMapping(path = "/get", method = RequestMethod.GET)
@@ -311,24 +314,36 @@ class VendorController {
     @PostMapping("/uploadAttachment")
     @ResponseBody
     public String handleFileUpload(@RequestParam("file_data") MultipartFile file, @RequestParam("docType") String docType,
+                                   @RequestParam("vendorId") String vendorId,
                                    RedirectAttributes redirectAttributes) {
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userName = auth.getUsername();
-        storageService.store("attachment", userName, docType, file);
+        try {
+            if (userName.equals(vendorId)) {
+                storageService.deleteAll("attachment", userName + "/" + docType);
+                storageService.store("attachment", userName + "/" + docType, file);
+                Vendor vendor = vendorRepository.findByVendorId(vendorId);
+                if (vendor != null) {
+                    List<Attachment> attachments = vendor.getAttachments();
+                    for (Attachment attachment : attachments) {
+                        if (attachment.getDocType().equals(docType)) {
+                            attachmentRepository.delete(attachment);
+                        }
+                    }
+                    Attachment attachment = new Attachment();
+                    attachment.setVendor(vendor);
+                    attachment.setDocName(file.getOriginalFilename());
+                    attachment.setDocType(docType);
+                    attachmentRepository.save(attachment);
 
-        return "{ initialPreview: [\n" +
-                "    '<img src='/images/desert.jpg' class='file-preview-image' alt='Desert' title='Desert'>',\n" +
-                "],initialPreviewConfig: [\n" +
-                "    {\n" +
-                "        caption: 'desert.jpg', \n" +
-                "        width: '120px', \n" +
-                "        url: 'http://localhost/avatar/delete', // server delete action \n" +
-                "        key: 100, \n" +
-                "        extra: {id: 100}\n" +
-                "    }\n" +
-                "] }";
-
-
+                }
+            } else {
+                return "{error: Permission Denied }";
+            }
+        } catch (Exception e) {
+            return "{error: " + e.getMessage() + "}";
+        }
+        return "{}";
     }
 
     private void copyOverProperties(Vendor newVendor, Vendor oldVendor) {

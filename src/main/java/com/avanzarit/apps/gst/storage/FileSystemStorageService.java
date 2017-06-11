@@ -9,12 +9,12 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Service
@@ -35,40 +35,32 @@ public class FileSystemStorageService implements StorageService {
         this.attachmentLocation = Paths.get(properties.getAttachmentLocation());
     }
 
-    private Path getPath(String pathPrefix, String type) {
-        try {
-            switch (type) {
-                case "upload":
-                    if (pathPrefix != null) {
-                        return Files.createDirectory(Paths.get(this.uploadLocation + "/" + pathPrefix));
-                    }
-                    return this.uploadLocation;
-                case "export":
-                    if (pathPrefix != null) {
-                        return Files.createDirectory(Paths.get(this.exportLocation + "/" + pathPrefix));
-                    }
-                    return this.exportLocation;
-                case "download":
-                    if (pathPrefix != null) {
-                        return Files.createDirectory(Paths.get(this.downloadLocation + "/" + pathPrefix));
-                    }
-                    return this.downloadLocation;
-                case "batchlog":
-                    if (pathPrefix != null) {
-                        return Files.createDirectory(Paths.get(this.batchLogLocation + "/" + pathPrefix));
-                    }
-                    return this.batchLogLocation;
-                case "attachment":
-                    if (pathPrefix != null) {
-                        return Files.createDirectory(Paths.get(this.attachmentLocation + "/" + pathPrefix));
-                    }
-                    return this.attachmentLocation;
+    private Path getPath(String type) {
+        Path path = null;
 
-            }
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        switch (type) {
+            case "upload":
+                path = this.uploadLocation;
+                break;
+            case "export":
+                path = this.exportLocation;
+                break;
+            case "download":
+                path = this.downloadLocation;
+                break;
+            case "batchlog":
+                path = this.batchLogLocation;
+                break;
+            case "attachment":
+                path = this.attachmentLocation;
+                break;
         }
-        return null;
+        return path;
+    }
+
+    @Override
+    public String store(String type, String path, MultipartFile file) {
+        return store(type, path, null, file);
     }
 
     @Override
@@ -80,11 +72,17 @@ public class FileSystemStorageService implements StorageService {
     public String store(String type, String path, String fileName, MultipartFile file) {
 
         String originalFileName = file.getOriginalFilename();
+
         if (fileName != null) {
-            originalFileName = fileName;
+            originalFileName = fileName + originalFileName.substring(originalFileName.lastIndexOf("."), originalFileName.length());
         }
-        Path location = getPath(path, type);
+        Path location = getPath(type);
+
         try {
+            if (path != null) {
+                location = Paths.get(location + "/" + path);
+                Files.createDirectories(location);
+            }
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + originalFileName);
             }
@@ -107,11 +105,15 @@ public class FileSystemStorageService implements StorageService {
         return store(type, null, fileName);
     }
 
+
     @Override
     public String store(String type, String path, String fileName) throws IOException {
 
-        Path location = getPath(path, type);
+        Path location = getPath(type);
         try {
+            if (path != null) {
+                Files.createDirectories(location);
+            }
             Files.delete(location.resolve(fileName));
             Files.createFile(location.resolve(fileName));
         } catch (IOException exception) {
@@ -140,7 +142,10 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public Path load(String type, String path, String fileName) {
-        Path location = getPath(path, type);
+        Path location = getPath(type);
+        if (path != null) {
+            location = Paths.get(location + "/" + path);
+        }
         return location.resolve(fileName);
     }
 
@@ -150,9 +155,34 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
+    public File loadAsFile(String type, String path) {
+        Path filePath = load(type, path);
+        if (filePath != null) {
+            List<String> files = fileList(filePath);
+            if (files != null && !files.isEmpty()) {
+                filePath = Paths.get(files.get(0));
+            }
+            return new File(filePath.toUri());
+        }
+        return null;
+    }
+
+    public static List<String> fileList(Path directory) {
+        List<String> fileNames = new ArrayList<>();
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
+            for (Path path : directoryStream) {
+                fileNames.add(path.toString());
+            }
+        } catch (IOException ex) {
+        }
+        return fileNames;
+    }
+
+    @Override
     public Resource loadAsResource(String type, String path, String fileName) {
         try {
             Path file = load(type, path, fileName);
+
             if (file != null) {
                 Resource resource = new UrlResource(file.toUri());
                 if (resource.exists() || resource.isReadable()) {
@@ -167,6 +197,13 @@ public class FileSystemStorageService implements StorageService {
         return null;
     }
 
+    @Override
+    public void deleteAll(String type, String path) {
+        Path pathToFolder = getPath(type);
+        pathToFolder = Paths.get(pathToFolder + "/" + path);
+        FileSystemUtils.deleteRecursively(pathToFolder.toFile());
+    }
+
     @PostConstruct
     @Override
     public void init() {
@@ -175,6 +212,7 @@ public class FileSystemStorageService implements StorageService {
             FileSystemUtils.deleteRecursively(exportLocation.toFile());
             FileSystemUtils.deleteRecursively(downloadLocation.toFile());
             FileSystemUtils.deleteRecursively(batchLogLocation.toFile());
+
             Files.createDirectory(uploadLocation);
             Files.createDirectory(exportLocation);
             Files.createDirectory(downloadLocation);

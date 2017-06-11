@@ -41,6 +41,7 @@ DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS contactpersonmaster;
 DROP TABLE IF EXISTS hsnmaster;
 DROP TABLE IF EXISTS sacmaster;
+DROP TABLE IF EXISTS attachment;
 
 
 CREATE TABLE vendor (
@@ -103,6 +104,13 @@ CREATE TABLE vendor (
   tncacceptedon         TIMESTAMP,
   sapsyncdate           TIMESTAMP,
   submityn              VARCHAR(1)
+);
+
+CREATE TABLE attachment(
+  id          Bigserial PRIMARY KEY NOT NULL,
+  vendorid    VARCHAR(500),
+  doctype VARCHAR(50),
+  docname VARCHAR(50)
 );
 
 CREATE TABLE materialmaster(
