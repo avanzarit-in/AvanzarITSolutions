@@ -1,6 +1,5 @@
 package com.avanzarit.apps.gst.batch.job;
 
-import com.avanzarit.apps.gst.batch.job.userimport.UserReaderStepListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.batch.core.StepExecution;
@@ -11,7 +10,7 @@ import org.springframework.batch.core.StepExecution;
  */
 public abstract class ReaderStepListener<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger(UserReaderStepListener.class);
+    private static final Logger LOGGER = LogManager.getLogger(ReaderStepListener.class);
 
     public void onReadError(Exception exception) {
         LOGGER.error(exception.getMessage());

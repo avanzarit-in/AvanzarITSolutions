@@ -1,6 +1,5 @@
 package com.avanzarit.apps.gst.batch.job.vendorimport;
 
-import com.avanzarit.apps.gst.auth.model.User;
 import com.avanzarit.apps.gst.batch.job.ReaderStepListener;
 import com.avanzarit.apps.gst.batch.job.userimport.UserReaderStepListener;
 import com.avanzarit.apps.gst.model.Vendor;
@@ -22,7 +21,6 @@ public class VendorImportReaderStepListener extends ReaderStepListener<Vendor>{
     private static final Logger LOGGER = LogManager.getLogger(UserReaderStepListener.class);
     private StepExecution stepExecution;
 
-
     @OnReadError
     public void onReadError(Exception exception) {
         super.onReadError(exception);
@@ -43,11 +41,8 @@ public class VendorImportReaderStepListener extends ReaderStepListener<Vendor>{
         this.stepExecution = stepExecution;
     }
 
-
     @AfterStep
     public ExitStatus afterStep(StepExecution stepExecution) {
         return ExitStatus.COMPLETED;
     }
-
-
 }

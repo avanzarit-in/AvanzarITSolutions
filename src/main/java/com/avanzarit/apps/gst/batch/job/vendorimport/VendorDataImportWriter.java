@@ -71,18 +71,6 @@ public class VendorDataImportWriter implements ItemWriter<Vendor> {
     public void write(List<? extends Vendor> vendors) throws Exception {
         for (Vendor vendor : vendors) {
 
-       /*     List<MaterialMaster> materialMasterList = new ArrayList<>();
-            MaterialMaster materialMaster = new MaterialMaster();
-            materialMaster.setVendor(vendor);
-            materialMasterList.add(materialMaster);
-
-            List<ContactPersonMaster> contactPersonMasterList = new ArrayList<>();
-            ContactPersonMaster contactPersonMaster = new ContactPersonMaster();
-            contactPersonMaster.setVendor(vendor);
-            contactPersonMasterList.add(contactPersonMaster);
-
-            vendor.setMaterialMaster(materialMasterList);
-            vendor.setContactPersonMaster(contactPersonMasterList);*/
             vendorRepository.save(vendor);
 
             if (userService.findByUsername(vendor.getVendorId()) == null) {

@@ -1,11 +1,14 @@
 package com.avanzarit.apps.gst.batch.job.vendorimport;
 
+import com.avanzarit.apps.gst.batch.job.exception.SkippableReadException;
 import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.model.VendorStatusEnum;
+import com.avanzarit.apps.gst.repository.VendorRepository;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
 
@@ -18,6 +21,8 @@ import java.util.Date;
 public class VendorFieldSetMapper implements FieldSetMapper<Vendor> {
 
     private String user;
+    @Autowired
+    private VendorRepository vendorRepository;
 
     /**
      * Method used to map data obtained from a {@link FieldSet} into an object.
@@ -27,9 +32,13 @@ public class VendorFieldSetMapper implements FieldSetMapper<Vendor> {
      */
     @Override
     public Vendor mapFieldSet(FieldSet fieldSet) throws BindException {
+
+        Vendor savedVendor = vendorRepository.findByVendorId(fieldSet.readString("vendorid"));
+        if (savedVendor != null) {
+            throw new SkippableReadException("Vendor with ID " + savedVendor.getVendorId() + " already exist not uploading again");
+        }
+
         Vendor result = new Vendor();
-
-
         result.setVendorId(fieldSet.readString("vendorid"));
         result.setVendorName1(fieldSet.readString("vendorname1"));
         result.setVendorName2(fieldSet.readString("vendorname2"));
