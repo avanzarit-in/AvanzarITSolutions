@@ -3,17 +3,9 @@ package com.avanzarit.apps.gst.controller;
 import com.avanzarit.apps.gst.Layout;
 import com.avanzarit.apps.gst.annotations.CopyOver;
 import com.avanzarit.apps.gst.auth.repository.UserRepository;
-import com.avanzarit.apps.gst.model.ContactPersonMaster;
-import com.avanzarit.apps.gst.model.MaterialMaster;
-import com.avanzarit.apps.gst.model.ServiceSacMaster;
-import com.avanzarit.apps.gst.model.Vendor;
-import com.avanzarit.apps.gst.model.VendorStatusEnum;
-import com.avanzarit.apps.gst.repository.ContactPersonMasterRepository;
-import com.avanzarit.apps.gst.repository.HsnMasterRepository;
-import com.avanzarit.apps.gst.repository.MaterialMasterRepository;
-import com.avanzarit.apps.gst.repository.SacMasterRepository;
-import com.avanzarit.apps.gst.repository.ServiceSacMasterRepository;
-import com.avanzarit.apps.gst.repository.VendorRepository;
+import com.avanzarit.apps.gst.model.*;
+import com.avanzarit.apps.gst.repository.*;
+import com.avanzarit.apps.gst.storage.StorageService;
 import com.avanzarit.apps.gst.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -68,6 +56,9 @@ class VendorController {
 
     @Autowired
     private ContactPersonMasterRepository contactPersonMasterRepository;
+
+    @Autowired
+    StorageService storageService;
 
 
     @Layout(value = "layouts/vendorForm")
@@ -298,9 +289,8 @@ class VendorController {
     }
 
     @RequestMapping(path = "/master/sac/validate", method = RequestMethod.POST)
-    public
     @ResponseBody
-    String getSacCode(@RequestParam Map<String, String> allRequestParams) {
+    public String getSacCode(@RequestParam Map<String, String> allRequestParams) {
         String sacCode = allRequestParams.get("sac");
         if (sacMasterRepository.findByCode(sacCode) != null) {
             return "{ \"valid\": true }";
@@ -316,6 +306,29 @@ class VendorController {
         mav.addObject("vendors", vendorRepository.findAll());
         mav.setViewName("vendorListView");
         return mav;
+    }
+
+    @PostMapping("/uploadAttachment")
+    @ResponseBody
+    public String handleFileUpload(@RequestParam("file_data") MultipartFile file, @RequestParam("docType") String docType,
+                                   RedirectAttributes redirectAttributes) {
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = auth.getUsername();
+        storageService.store("attachment", userName, docType, file);
+
+        return "{ initialPreview: [\n" +
+                "    '<img src='/images/desert.jpg' class='file-preview-image' alt='Desert' title='Desert'>',\n" +
+                "],initialPreviewConfig: [\n" +
+                "    {\n" +
+                "        caption: 'desert.jpg', \n" +
+                "        width: '120px', \n" +
+                "        url: 'http://localhost/avatar/delete', // server delete action \n" +
+                "        key: 100, \n" +
+                "        extra: {id: 100}\n" +
+                "    }\n" +
+                "] }";
+
+
     }
 
     private void copyOverProperties(Vendor newVendor, Vendor oldVendor) {

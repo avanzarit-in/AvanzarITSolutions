@@ -19,6 +19,7 @@ public class StorageProperties {
     private String downloadLocation;
     private String downloadFileName;
     private String batchjobLogLocation;
+    private String attachmentLocation;
 
     public String getUploadLocation() {
         return uploadLocation;
@@ -62,5 +63,13 @@ public class StorageProperties {
 
     public void setBatchjobLogLocation(String batchjobLogLocation) {
         this.batchjobLogLocation = batchjobLogLocation;
+    }
+
+    public String getAttachmentLocation() {
+        return attachmentLocation;
+    }
+
+    public void setAttachmentLocation(String attachmentLocation) {
+        this.attachmentLocation = attachmentLocation;
     }
 }

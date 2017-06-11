@@ -18,11 +18,19 @@ public interface StorageService {
 
     String store(String type,MultipartFile file);
 
+    String store(String type, String path, String fileName, MultipartFile file);
+
+    String store(String type, String path, String fileName) throws IOException;
+
     String store(String type,String fileName) throws IOException;
 
     Stream<Path> loadAll();
 
+    Path load(String type, String path, String filename);
+
     Path load(String type, String filename);
+
+    Resource loadAsResource(String type, String path, String filename);
 
     Resource loadAsResource(String type, String filename);
 

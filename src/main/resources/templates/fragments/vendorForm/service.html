@@ -55,6 +55,8 @@
 
 <script th:fragment="servicejs" th:inline="javascript">
 
+
+
     $(document).ready(function () {
 
      var sacitems = new Bloodhound({
@@ -70,11 +72,12 @@
             return test;
         }
         , queryTokenizer: Bloodhound.tokenizers.whitespace
-        , limit: 10
+        , limit : 10
         , prefetch: {
             url: 'http://localhost:8080/master/sac'
             , cache: false
         }
+
     });
 
     sacitems.initialize();
@@ -139,7 +142,6 @@
         }).on('success.field.fv', function (e, data) {
             // data.fv      --> The FormValidation instance
             // data.element --> The field element
-
             var $tabPane = data.element.parents('.tab-pane'),
                 tabId = $tabPane.attr('id'),
                 $icon = $('a[href="#' + tabId + '"][data-toggle="tab"]')
@@ -161,9 +163,9 @@
                 name: 'sacitems'
                 , displayKey: 'code'
                 , source: sacitems.ttAdapter()
-            }).on('typeahead:close', function(e) {
+            }).on('typeahead:closed', function(e) {
                  $('#service-tab').formValidation('revalidateField', $(this).attr('name'), codeValidators);
-            }).on('typeahead:select', function(e,obj) {
+            }).on('typeahead:selected', function(e,obj) {
                  $(this).val(obj.code);
                  $('#service-tab').formValidation('revalidateField', $(this).attr('name'), codeValidators);
             });
@@ -200,9 +202,11 @@
                 name: 'sacitems'
                 , displayKey: 'code'
                 , source: sacitems.ttAdapter()
+
             }).on('typeahead:close', function(e) {
                  $('#service-tab').formValidation('revalidateField', $(this).attr('name'), codeValidators);
             }).on('typeahead:select', function(e,obj) {
+            alert('hi');
                  $(this).val(obj.code);
                  $('#service-tab').formValidation('revalidateField', $(this).attr('name'), codeValidators);
             });

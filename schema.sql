@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS appuser;
 DROP TABLE IF EXISTS role;
 DROP TABLE IF EXISTS user_role;
 DROP TABLE IF EXISTS password_reset_token;
+DROP TABLE IF EXIST hsnmaster;
 
 CREATE TABLE role (
   id   BIGSERIAL PRIMARY KEY NOT NULL,
@@ -38,6 +39,9 @@ DROP TABLE IF EXISTS vendor;
 DROP TABLE IF EXISTS materialmaster;
 DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS contactpersonmaster;
+DROP TABLE IF EXISTS hsnmaster;
+DROP TABLE IF EXISTS sacmaster;
+
 
 CREATE TABLE vendor (
   vendorid  VARCHAR(500) PRIMARY KEY NOT NULL,

@@ -94,3 +94,9 @@ div.dataTables_wrapper {
     text-decoration: none;
 }
 
+.tt-suggestions {
+  min-height: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+

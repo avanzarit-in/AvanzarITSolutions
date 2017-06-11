@@ -144,13 +144,14 @@ $(document).ready(function () {
                 hint: true
                 , highlight: true
                 , minLength: 1
+
             }, {
                 name: 'items'
                 , displayKey: 'code'
                 , source: items.ttAdapter()
-            }).on('typeahead:close', function(e) {
+            }).on('typeahead:closed', function(e) {
                  $('#material-tab').formValidation('revalidateField', $(this).attr('name'), hsnValidators);
-            }).on('typeahead:select', function(e,obj) {
+            }).on('typeahead:selected', function(e,obj) {
                  $(this).val(obj.code);
                  $('#material-tab').formValidation('revalidateField', $(this).attr('name'), hsnValidators);
             });

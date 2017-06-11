@@ -24,54 +24,93 @@ public class FileSystemStorageService implements StorageService {
     private final Path exportLocation;
     private final Path downloadLocation;
     private final Path batchLogLocation;
+    private final Path attachmentLocation;
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.uploadLocation = Paths.get(properties.getUploadLocation());
         this.exportLocation = Paths.get(properties.getExportLocation());
         this.downloadLocation = Paths.get(properties.getDownloadLocation());
-        this.batchLogLocation=Paths.get(properties.getBatchjobLogLocation());
-
+        this.batchLogLocation = Paths.get(properties.getBatchjobLogLocation());
+        this.attachmentLocation = Paths.get(properties.getAttachmentLocation());
     }
 
-    private Path getPath(String type){
-        switch(type){
-            case "upload":
-                return this.uploadLocation;
-            case "export":
-                return this.exportLocation;
-            case "download":
-                return this.downloadLocation;
-            case "batchlog":
-                return this.batchLogLocation;
+    private Path getPath(String pathPrefix, String type) {
+        try {
+            switch (type) {
+                case "upload":
+                    if (pathPrefix != null) {
+                        return Files.createDirectory(Paths.get(this.uploadLocation + "/" + pathPrefix));
+                    }
+                    return this.uploadLocation;
+                case "export":
+                    if (pathPrefix != null) {
+                        return Files.createDirectory(Paths.get(this.exportLocation + "/" + pathPrefix));
+                    }
+                    return this.exportLocation;
+                case "download":
+                    if (pathPrefix != null) {
+                        return Files.createDirectory(Paths.get(this.downloadLocation + "/" + pathPrefix));
+                    }
+                    return this.downloadLocation;
+                case "batchlog":
+                    if (pathPrefix != null) {
+                        return Files.createDirectory(Paths.get(this.batchLogLocation + "/" + pathPrefix));
+                    }
+                    return this.batchLogLocation;
+                case "attachment":
+                    if (pathPrefix != null) {
+                        return Files.createDirectory(Paths.get(this.attachmentLocation + "/" + pathPrefix));
+                    }
+                    return this.attachmentLocation;
 
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
         return null;
     }
 
     @Override
-    public String store(String type,MultipartFile file) {
-        Path location=getPath(type);
+    public String store(String type, MultipartFile file) {
+        return store(type, null, null, file);
+    }
+
+    @Override
+    public String store(String type, String path, String fileName, MultipartFile file) {
+
+        String originalFileName = file.getOriginalFilename();
+        if (fileName != null) {
+            originalFileName = fileName;
+        }
+        Path location = getPath(path, type);
         try {
             if (file.isEmpty()) {
-                throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
+                throw new StorageException("Failed to store empty file " + originalFileName);
             }
             try {
-                Files.delete(location.resolve(file.getOriginalFilename()));
+                Files.delete(location.resolve(originalFileName));
+
             } catch (NoSuchFileException exception) {
 
             }
-            Files.copy(file.getInputStream(), location.resolve(file.getOriginalFilename()));
+            Files.copy(file.getInputStream(), location.resolve(originalFileName));
 
         } catch (IOException e) {
-            throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
+            throw new StorageException("Failed to store file " + originalFileName, e);
         }
         return "";
     }
 
     @Override
-    public String store(String type,String fileName) throws IOException {
-        Path location=getPath(type);
+    public String store(String type, String fileName) throws IOException {
+        return store(type, null, fileName);
+    }
+
+    @Override
+    public String store(String type, String path, String fileName) throws IOException {
+
+        Path location = getPath(path, type);
         try {
             Files.delete(location.resolve(fileName));
             Files.createFile(location.resolve(fileName));
@@ -79,7 +118,7 @@ public class FileSystemStorageService implements StorageService {
             Files.createFile(location.resolve(fileName));
         }
 
-        return "";
+        return location.toString() + "/" + fileName;
     }
 
     @Override
@@ -95,26 +134,35 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public Path load(String type, String filename) {
-        Path location=getPath(type);
-        return location.resolve(filename);
+    public Path load(String type, String fileName) {
+        return load(type, null, fileName);
     }
 
+    @Override
+    public Path load(String type, String path, String fileName) {
+        Path location = getPath(path, type);
+        return location.resolve(fileName);
+    }
 
     @Override
-    public Resource loadAsResource(String type, String filename) {
+    public Resource loadAsResource(String type, String fileName) {
+        return loadAsResource(type, null, fileName);
+    }
+
+    @Override
+    public Resource loadAsResource(String type, String path, String fileName) {
         try {
-            Path file = load(type, filename);
+            Path file = load(type, path, fileName);
             if (file != null) {
                 Resource resource = new UrlResource(file.toUri());
                 if (resource.exists() || resource.isReadable()) {
                     return resource;
                 } else {
-                    throw new StorageFileNotFoundException("Could not read file: " + filename);
+                    throw new StorageFileNotFoundException("Could not read file: " + fileName);
                 }
             }
         } catch (MalformedURLException e) {
-            throw new StorageFileNotFoundException("Could not read file: " + filename, e);
+            throw new StorageFileNotFoundException("Could not read file: " + fileName, e);
         }
         return null;
     }
@@ -131,6 +179,11 @@ public class FileSystemStorageService implements StorageService {
             Files.createDirectory(exportLocation);
             Files.createDirectory(downloadLocation);
             Files.createDirectory(batchLogLocation);
+            try {
+                Files.createDirectory(attachmentLocation);
+            } catch (Exception e) {
+
+            }
         } catch (IOException e) {
             throw new StorageException("Could not initialize storage", e);
         }

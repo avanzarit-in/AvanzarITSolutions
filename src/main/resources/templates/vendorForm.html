@@ -113,11 +113,18 @@
 /*<![CDATA[*/
 $(document).ready(function() {
 
+$('#profileForm').on("keyup keypress", function(e) {
+    var code = e.keyCode || e.which;
+    if (code === 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+
     $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
         $("#success-alert").slideUp(500);
     });
     $("#updateButton").click(function(e) {
-
         $("#submitstatus").val("N");
         var vendorIdValid=($('#info-tab').data('formValidation').validateField('vendorId').isValid());
         if(vendorIdValid!=null && !vendorIdValid){

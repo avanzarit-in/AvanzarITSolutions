@@ -2,37 +2,57 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<div  th:fragment="general" th:object="${vendor}">
+<div th:fragment="general" th:object="${vendor}">
 
-<div class="form-group">
-    <label class="col-xs-2 control-label">Vendor ID</label>
-    <div class="col-xs-6">
-        <input type="text" class="form-control" th:field="*{vendorId}" th:disabled="*{submityn == 'Y'}"
-               placeholder="Vendor ID"/>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">Vendor ID</label>
+        <div class="col-xs-6">
+            <input type="text" class="form-control" th:field="*{vendorId}" th:readOnly="true"
+                   placeholder="Vendor ID"/>
+        </div>
     </div>
-</div>
 
-<div class="form-group required">
-    <label class="col-xs-2 control-label">Vendor Name</label>
-    <div class="col-xs-3">
-        <input type="text" class="form-control " th:field="*{vendorName1}"
-               th:placeholder="*{submityn != 'Y' ? 'Name1':''}" th:disabled="*{submityn == 'Y'}"/>
+    <div class="form-group required">
+        <label class="col-xs-2 control-label">Vendor Name</label>
+        <div class="col-xs-3">
+            <input type="text" class="form-control " th:field="*{vendorName1}"
+                   th:placeholder="*{submityn != 'Y' ? 'Name1':''}" th:disabled="*{submityn == 'Y'}"/>
+        </div>
+        <div class="col-xs-3">
+            <input type="text" class="form-control" th:field="*{vendorName2}"
+                   th:placeholder="*{submityn != 'Y' ? 'Name2':''}" th:disabled="*{submityn == 'Y'}"/>
+        </div>
+        <div class="col-xs-3">
+            <input type="text" class="form-control" th:field="*{vendorName3}"
+                   th:placeholder="*{submityn != 'Y' ? 'Name3':''}" th:disabled="*{submityn == 'Y'}"/>
+        </div>
+
     </div>
-    <div class="col-xs-3">
-        <input type="text" class="form-control" th:field="*{vendorName2}"
-               th:placeholder="*{submityn != 'Y' ? 'Name2':''}" th:disabled="*{submityn == 'Y'}"/>
+
+
+    <div class="form-group">
+        <label class="col-xs-2 control-label">Upload Documents</label>
+        <div class="col-xs-6">
+            <input id="input-id" type="file" class="file">
+        </div>
     </div>
-    <div class="col-xs-3">
-        <input type="text" class="form-control" th:field="*{vendorName3}"
-               th:placeholder="*{submityn != 'Y' ? 'Name3':''}" th:disabled="*{submityn == 'Y'}"/>
-    </div>
-</div>
 
 </div>
 </body>
 <script th:fragment="generaljs">
 
+
+$("#input-id").fileinput({"uploadUrl":'http://localhost:8080/uploadAttachment'
+,uploadExtraData: {'_csrf': $('[name="_csrf"]').val(),'docType': 'PAN'}
+, "previewFileType":'any'});
+
+$('#input-id').on('filepreajax', function(event, previewId, index) {
+    console.log('File pre ajax triggered');
+
+});
+
 $(document).ready(function() {
+
      $('#info-tab').formValidation({
         framework: 'bootstrap',
             excluded: [':disabled'],
@@ -111,6 +131,7 @@ $(document).ready(function() {
             }
         });
 });
+
 
 </script>
 </html>

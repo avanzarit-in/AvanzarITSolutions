@@ -70,6 +70,7 @@ public class Application extends WebMvcConfigurerAdapter {
         };
     }
 
+
     @Bean(name = "javaMmailSender")
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
