@@ -131,4 +131,13 @@ public class ContactPersonMaster implements Model {
     public int hashCode() {
         return Objects.hash(id, lastName, firstName, department, mobile, telephone, email);
     }
+
+    @Override
+    public String toString() {
+        return "ContactPersonMaster{" +
+                "id=" + id +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                '}';
+    }
 }

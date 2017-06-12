@@ -8,6 +8,7 @@ import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportProcess
 import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportReader;
 import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportWriter;
 import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
+import com.avanzarit.apps.gst.batch.job.report.BatchLog;
 import com.avanzarit.apps.gst.email.EmailServiceImpl;
 import com.avanzarit.apps.gst.model.Customer;
 import com.avanzarit.apps.gst.repository.CustomerRepository;
@@ -111,11 +112,11 @@ public class BatchJobController implements BeanFactoryAware {
                     .addString("user", userName)
                     .toJobParameters();
             JobExecution execution=jobLauncher.run(job, jobParameters);
-            String logInfo=(String)execution.getExecutionContext().get("log");
+            BatchLog logInfo = (BatchLog) execution.getExecutionContext().get("log");
             storageService.store("batchlog","vendoruploadbatch.log");
             Resource logFile=storageService.loadAsResource("batchlog","vendoruploadbatch.log");
             PrintWriter out = new PrintWriter( logFile.getFile());
-            out.print(logInfo);
+            out.print(logInfo.getLog());
             out.flush();
             out.close();
         } catch (Exception e) {
@@ -140,11 +141,11 @@ public class BatchJobController implements BeanFactoryAware {
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
             JobExecution execution = jobLauncher.run(job, jobParameters);
-            String logInfo = (String) execution.getExecutionContext().get("log");
+            BatchLog logInfo = (BatchLog) execution.getExecutionContext().get("log");
             storageService.store("batchlog", "contactpersonuploadbatch.log");
             Resource logFile = storageService.loadAsResource("batchlog", "contactpersonuploadbatch.log");
             PrintWriter out = new PrintWriter(logFile.getFile());
-            out.print(logInfo);
+            out.print(logInfo.getLog());
             out.flush();
             out.close();
         } catch (Exception e) {
@@ -169,11 +170,11 @@ public class BatchJobController implements BeanFactoryAware {
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
             JobExecution execution=jobLauncher.run(job, jobParameters);
-            String logInfo=(String)execution.getExecutionContext().get("log");
+            BatchLog logInfo = (BatchLog) execution.getExecutionContext().get("log");
             storageService.store("batchlog","materialuploadbatch.log");
             Resource logFile=storageService.loadAsResource("batchlog","materialuploadbatch.log");
             PrintWriter out = new PrintWriter( logFile.getFile());
-            out.print(logInfo);
+            out.print(logInfo.getLog());
             out.flush();
             out.close();
         } catch (Exception e) {
@@ -197,11 +198,11 @@ public class BatchJobController implements BeanFactoryAware {
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
             JobExecution execution=jobLauncher.run(job, jobParameters);
-            String logInfo=(String)execution.getExecutionContext().get("log");
+            BatchLog logInfo = (BatchLog) execution.getExecutionContext().get("log");
             storageService.store("batchlog","useruploadbatch.log");
             Resource logFile=storageService.loadAsResource("batchlog","useruploadbatch.log");
             PrintWriter out = new PrintWriter( logFile.getFile());
-            out.print(logInfo);
+            out.print(logInfo.getLog());
             out.flush();
             out.close();
         } catch (Exception e) {

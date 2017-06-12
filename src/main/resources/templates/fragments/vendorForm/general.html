@@ -34,7 +34,7 @@
         <label class="col-xs-2 control-label">Upload Documents</label>
 
         <div class="col-xs-5">
-            <input id="input-id" type="file" class="file">
+            <input th:disabled="*{submityn == 'Y'}" id="input-id" type="file" class="file">
         </div>
         <div class="col-xs-4" style="margin-top:10px;">
             <a id="attachmentId" th:href="'/downloadAttachment/' + *{vendorId} + '/PAN'" th:text="*{documentName}"></a>

@@ -19,8 +19,6 @@ import org.springframework.stereotype.Component;
 public class ContactPersonImportReaderStepListener extends ReaderStepListener<ContactPersonMaster> {
 
     private static final Logger LOGGER = LogManager.getLogger(ContactPersonImportReaderStepListener.class);
-    private StepExecution stepExecution;
-
 
     @OnReadError
     public void onReadError(Exception exception) {
@@ -32,19 +30,15 @@ public class ContactPersonImportReaderStepListener extends ReaderStepListener<Co
         super.afterReadItem(item);
     }
 
-    @Override
-    public StepExecution getStepExecution() {
-        return this.stepExecution;
-    }
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
-        this.stepExecution = stepExecution;
+        super.beforeStep(stepExecution);
     }
-
 
     @AfterStep
     public ExitStatus afterStep(StepExecution stepExecution) {
+        super.afterStep();
         return ExitStatus.COMPLETED;
     }
 

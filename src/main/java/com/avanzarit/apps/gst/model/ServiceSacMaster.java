@@ -86,12 +86,10 @@ public class ServiceSacMaster implements Model {
 
     @Override
     public String toString() {
-        return "MaterialMaster{" +
-                "vendorId='" + vendorId + '\'' +
-                "code='" + code + '\'' +
+        return "ServiceSacMaster{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
                 ", desc='" + desc + '\'' +
                 '}';
     }
-
-
 }

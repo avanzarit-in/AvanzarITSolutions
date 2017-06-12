@@ -1,8 +1,6 @@
 package com.avanzarit.apps.gst.batch.job.materialimport;
 
-import com.avanzarit.apps.gst.auth.model.User;
 import com.avanzarit.apps.gst.batch.job.ReaderStepListener;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportReaderStepListener;
 import com.avanzarit.apps.gst.model.MaterialMaster;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +19,6 @@ import org.springframework.stereotype.Component;
 public class MaterialImportReaderStepListener extends ReaderStepListener<MaterialMaster>{
 
     private static final Logger LOGGER = LogManager.getLogger(MaterialImportReaderStepListener.class);
-    private StepExecution stepExecution;
-
 
     @OnReadError
     public void onReadError(Exception exception) {
@@ -34,19 +30,15 @@ public class MaterialImportReaderStepListener extends ReaderStepListener<Materia
         super.afterReadItem(item);
     }
 
-    @Override
-    public StepExecution getStepExecution() {
-        return this.stepExecution;
-    }
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
-        this.stepExecution = stepExecution;
+        super.beforeStep(stepExecution);
     }
-
 
     @AfterStep
     public ExitStatus afterStep(StepExecution stepExecution) {
+        super.afterStep();
         return ExitStatus.COMPLETED;
     }
 

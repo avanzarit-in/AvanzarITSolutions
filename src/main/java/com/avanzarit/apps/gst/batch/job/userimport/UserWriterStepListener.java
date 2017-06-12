@@ -1,11 +1,11 @@
 package com.avanzarit.apps.gst.batch.job.userimport;
 
 import com.avanzarit.apps.gst.auth.model.User;
+import com.avanzarit.apps.gst.batch.job.WriterStepListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.AfterRead;
 import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.core.annotation.AfterWrite;
 import org.springframework.batch.core.annotation.BeforeStep;
@@ -18,31 +18,29 @@ import java.util.List;
  * Created by SPADHI on 5/30/2017.
  */
 @Component
-public class UserWriterStepListener {
+public class UserWriterStepListener extends WriterStepListener<User> {
 
-    private static final Logger LOGGER = LogManager.getLogger(UserReaderStepListener.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserWriterStepListener.class);
 
     @OnWriteError
     public void onWriteError(Exception exception, List<User> items) {
-        LOGGER.error( exception.getMessage());
-
+        super.onWriteError(exception, items);
     }
 
     @AfterWrite
-    public void afterWrite(List<? extends User> items) {
-        for(User user:items) {
-            LOGGER.info("Write Item :{}", user.getUsername());
-        }
+    public void afterWrite(List<User> item) {
+        super.afterWriteItem(item);
     }
+
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
-
+        super.beforeStep(stepExecution);
     }
 
     @AfterStep
     public ExitStatus afterStep(StepExecution stepExecution) {
-
+        super.afterStep();
         return ExitStatus.COMPLETED;
     }
 }

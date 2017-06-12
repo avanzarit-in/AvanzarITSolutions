@@ -14,6 +14,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by AVANZAR on 6/1/2017.
@@ -48,8 +50,9 @@ public class FileDownloadController implements BeanFactoryAware {
     @RequestMapping(value = "/downloadAttachment/{vendorId}/{docType}", method = RequestMethod.GET)
     public void downloadAttachment(HttpServletResponse response, @PathVariable String docType, @PathVariable String vendorId) throws IOException {
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userName = auth.getUsername();
-        if (userName.equals(vendorId)) {
+        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
+        String userName = roles.contains("BUSINESS_OWNER") ? vendorId : auth.getUsername();
+        if (roles.contains("BUSINESS_OWNER") || (roles.contains("VENDOR") && auth.getUsername().equals(vendorId))) {
             File file = storageService.loadAsFile("attachment", userName + "/PAN");
             String mimeType = URLConnection.guessContentTypeFromName(file.getName());
             if (mimeType == null) {

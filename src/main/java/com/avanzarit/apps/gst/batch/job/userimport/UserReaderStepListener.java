@@ -8,7 +8,6 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterRead;
 import org.springframework.batch.core.annotation.AfterStep;
-import org.springframework.batch.core.annotation.BeforeRead;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.annotation.OnReadError;
 import org.springframework.stereotype.Component;
@@ -20,8 +19,6 @@ import org.springframework.stereotype.Component;
 public class UserReaderStepListener extends ReaderStepListener<User> {
 
     private static final Logger LOGGER = LogManager.getLogger(UserReaderStepListener.class);
-    private StepExecution stepExecution;
-
 
     @OnReadError
     public void onReadError(Exception exception) {
@@ -33,19 +30,15 @@ public class UserReaderStepListener extends ReaderStepListener<User> {
         super.afterReadItem(item);
     }
 
-    @Override
-    public StepExecution getStepExecution() {
-        return this.stepExecution;
-    }
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
-        this.stepExecution = stepExecution;
+        super.beforeStep(stepExecution);
     }
-
 
     @AfterStep
     public ExitStatus afterStep(StepExecution stepExecution) {
+        super.afterStep();
         return ExitStatus.COMPLETED;
     }
 
