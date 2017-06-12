@@ -7,6 +7,7 @@ import com.avanzarit.apps.gst.model.VendorStatusEnum;
 import com.avanzarit.apps.gst.repository.VendorRepository;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
+import org.springframework.batch.item.ItemCountAware;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,13 @@ import java.util.Date;
  * Created by SPADHI on 5/30/2017.
  */
 @Component
-public class VendorFieldSetMapper implements FieldSetMapper<Vendor> {
+public class VendorFieldSetMapper implements FieldSetMapper<Vendor>, ItemCountAware {
 
     private String user;
     @Autowired
     private VendorRepository vendorRepository;
     private BatchLog logger;
+    private int itemCount;
 
     /**
      * Method used to map data obtained from a {@link FieldSet} into an object.
@@ -85,4 +87,8 @@ public class VendorFieldSetMapper implements FieldSetMapper<Vendor> {
     }
 
 
+    @Override
+    public void setItemCount(int i) {
+        this.itemCount = i;
+    }
 }

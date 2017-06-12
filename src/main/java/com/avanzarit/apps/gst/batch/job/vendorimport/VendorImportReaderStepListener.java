@@ -6,10 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.AfterRead;
-import org.springframework.batch.core.annotation.AfterStep;
-import org.springframework.batch.core.annotation.BeforeStep;
-import org.springframework.batch.core.annotation.OnReadError;
+import org.springframework.batch.core.annotation.*;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,6 +26,10 @@ public class VendorImportReaderStepListener extends ReaderStepListener<Vendor> {
         super.afterReadItem(item);
     }
 
+    @BeforeRead
+    public void beforeRead() {
+        super.beforeRead();
+    }
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {

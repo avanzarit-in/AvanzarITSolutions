@@ -19,6 +19,9 @@ public abstract class ReaderStepListener<T> {
         batchLog.log(exception.getCause().getMessage());
     }
 
+    public void beforeRead() {
+        batchLog.log("----------------------------");
+    }
 
     public void afterReadItem(T item) {
         LOGGER.info("Read Item :{}", item.toString());

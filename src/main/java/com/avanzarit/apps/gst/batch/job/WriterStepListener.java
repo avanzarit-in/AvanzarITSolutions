@@ -35,8 +35,11 @@ public abstract class WriterStepListener<T> {
 
     public void beforeStep(StepExecution stepExecution) {
         this.stepExecution = stepExecution;
-        this.batchLog = new BatchLog();
-        stepExecution.getJobExecution().getExecutionContext().put("log", batchLog);
+        this.batchLog = (BatchLog) stepExecution.getJobExecution().getExecutionContext().get("log");
+        if (this.batchLog == null) {
+            this.batchLog = new BatchLog();
+        }
+        stepExecution.getJobExecution().getExecutionContext().put("log", this.batchLog);
     }
 
     public void afterStep() {
