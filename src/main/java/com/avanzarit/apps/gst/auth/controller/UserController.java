@@ -9,7 +9,6 @@ import com.avanzarit.apps.gst.auth.service.UserService;
 import com.avanzarit.apps.gst.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,14 +26,10 @@ import javax.servlet.http.HttpSession;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Created by SPADHI on 5/4/2017.
- */
 @Controller
 public class UserController {
     @Autowired
@@ -47,6 +42,8 @@ public class UserController {
     private EmailService emailService;
     @Autowired
     SimpleMailMessage resetTokenMessage;
+    @Autowired
+    SimpleMailMessage loginReminderMessage;
 
 
     @Layout(value = "layouts/blank")
@@ -68,14 +65,13 @@ public class UserController {
         Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
         if (roles.contains("ADMIN")) {
             return "redirect:/adminLanding";
-        } else if(roles.contains("BUSINESS_OWNER")){
+        } else if (roles.contains("BUSINESS_OWNER")) {
             return "redirect:/businessOwnerLanding";
-        }else if(roles.contains("VENDOR")){
+        } else if (roles.contains("VENDOR")) {
             return "redirect:/get";
         }
         return "/404";
     }
-
 
 
     @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.GET)
@@ -151,6 +147,24 @@ public class UserController {
         redirectAttributes.addFlashAttribute("message", "We have sent you a mail on your registered E-mail ID with a link to reset your password");
         emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Reset Password", resetTokenMessage, contextPath, user.getUsername(), token);
         return "redirect:/login";
+    }
+
+    @RequestMapping(value = "/useraction", method = RequestMethod.POST)
+    public String sendReminderEmail(HttpServletRequest request, RedirectAttributes redirectAttributes,
+                                    @RequestParam("email") String userEmail,
+                                    @RequestParam("action") String action) throws MalformedURLException {
+        String contextPath = getContextPath(request);
+        User user = userService.findByEmail(userEmail);
+        if (user != null && action.equals("SEND_REMINDER_EMAIL")) {
+
+            redirectAttributes.addFlashAttribute("message", "Successfully sent a Login reminder mail to the vendor's registered E-mail ID");
+            emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Action Required: Please login into the Vendor Management " +
+                    "Portal and update your registration details at the earliest", loginReminderMessage, contextPath);
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Failed to trigger reminder Email");
+        }
+
+        return "redirect:/userListView";
     }
 
     // for 403 access denied page

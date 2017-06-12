@@ -61,11 +61,10 @@ public class Application extends WebMvcConfigurerAdapter {
 
         return new EmbeddedServletContainerCustomizer() {
             @Override
-            public void customize(ConfigurableEmbeddedServletContainer container)
-            {
+            public void customize(ConfigurableEmbeddedServletContainer container) {
                 ErrorPage error404Page = new ErrorPage(HttpStatus.NOT_FOUND, "/404");
                 ErrorPage error500Page = new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/500");
-                container.addErrorPages(error404Page,error500Page);
+                container.addErrorPages(error404Page, error500Page);
             }
         };
     }
@@ -95,10 +94,10 @@ public class Application extends WebMvcConfigurerAdapter {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setText(
                 "Please visit %s and activate your Registration:\n\n"
-        +"Initial UserId and Password to log into the portal are:\n\n"
-        +"User ID : %s\n"
-        +"Initial Login Password : %s"
-        +"\n\n\n Please note: On successfull login to activate your registration " +
+                        + "Initial UserId and Password to log into the portal are:\n\n"
+                        + "User ID : %s\n"
+                        + "Initial Login Password : %s"
+                        + "\n\n\n Please note: On successfull login to activate your registration " +
                         "you will have to change your password and login again");
         return message;
     }
@@ -107,6 +106,14 @@ public class Application extends WebMvcConfigurerAdapter {
     public SimpleMailMessage constructResetTokenEmailMessage() {
         SimpleMailMessage emailMessage = new SimpleMailMessage();
         emailMessage.setText("Please click the Link below to reset password" + "\n\n" + "%s" + "/changePassword?id=" + "%s" + "&token=" + "%s");
+        return emailMessage;
+    }
+
+    @Bean(name = "loginReminderMessage")
+    public SimpleMailMessage constructLoginReminderEmailMessage() {
+        SimpleMailMessage emailMessage = new SimpleMailMessage();
+        emailMessage.setText("It has been long since you have first logged in into the vendor management portal" + "\n\n" + "Please visit the Vendor Management portal " +
+                "at %s and complete your vendor registration information at the earliest");
         return emailMessage;
     }
 }

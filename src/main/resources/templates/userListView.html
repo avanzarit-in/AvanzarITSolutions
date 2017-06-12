@@ -3,49 +3,61 @@
 
 <body>
 <div class="container"  th:fragment="content">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            User List
+    <div th:if="${message != null}" class="alert alert-success" id="success-alert">
+        <strong>Success!</strong> <span th:text="${message}"/>
+    </div>
+    <div th:if="${error != null}" class="alert alert-danger" id="failure-alert">
+        <strong>Error!</strong> <span th:text="${error}"/>
+    </div>
+    <form id="viewUserDetailsForm" th:action="@{/useraction}" class="form-horizontal" method="post">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                User List
+            </div>
 
-        </div>
+            <div class="panel-body">
+                <div class="row view-area">
 
-        <div class="panel-body">
-            <div class="row view-area">
-
-                <table id="dataTable" class="table table-hover table-striped table-bordered">
-                    <thead class="thead-inverse">
-                    <tr>
-                        <th>UserID</th>
-                        <th>Email</th>
-                        <th>Roles</th>
-                        <th>Status</th>
-                        <th>UserLastLogin</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="mItem : ${users}">
-                        <td><label type="text"
-                                   th:text="${mItem.username}" /></td>
-                        <td><label type="text"
-                                   th:text="${mItem.email}" /></td>
-                        <td><label type="text"
-                                   th:each="a, iterStat : ${mItem.roles}" th:text="!${iterStat.last} ? ${a.name} + ',': ${a.name}" /></td>
-                        <td><label type="text"
-                                   th:text="${mItem.userStatus}" /></td>
-                        <td><label type="text"
-                                   th:text="${mItem.lastLoginDate}" /></td>
-                        <td>
-                            <button th:if="${#strings.toString(mItem.userStatus) == 'NEW'}" class="btn btn-primary"
-                                    id="reminderButton" type="submit">Send Reminder
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                    <table id="dataTable" class="table table-hover table-striped table-bordered">
+                        <thead class="thead-inverse">
+                        <tr>
+                            <th>UserID</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                            <th>Status</th>
+                            <th>UserLastLogin</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="mItem : ${users}">
+                            <td><label type="text"
+                                       th:text="${mItem.username}" /></td>
+                            <td><label type="text"
+                                       th:text="${mItem.email}" /></td>
+                            <td><label type="text"
+                                       th:each="a, iterStat : ${mItem.roles}" th:text="!${iterStat.last} ? ${a.name} + ',': ${a.name}" /></td>
+                            <td><label type="text"
+                                       th:text="${mItem.userStatus}" /></td>
+                            <td><label type="text"
+                                       th:text="${mItem.lastLoginDate}" /></td>
+                            <td>
+                                <button th:attr="data-email=${mItem.email}"
+                                        th:if="${#strings.toString(mItem.userStatus) == 'NEW'}"
+                                        class="btn btn-primary reminderButton"
+                                        id="reminderButton" type="submit">Send Reminder
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+
+        <input type="hidden" name="email" id="email"/>
+        <input type="hidden" name="action" id="action"/>
+    </form>
 </div>
 
 </body>
@@ -53,10 +65,49 @@
 
     $(document).ready(function(){
 
+ $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#success-alert").slideUp(500);
+    });
+
+     $("#failure-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#failure-alert").slideUp(500);
+    });
+
         $('#dataTable').DataTable( {
             "scrollY": 300
              ,"scrollCollapse": true
             });
+
+        $('#viewUserDetailsForm').on('click', '.reminderButton', function (e) {
+        e.preventDefault();
+        var $row = $(this)
+            , email = $row.attr('data-email');
+            if (typeof email == 'undefined'){
+                bootbox.alert("Can not proceed with the action as User does not have a Email ID configured!");
+                return;
+            }
+        $('#email').val(email);
+        $('#action').val("SEND_REMINDER_EMAIL");
+
+        bootbox.confirm({
+            title: "Send Reminder E-mail",
+            message: "This action will send out a Login reminder E-mail to the user.",
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Cancel'
+                },
+                confirm: {
+                    label: '<i class="fa fa-check"></i> Confirm'
+                }
+            },
+            callback: function (result) {
+
+                if (result) {
+                    $('#viewUserDetailsForm').submit();
+                }
+            }
+        });
+    });
 });
     </script>
 </html>
