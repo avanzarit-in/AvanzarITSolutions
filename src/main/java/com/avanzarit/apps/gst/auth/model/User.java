@@ -14,9 +14,6 @@ import javax.persistence.Table;
 import java.util.Date;
 import java.util.Set;
 
-/**
- * Created by SPADHI on 5/4/2017.
- */
 @Entity
 @Table(name = "appuser")
 public class User implements Model {

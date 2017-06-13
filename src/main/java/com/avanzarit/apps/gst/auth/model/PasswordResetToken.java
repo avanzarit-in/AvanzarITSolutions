@@ -15,9 +15,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-/**
- * Created by AVANZAR on 5/25/2017.
- */
 @Entity
 @Table(name = "password_reset_token")
 public class PasswordResetToken implements Model {

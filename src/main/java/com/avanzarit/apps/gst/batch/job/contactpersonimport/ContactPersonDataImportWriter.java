@@ -31,13 +31,8 @@ public class ContactPersonDataImportWriter implements ItemWriter<ContactPersonMa
     public void write(List<? extends ContactPersonMaster> contactPersonMasters) throws Exception {
         for (ContactPersonMaster contactPersonMaster : contactPersonMasters) {
             Vendor vendor = vendorRepository.findByVendorId(contactPersonMaster.getVendorId());
-            if (vendor != null) {
-                List<ContactPersonMaster> contactPersonMastersList = vendor.getContactPersonMaster();
-                if (!contactPersonMastersList.contains(contactPersonMaster)) {
-                    contactPersonMaster.setVendor(vendor);
-                    contactPersonMasterRepository.save(contactPersonMaster);
-                }
-            }
+            contactPersonMaster.setVendor(vendor);
+            contactPersonMasterRepository.save(contactPersonMaster);
         }
     }
 }

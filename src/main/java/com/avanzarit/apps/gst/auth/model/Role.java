@@ -10,9 +10,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.Set;
 
-/**
- * Created by SPADHI on 5/4/2017.
- */
 @Entity
 @Table(name = "role")
 public class Role implements Model {

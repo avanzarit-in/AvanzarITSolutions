@@ -16,9 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-/**
- * Created by SPADHI on 5/4/2017.
- */
 @Configuration
 @EnableWebSecurity
 @PropertySource(value = "classpath:application.properties")

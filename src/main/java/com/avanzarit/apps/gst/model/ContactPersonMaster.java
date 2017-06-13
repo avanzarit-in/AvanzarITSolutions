@@ -3,7 +3,15 @@ package com.avanzarit.apps.gst.model;
 import com.avanzarit.apps.gst.Model;
 import com.avanzarit.apps.gst.batch.job.annotations.Export;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Objects;
 
 /**
@@ -118,8 +126,7 @@ public class ContactPersonMaster implements Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ContactPersonMaster that = (ContactPersonMaster) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(lastName, that.lastName) &&
+        return Objects.equals(lastName, that.lastName) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(department, that.department) &&
                 Objects.equals(mobile, that.mobile) &&

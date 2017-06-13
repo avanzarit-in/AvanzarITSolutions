@@ -1,24 +1,18 @@
 package com.avanzarit.apps.gst.auth.filter;
 
 import com.avanzarit.apps.gst.auth.handler.CustomAuthenticationSuccessHandler;
-import com.avanzarit.apps.gst.auth.service.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Created by SPADHI on 5/25/2017.
- */
 @Component
 public class CaptchaValidationFilter extends UsernamePasswordAuthenticationFilter implements InitializingBean {
 

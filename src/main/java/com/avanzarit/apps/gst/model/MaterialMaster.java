@@ -3,12 +3,17 @@ package com.avanzarit.apps.gst.model;
 import com.avanzarit.apps.gst.Model;
 import com.avanzarit.apps.gst.batch.job.annotations.Export;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Objects;
 
-/**
- * Created by SPADHI on 5/18/2017.
- */
 @Entity
 @Table(name = "materialmaster")
 public class MaterialMaster implements Model {
@@ -76,8 +81,7 @@ public class MaterialMaster implements Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MaterialMaster that = (MaterialMaster) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(code, that.code) &&
+        return Objects.equals(code, that.code) &&
                 Objects.equals(desc, that.desc) &&
                 Objects.equals(hsn, that.hsn);
     }

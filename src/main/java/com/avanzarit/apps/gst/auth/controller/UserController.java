@@ -41,9 +41,9 @@ public class UserController {
     @Autowired
     private EmailService emailService;
     @Autowired
-    SimpleMailMessage resetTokenMessage;
+    private SimpleMailMessage resetTokenMessage;
     @Autowired
-    SimpleMailMessage loginReminderMessage;
+    private SimpleMailMessage loginReminderMessage;
 
 
     @Layout(value = "layouts/blank")
