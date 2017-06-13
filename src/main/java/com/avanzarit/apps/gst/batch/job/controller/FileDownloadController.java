@@ -137,10 +137,12 @@ public class FileDownloadController implements BeanFactoryAware {
             storageService.store("export",batchProperties.getVendorExportFileName());
             storageService.store("export",batchProperties.getVendorMaterialExportFileName());
             storageService.store("export",batchProperties.getVendorContactPersonExportFileName());
+            storageService.store("export", batchProperties.getServiceSacExportFileNmae());
             Map<String, String> resourceMap = new HashMap<>();
             resourceMap.put("VENDOR", batchProperties.getVendorExportFileName());
             resourceMap.put("MATERIAL", batchProperties.getVendorMaterialExportFileName());
             resourceMap.put("CONTACTPERSON", batchProperties.getVendorContactPersonExportFileName());
+            resourceMap.put("SAC", batchProperties.getServiceSacExportFileNmae());
             Job job = (Job) beanFactory.getBean("vendorExportJob", resourceMap);
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();

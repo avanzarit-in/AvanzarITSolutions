@@ -195,7 +195,11 @@ public class Vendor implements Model {
     }
 
     public void setEmail(String email) {
+        if (email != null && email.contains(",")) {
+            this.email = email.substring(0, email.lastIndexOf(',') - 1);
+        }
         this.email = email;
+
     }
 
     @Column(name="faxnumberextn")

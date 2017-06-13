@@ -182,11 +182,7 @@ $(document).ready(function() {
                             .find('i')
                             .removeClass('fa-check fa-times');
 
-            // Check if all fields in tab are valid
-            var isValidTab = data.fv.isValidContainer($tabPane);
-            if (isValidTab !== null) {
-                $icon.addClass(isValidTab ? '' : 'fa-times');
-            }
+
         });
 
 

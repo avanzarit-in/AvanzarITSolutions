@@ -17,6 +17,7 @@ public class BatchProperties {
     private String vendorMaterialExportFileName;
     private String vendorContactPersonExportFileName;
     private String vendorMaterialImportFileName;
+    private String serviceSacExportFileNmae;
 
 
     public String getUserImportFileName() {
@@ -65,5 +66,13 @@ public class BatchProperties {
 
     public void setVendorMaterialImportFileName(String vendorMaterialImportFileName) {
         this.vendorMaterialImportFileName = vendorMaterialImportFileName;
+    }
+
+    public String getServiceSacExportFileNmae() {
+        return serviceSacExportFileNmae;
+    }
+
+    public void setServiceSacExportFileNmae(String serviceSacExportFileNmae) {
+        this.serviceSacExportFileNmae = serviceSacExportFileNmae;
     }
 }

@@ -1,37 +1,11 @@
 package com.avanzarit.apps.gst.batch.job.config;
 
-import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonDataImportProcessor;
-import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonDataImportWriter;
-import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonFieldSetMapper;
-import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonImportJobListener;
-import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonImportReaderStepListener;
-import com.avanzarit.apps.gst.batch.job.contactpersonimport.ContactPersonImportWriterStepListener;
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialDataImportProcessor;
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialDataImportWriter;
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialFieldSetMapper;
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportJobListener;
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportReaderStepListener;
-import com.avanzarit.apps.gst.batch.job.materialimport.MaterialImportWriterStepListener;
+import com.avanzarit.apps.gst.batch.job.contactpersonimport.*;
+import com.avanzarit.apps.gst.batch.job.materialimport.*;
 import com.avanzarit.apps.gst.batch.job.policy.SkipPolicy;
 import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
-import com.avanzarit.apps.gst.batch.job.vendorexport.ContactPersonDataFieldExtractor;
-import com.avanzarit.apps.gst.batch.job.vendorexport.ContactPersonExportHeaderCallback;
-import com.avanzarit.apps.gst.batch.job.vendorexport.CustomArrayExtractorLineAggregator;
-import com.avanzarit.apps.gst.batch.job.vendorexport.CustomExtractorLineAggregator;
-import com.avanzarit.apps.gst.batch.job.vendorexport.MaterialDataFieldExtractor;
-import com.avanzarit.apps.gst.batch.job.vendorexport.MaterialExportHeaderCallback;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataExportProcessor;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorDataFieldExtractor;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportHeaderCallback;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportJobListener;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportReaderStepListener;
-import com.avanzarit.apps.gst.batch.job.vendorexport.VendorExportWriterStepListener;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportProcessor;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorDataImportWriter;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorFieldSetMapper;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportJobListener;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportReaderStepListener;
-import com.avanzarit.apps.gst.batch.job.vendorimport.VendorImportWriterStepListener;
+import com.avanzarit.apps.gst.batch.job.vendorexport.*;
+import com.avanzarit.apps.gst.batch.job.vendorimport.*;
 import com.avanzarit.apps.gst.model.ContactPersonMaster;
 import com.avanzarit.apps.gst.model.MaterialMaster;
 import com.avanzarit.apps.gst.model.Vendor;
@@ -153,6 +127,9 @@ public class VendorJobConfig {
     MaterialExportHeaderCallback materialExportHeaderCallback;
 
     @Autowired
+    SacExportHeaderCallback sacExportHeaderCallback;
+
+    @Autowired
     ContactPersonExportHeaderCallback contactPersonExportHeaderCallback;
 
     @Autowired
@@ -165,12 +142,15 @@ public class VendorJobConfig {
     MaterialDataFieldExtractor materialDataFieldExtractor;
 
     @Autowired
+    SacDataFieldExtractor sacDataFieldExtractor;
+
+    @Autowired
     EntityManagerFactory entityManagerFactory;
 
     @Bean(name = "contactPersonImportJob")
     @Scope(scopeName = "prototype")
     public Job importContactPersonJob(Resource resource) {
-        return jobBuilderFactory.get("importContactPErsonjob").incrementer(new RunIdIncrementer()).listener(contactPersonImportJobListener)
+        return jobBuilderFactory.get("importContactPersonjob").incrementer(new RunIdIncrementer()).listener(contactPersonImportJobListener)
                 .flow(importContactPersonStep(resource)).end().build();
     }
 
@@ -311,6 +291,7 @@ public class VendorJobConfig {
         itemWriterList.add(vendorDataExportWriter(storageService.loadAsResource("export", resourceMap.get("VENDOR"))));
         itemWriterList.add(contactPersonExportWriter(storageService.loadAsResource("export", resourceMap.get("CONTACTPERSON"))));
         itemWriterList.add(materialExportWriter(storageService.loadAsResource("export", resourceMap.get("MATERIAL"))));
+        itemWriterList.add(serviceSacExportWriter(storageService.loadAsResource("export", resourceMap.get("SAC"))));
         compositeItemWriter.setDelegates(itemWriterList);
         return compositeItemWriter;
     }
@@ -345,6 +326,18 @@ public class VendorJobConfig {
         flatFileItemWriter.setLineAggregator((new CustomArrayExtractorLineAggregator<Vendor>() {
             {
                 setFieldExtractor(materialDataFieldExtractor);
+            }
+        }));
+        flatFileItemWriter.setResource(resource);
+        return flatFileItemWriter;
+    }
+
+    public ItemWriter<Vendor> serviceSacExportWriter(Resource resource) {
+        FlatFileItemWriter<Vendor> flatFileItemWriter = new FlatFileItemWriter<>();
+        flatFileItemWriter.setHeaderCallback(sacExportHeaderCallback);
+        flatFileItemWriter.setLineAggregator((new CustomArrayExtractorLineAggregator<Vendor>() {
+            {
+                setFieldExtractor(sacDataFieldExtractor);
             }
         }));
         flatFileItemWriter.setResource(resource);
