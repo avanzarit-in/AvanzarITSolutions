@@ -19,12 +19,13 @@
         <div class="col-xs-5">
             <label th:if="${rowStat.index}==0 and *{submityn == 'Y'}" class="control-label">SAC Code</label>
             <input type="text" class="form-control" th:field="*{serviceSacMaster[__${rowStat.index}__].code}"
-                   th:placeholder="*{submityn != 'Y' ? 'SAC Code':''}" th:disabled="*{submityn == 'Y'}"/>
+                   name="code" th:placeholder="*{submityn != 'Y' ? 'SAC Code':''}" th:disabled="*{submityn == 'Y'}"/>
         </div>
         <div class="col-xs-5">
             <label th:if="${rowStat.index}==0 and *{submityn == 'Y'}" class="control-label">SAC Description</label>
             <input type="text" class="form-control" th:field="*{serviceSacMaster[__${rowStat.index}__].desc}"
-                   th:placeholder="*{submityn != 'Y' ? 'SAC Description':''}" th:disabled="*{submityn == 'Y'}"/>
+                   name="desc" th:placeholder="*{submityn != 'Y' ? 'SAC Description':''}"
+                   th:disabled="*{submityn == 'Y'}"/>
         </div>
         <div class="col-xs-1">
             <button type="button" th:if="*{submityn != 'Y'}" class="btn btn-default removeButton">
@@ -54,8 +55,6 @@
 </body>
 
 <script th:fragment="servicejs" th:inline="javascript">
-
-
 
     $(document).ready(function () {
 
@@ -203,10 +202,9 @@
                 , displayKey: 'code'
                 , source: sacitems.ttAdapter()
 
-            }).on('typeahead:close', function(e) {
+            }).on('typeahead:closed', function(e) {
                  $('#service-tab').formValidation('revalidateField', $(this).attr('name'), codeValidators);
-            }).on('typeahead:select', function(e,obj) {
-            alert('hi');
+            }).on('typeahead:selected', function(e,obj) {
                  $(this).val(obj.code);
                  $('#service-tab').formValidation('revalidateField', $(this).attr('name'), codeValidators);
             });

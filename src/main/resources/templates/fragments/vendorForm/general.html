@@ -48,12 +48,11 @@
 
 $("#input-id").fileinput({"uploadUrl":'http://localhost:8080/uploadAttachment'
 ,uploadExtraData: {'_csrf': $('[name="_csrf"]').val(),'docType': 'PAN','vendorId':$('[name="vendorId"]').val()}
-, "previewFileType":'any',"showRemove":false,"showPreview":false});
+, "previewFileType":'any',allowedFileExtensions: ["jpg", "png", "gif"],
+    minImageWidth: 50,minImageHeight: 50,maxImageWidth: 150,maxImageHeight: 150,"showRemove":false,"showPreview":false});
 
 $('#input-id').on('fileuploaded', function(event, data, previewId, index) {
-
     $('#attachmentId').text(data.filenames[0]);
-
 });
 
 $(document).ready(function() {
@@ -129,11 +128,6 @@ $(document).ready(function() {
                             .find('i')
                             .removeClass('fa-check fa-times');
 
-            // Check if all fields in tab are valid
-            var isValidTab = data.fv.isValidContainer($tabPane);
-            if (isValidTab !== null) {
-                $icon.addClass(isValidTab ? '' : 'fa-times');
-            }
         });
 });
 
