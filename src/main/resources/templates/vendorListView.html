@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
  
 <body>
-<div class="container"  th:fragment="content">
+<div class="container-full" th:fragment="content">
     <div th:if="${message != null}" class="alert alert-success" id="success-alert">
         <strong>Success!</strong> <span th:text="${message}"/>
     </div>
@@ -100,7 +100,10 @@ $.fn.dataTable.ext.search.push(
 $(document).ready(function () {
 
     $('#dataTable').DataTable({
-        "scrollY": 200
+        "scrollY": 230,
+        "columnDefs": [
+    { "width": "10%", "targets": 7 }
+  ]
     });
 
     $('input:radio[name="filter"]').change(function () {

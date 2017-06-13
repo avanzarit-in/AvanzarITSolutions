@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<div class="container"  th:fragment="content">
+<div class="container-full" th:fragment="content">
     <div th:if="${message != null}" class="alert alert-success" id="success-alert">
         <strong>Success!</strong> <span th:text="${message}"/>
     </div>
@@ -74,7 +74,7 @@
     });
 
         $('#dataTable').DataTable( {
-            "scrollY": 300
+            "scrollY": 230
              ,"scrollCollapse": true
             });
 
