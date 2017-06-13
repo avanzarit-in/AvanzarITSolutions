@@ -3,8 +3,19 @@ package com.avanzarit.apps.gst.controller;
 import com.avanzarit.apps.gst.Layout;
 import com.avanzarit.apps.gst.annotations.CopyOver;
 import com.avanzarit.apps.gst.auth.repository.UserRepository;
-import com.avanzarit.apps.gst.model.*;
-import com.avanzarit.apps.gst.repository.*;
+import com.avanzarit.apps.gst.model.Attachment;
+import com.avanzarit.apps.gst.model.ContactPersonMaster;
+import com.avanzarit.apps.gst.model.MaterialMaster;
+import com.avanzarit.apps.gst.model.ServiceSacMaster;
+import com.avanzarit.apps.gst.model.Vendor;
+import com.avanzarit.apps.gst.model.VendorStatusEnum;
+import com.avanzarit.apps.gst.repository.AttachmentRepository;
+import com.avanzarit.apps.gst.repository.ContactPersonMasterRepository;
+import com.avanzarit.apps.gst.repository.HsnMasterRepository;
+import com.avanzarit.apps.gst.repository.MaterialMasterRepository;
+import com.avanzarit.apps.gst.repository.SacMasterRepository;
+import com.avanzarit.apps.gst.repository.ServiceSacMasterRepository;
+import com.avanzarit.apps.gst.repository.VendorRepository;
 import com.avanzarit.apps.gst.storage.StorageService;
 import com.avanzarit.apps.gst.utils.Utils;
 import org.slf4j.Logger;
@@ -16,7 +27,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -343,7 +360,7 @@ class VendorController {
         } catch (Exception e) {
             return "{error: " + e.getMessage() + "}";
         }
-        return "{}";
+        return "{initialPreview: ['<img src='/downloadAttachment/" + vendorId + "/" + docType + "' class='file-preview-image'>']}";
     }
 
     private void copyOverProperties(Vendor newVendor, Vendor oldVendor) {
