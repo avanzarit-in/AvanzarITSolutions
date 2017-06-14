@@ -14,9 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * Created by SPADHI on 5/30/2017.
- */
 @Component
 public class UserWriterStepListener extends WriterStepListener<User> {
 

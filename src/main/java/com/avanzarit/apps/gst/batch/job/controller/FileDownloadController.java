@@ -154,8 +154,6 @@ public class FileDownloadController implements BeanFactoryAware {
             logger.info(e.getMessage());
         }
     }
-
-
     /*
      * Download a file from
      *   - inside project, located in resources folder.
@@ -223,12 +221,8 @@ public class FileDownloadController implements BeanFactoryAware {
         }
     }
 
-
-
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
-
-
 }

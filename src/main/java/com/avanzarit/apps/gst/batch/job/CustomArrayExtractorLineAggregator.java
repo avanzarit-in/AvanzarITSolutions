@@ -5,9 +5,6 @@ import org.springframework.batch.item.file.transform.ExtractorLineAggregator;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by SPADHI on 6/1/2017.
- */
 public class CustomArrayExtractorLineAggregator<T> extends ExtractorLineAggregator<T> {
     /**
      * Aggregate provided fields into single String.

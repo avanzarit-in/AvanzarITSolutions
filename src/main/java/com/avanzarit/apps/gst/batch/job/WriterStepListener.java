@@ -7,7 +7,6 @@ import org.springframework.batch.core.StepExecution;
 
 import java.util.List;
 
-
 public abstract class WriterStepListener<T> {
 
     private static final Logger LOGGER = LogManager.getLogger(WriterStepListener.class);

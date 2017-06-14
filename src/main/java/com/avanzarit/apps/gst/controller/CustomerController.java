@@ -111,7 +111,6 @@ class CustomerController {
         return "redirect:/customerListView";
     }
 
-
     @Layout(value = "layouts/customerForm")
     @RequestMapping(path = "/get/customer/{customerId}", method = RequestMethod.GET)
     public String showCUstomer(RedirectAttributes redirectAttributes, Model model, @PathVariable String customerId) {
@@ -180,7 +179,6 @@ class CustomerController {
 
         customerRepository.save(customer);
 
-
         List<CustomerContactPersonMaster> customerContactPersonMasterList = customerContactPersonMasterRepository.findByCustomer(customer);
         for (CustomerContactPersonMaster customerContactPersonMaster : customerContactPersonMasterList) {
             if (!cleanedCustomerContactPersonMaster.contains(customerContactPersonMaster)) {
@@ -221,6 +219,4 @@ class CustomerController {
 
         }
     }
-
-
 }

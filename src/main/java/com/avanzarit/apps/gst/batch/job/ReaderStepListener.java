@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.batch.core.StepExecution;
 
-
 public abstract class ReaderStepListener<T> {
 
     private static final Logger LOGGER = LogManager.getLogger(ReaderStepListener.class);

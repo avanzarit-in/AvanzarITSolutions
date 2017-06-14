@@ -19,9 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by SPADHI on 5/30/2017.
- */
 @Component
 public class UserFieldSetMapper implements FieldSetMapper<User> {
 

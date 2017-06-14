@@ -5,9 +5,6 @@ import com.avanzarit.apps.gst.batch.job.annotations.Export;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 
-/**
- * Created by AVANZAR on 6/3/2017.
- */
 public class FieldComparator implements Comparator<Field> {
 
     @Override

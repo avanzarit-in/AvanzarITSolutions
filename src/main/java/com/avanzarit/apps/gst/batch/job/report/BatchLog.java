@@ -1,8 +1,5 @@
 package com.avanzarit.apps.gst.batch.job.report;
 
-/**
- * Created by AVANZAR on 6/12/2017.
- */
 public class BatchLog {
 
     private StringBuilder sb;

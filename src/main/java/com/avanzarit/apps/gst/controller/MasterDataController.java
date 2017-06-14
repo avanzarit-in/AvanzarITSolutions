@@ -55,9 +55,5 @@ public class MasterDataController {
         }
         return "{ \"valid\": false }";
     }
-
-
-
-
 }
 

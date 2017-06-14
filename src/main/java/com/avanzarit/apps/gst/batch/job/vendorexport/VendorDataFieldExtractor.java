@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by SPADHI on 6/1/2017.
- */
 @Component
 public class VendorDataFieldExtractor implements FieldExtractor<Vendor> {
     /**
