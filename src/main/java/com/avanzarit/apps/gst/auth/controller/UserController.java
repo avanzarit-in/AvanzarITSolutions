@@ -69,6 +69,8 @@ public class UserController {
             return "redirect:/businessOwnerLanding";
         } else if (roles.contains("VENDOR")) {
             return "redirect:/get";
+        } else if (roles.contains("CUSTOMER")) {
+            return "redirect:/get/customer";
         }
         return "/404";
     }
@@ -186,7 +188,7 @@ public class UserController {
 
     }
 
-    // for 403 access denied page
+    // for 404 page not found
     @RequestMapping(value = "/404", method = RequestMethod.GET)
     public ModelAndView pageNotFound() {
         ModelAndView model = new ModelAndView();

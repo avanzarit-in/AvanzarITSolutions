@@ -17,7 +17,8 @@ public class StorageProperties {
     private String uploadLocation;
     private String exportLocation;
     private String downloadLocation;
-    private String downloadFileName;
+    private String vendorDownloadFileName;
+    private String customerDownloadFileName;
     private String batchjobLogLocation;
     private String attachmentLocation;
 
@@ -45,16 +46,28 @@ public class StorageProperties {
         this.downloadLocation = downloadLocation;
     }
 
-    public String getDownloadFileName() {
-        return downloadFileName;
+    public String getVendorDownloadFileName() {
+        return vendorDownloadFileName;
     }
 
-    public void setDownloadFileName(String downloadFileName) {
-        this.downloadFileName = downloadFileName;
+    public void setVendorDownloadFileName(String vendorDownloadFileName) {
+        this.vendorDownloadFileName = vendorDownloadFileName;
     }
 
-    public String getDownloadZipFilePath() {
-        return downloadLocation + "\\" + downloadFileName;
+    public String getCustomerDownloadFileName() {
+        return customerDownloadFileName;
+    }
+
+    public void setCustomerDownloadFileName(String customerDownloadFileName) {
+        this.customerDownloadFileName = customerDownloadFileName;
+    }
+
+    public String getCustomerDownloadZipFilePath() {
+        return downloadLocation + "\\" + customerDownloadFileName;
+    }
+
+    public String getVendorDownloadZipFilePath() {
+        return downloadLocation + "\\" + vendorDownloadFileName;
     }
 
     public String getBatchjobLogLocation() {

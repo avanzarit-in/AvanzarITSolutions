@@ -1,6 +1,8 @@
 package com.avanzarit.apps.gst;
 
 import com.avanzarit.apps.gst.interceptor.ThymeleafLayoutInterceptor;
+import com.avanzarit.apps.gst.properties.CustomerMailProperties;
+import com.avanzarit.apps.gst.properties.VendorMailProperties;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,6 +39,12 @@ public class Application extends WebMvcConfigurerAdapter {
     @Autowired
     DataSource datasource;
 
+    @Autowired
+    CustomerMailProperties customerMailProperties;
+
+    @Autowired
+    VendorMailProperties vendorMailProperties;
+
     @Bean(name = "messageSource")
     public ReloadableResourceBundleMessageSource reloadableResourceBundleMessageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -70,20 +78,40 @@ public class Application extends WebMvcConfigurerAdapter {
     }
 
 
-    @Bean(name = "javaMmailSender")
-    public JavaMailSender getJavaMailSender() {
+    @Bean(name = "javaCustomerMailSender")
+    public JavaMailSender getJavaCustomerMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
-        mailSender.setHost("127.0.0.1");
-        mailSender.setPort(587);
+        mailSender.setHost(customerMailProperties.getHost());
+        mailSender.setPort(customerMailProperties.getPort());
 
-        mailSender.setUsername("admin@avanzarit.in");
-        mailSender.setPassword("admin");
+        mailSender.setUsername(customerMailProperties.getUsername());
+        mailSender.setPassword(customerMailProperties.getPassword());
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
+        props.put(customerMailProperties.getAuth(), "true");
+        props.put(customerMailProperties.getStarttls(), "true");
+        props.put("mail.debug", "true");
+
+        return mailSender;
+    }
+
+
+    @Bean(name = "javaVendorMailSender")
+    public JavaMailSender getJavaVendorMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
+        mailSender.setHost(vendorMailProperties.getHost());
+        mailSender.setPort(vendorMailProperties.getPort());
+
+        mailSender.setUsername(vendorMailProperties.getUsername());
+        mailSender.setPassword(vendorMailProperties.getPassword());
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put(vendorMailProperties.getAuth(), "true");
+        props.put(vendorMailProperties.getStarttls(), "true");
         props.put("mail.debug", "true");
 
         return mailSender;

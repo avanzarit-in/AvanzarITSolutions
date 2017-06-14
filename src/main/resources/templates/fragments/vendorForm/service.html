@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<div th:fragment="service" th:object="${vendor}">
+<div th:fragment="service" th:object="${model}">
 
     <div class="form-group">
         <div class="col-xs-12">
@@ -73,7 +73,7 @@
         , queryTokenizer: Bloodhound.tokenizers.whitespace
         , limit : 10
         , prefetch: {
-            url: 'http://localhost:8080/master/sac'
+            url: getAbsoluteUrl('/master/sac')
             , cache: false
         }
 
@@ -92,7 +92,7 @@
                         message: 'The SAC Code is required'
                     },
                     remote: {
-                        url: 'http://localhost:8080/master/sac/validate'
+                        url: getAbsoluteUrl('/master/sac/validate')
                         , type: 'POST'
                         , data: function (validator, $field, value) {
                             return {
@@ -116,7 +116,7 @@
                 }
             },
                 /*<![CDATA[*/
-            serviceSacIndex = [[${#lists.size(vendor.serviceSacMaster)-1}]];
+            serviceSacIndex = [[${#lists.size(model.serviceSacMaster)-1}]];
         /*]]>*/
 
         $('#service-tab')

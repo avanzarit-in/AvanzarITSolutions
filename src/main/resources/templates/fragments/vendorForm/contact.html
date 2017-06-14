@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<div th:fragment="contact" th:object="${vendor}">
+<div th:fragment="contact" th:object="${model}">
     <div class="form-group">
         <div class="col-xs-12">
             <button type="button" th:if="*{submityn != 'Y'}" class="btn btn-default addButton">
@@ -176,7 +176,7 @@ var lastNameValidators = {
             }
         },
         /*<![CDATA[*/
-            contactIndex = [[${#lists.size(vendor.contactPersonMaster)-1}]];
+            contactIndex = [[${#lists.size(model.contactPersonMaster)-1}]];
        /*]]>*/
 
 

@@ -8,13 +8,14 @@
             margin-top: 15px;
         }
 
+
     </style>
 
     <div th:if="${message != null}" class="alert alert-success" id="success-alert">
         <strong>Success!</strong> <span th:text="${message}"/>
     </div>
 
-    <form id="profileForm" th:action="@{/add}" th:object="${customer}" class="form-horizontal" method="post">
+    <form id="profileForm" th:action="@{/add/customer}" th:object="${model}" class="form-horizontal" method="post">
 
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -27,7 +28,9 @@
                     <li class="active"><a href="#info-tab" data-toggle="tab">Basic Details<i class="fa"></i></a></li>
                     <li><a href="#address-tab" data-toggle="tab">Address Details<i class="fa"></i></a></li>
                     <li><a href="#communication-tab" data-toggle="tab">Communication Details<i class="fa"></i></a></li>
-                    <li><a href="#gstinfo-tab" data-toggle="tab">GST / TAX Information<i class="fa"></i></a></li>
+                    <li><a href="#contact-tab" data-toggle="tab">Contact Person<i class="fa"></i></a></li>
+                    <li><a href="#gstinfo-tab" data-toggle="tab">GSTN/Tax Details<i class="fa"></i></a></li>
+
                 </ul>
                 <div class="tab-content">
 
@@ -38,22 +41,29 @@
                     </div>
 
                     <div class="tab-pane" id="address-tab">
-                        <div th:replace="fragments/customerForm/address :: address">
+                        <div th:replace="fragments/common/address :: address">
                             Address Details goes here
                         </div>
                     </div>
 
                     <div class="tab-pane" id="communication-tab">
-                        <div th:replace="fragments/customerForm/communication :: communication">
+                        <div th:replace="fragments/common/communication :: communication">
                             Communication Details goes here
                         </div>
                     </div>
 
+                    <div class="tab-pane" id="contact-tab">
+                        <div th:replace="fragments/customerForm/contact :: contact">
+                            Contact Details goes here
+                        </div>
+                    </div>
+
                     <div class="tab-pane" id="gstinfo-tab">
-                        <div th:replace="fragments/customerForm/gstn :: gstn">
+                        <div th:replace="fragments/common/gstn :: gstn">
                             GSTN Details goes here
                         </div>
                     </div>
+
                 </div>
             </div>
             <div class="panel-footer">
@@ -80,39 +90,46 @@
 
 
 <script th:fragment="js" th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function () {
+/*<![CDATA[*/
+$(document).ready(function() {
 
-        $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
-            $("#success-alert").slideUp(500);
-        });
-        $("#updateButton").click(function (e) {
+$('#profileForm').on("keyup keypress", function(e) {
+    var code = e.keyCode || e.which;
+    if (code === 13) {
+        e.preventDefault();
+        return false;
+    }
+});
 
-            $("#submitstatus").val("N");
-            var customerIdValid = ($('#info-tab').data('formValidation').validateField('customerId').isValid());
-            if (customerIdValid != null && !customerIdValid) {
-                e.preventDefault();
-                return false;
-            }
-
-        });
-        $("#submitButton").click(function (e) {
-            e.preventDefault();
-            $("#submitstatus").val("Y");
-            var infoTabValid = ($('#info-tab').data('formValidation').validate().isValid());
-            var addressTabValid = ($('#address-tab').data('formValidation').validate().isValid());
-            var communicationTabValid = ($('#communication-tab').data('formValidation').validate().isValid());
-            var gstTabValid = ($('#gstinfo-tab').data('formValidation').validate().isValid());
-
-            if (!infoTabValid || !addressTabValid || !communicationTabValid || !gstTabValid) {
-                return false;
-            }
-            return true;
-        });
+    $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#success-alert").slideUp(500);
     });
-    /*]]>*/
+    $("#updateButton").click(function(e) {
+        $("#submitstatus").val("N");
+        var customerIdValid=($('#info-tab').data('formValidation').validateField('customerId').isValid());
+        if(customerIdValid!=null && !customerIdValid){
+            e.preventDefault();
+            return false;
+        }
 
+    });
+     $("#submitButton").click(function(e) {
+
+        $("#submitstatus").val("Y");
+         var infoTabValid = ($('#info-tab').data('formValidation').validate().isValid());
+        var addressTabValid=($('#address-tab').data('formValidation').validate().isValid());
+        var communicationTabValid=($('#communication-tab').data('formValidation').validate().isValid());
+        var gstTabValid=($('#gstinfo-tab').data('formValidation').validate().isValid());
+        var contactTabValid = ($('#contact-tab').data('formValidation').validate().isValid());
+
+
+         if (!infoTabValid || !addressTabValid || !communicationTabValid ||  !gstTabValid || !contactTabValid ) {
+        e.preventDefault();
+            return false;
+         }
+        return true;
+    });
+});
+  /*]]>*/
 </script>
-
-
 </html>

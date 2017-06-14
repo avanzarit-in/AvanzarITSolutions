@@ -41,13 +41,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Created by SPADHI on 5/3/2017.
- */
 @Controller
 class VendorController {
 
@@ -95,7 +91,7 @@ class VendorController {
             redirectAttributes.addFlashAttribute("message", "Vendor Data not available, please contact for more Details");
             return "redirect:/404";
         } else {
-            model.addAttribute("vendor", vendor);
+            model.addAttribute("model", vendor);
         }
         return "vendorForm";
     }
@@ -160,7 +156,7 @@ class VendorController {
                 if (roles.contains("BUSINESS_OWNER")) {
                     vendor.setSubmityn("Y");
                 }
-                model.addAttribute("vendor", vendor);
+                model.addAttribute("model", vendor);
             }
             return "vendorForm";
         }
@@ -174,11 +170,6 @@ class VendorController {
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userName = auth.getUsername();
 
-        String email = vendor.getEmail();
-        if (email != null && email.indexOf(",") > 0) {
-            email = email.substring(0, email.indexOf(","));
-            vendor.setEmail(email);
-        }
         List<MaterialMaster> materials = vendor.getMaterialMaster();
         List<MaterialMaster> cleanedMaterailList = materials.stream()
                 .filter(line -> line.getId() != null)
@@ -264,10 +255,10 @@ class VendorController {
             }
         }
 
-        redirectAttributes.addFlashAttribute("vendor", vendor);
+        redirectAttributes.addFlashAttribute("model", vendor);
         logger.debug("Forwarding to the exportVendorJob list...");
         if (vendor.getSubmityn() != null && vendor.getSubmityn().equals("N")) {
-            redirectAttributes.addFlashAttribute("message", "Your changes hav been Saved!");
+            redirectAttributes.addFlashAttribute("message", "Your changes have been Saved!");
             return "redirect:get";
         }
         redirectAttributes.addFlashAttribute("message",
@@ -294,28 +285,6 @@ class VendorController {
         mav.addObject("users", userRepository.findAll());
         mav.setViewName("userListView");
         return mav;
-    }
-
-
-    @RequestMapping(path = "/master/hsn/validate", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String getHsnCode(@RequestParam Map<String, String> allRequestParams) {
-        String hsnCode = allRequestParams.get("hsn");
-        if (hsnMasterRepository.findByCode(hsnCode) != null) {
-            return "{ \"valid\": true }";
-        }
-        return "{ \"valid\": false }";
-    }
-
-    @RequestMapping(path = "/master/sac/validate", method = RequestMethod.POST)
-    @ResponseBody
-    public String getSacCode(@RequestParam Map<String, String> allRequestParams) {
-        String sacCode = allRequestParams.get("sac");
-        if (sacMasterRepository.findByCode(sacCode) != null) {
-            return "{ \"valid\": true }";
-        }
-        return "{ \"valid\": false }";
     }
 
     @RequestMapping(path = "/vendorListView", method = RequestMethod.GET)
@@ -360,7 +329,7 @@ class VendorController {
         } catch (Exception e) {
             return "{error: " + e.getMessage() + "}";
         }
-        return "{initialPreview: ['<img src='/downloadAttachment/" + vendorId + "/" + docType + "' class='file-preview-image'>']}";
+        return "{}";
     }
 
     private void copyOverProperties(Vendor newVendor, Vendor oldVendor) {

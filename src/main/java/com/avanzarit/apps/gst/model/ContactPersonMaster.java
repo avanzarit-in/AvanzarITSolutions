@@ -14,9 +14,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Objects;
 
-/**
- * Created by SPADHI on 5/31/2017.
- */
 @Entity
 @Table(name = "contactpersonmaster")
 public class ContactPersonMaster implements Model {
@@ -126,7 +123,8 @@ public class ContactPersonMaster implements Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ContactPersonMaster that = (ContactPersonMaster) o;
-        return Objects.equals(lastName, that.lastName) &&
+        return Objects.equals(id, that.id) &&
+                Objects.equals(lastName, that.lastName) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(department, that.department) &&
                 Objects.equals(mobile, that.mobile) &&

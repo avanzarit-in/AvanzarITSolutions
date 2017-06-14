@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<div th:fragment="general" th:object="${vendor}">
+<div th:fragment="general" th:object="${model}">
 
     <div class="form-group">
         <label class="col-xs-2 control-label">Vendor ID</label>
@@ -46,7 +46,7 @@
 <script th:fragment="generaljs">
 
 
-$("#input-id").fileinput({"uploadUrl":'http://localhost:8080/uploadAttachment'
+$("#input-id").fileinput({"uploadUrl":getAbsoluteUrl('/uploadAttachment')
 ,uploadExtraData: {'_csrf': $('[name="_csrf"]').val(),'docType': 'PAN','vendorId':$('[name="vendorId"]').val()}
 , "previewFileType":'any',allowedFileExtensions: ["jpg", "png", "gif"],
     minImageWidth: 50,minImageHeight: 50,maxImageWidth: 150,maxImageHeight: 150,"showRemove":false,"showPreview":false});

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<div  th:fragment="material" th:object="${vendor}">
+<div th:fragment="material" th:object="${model}">
 
     <div class="form-group">
 
@@ -53,12 +53,12 @@
 <script th:fragment="materialjs"  th:inline="javascript">
 
 $(document).ready(function () {
-
+alert('hh');
     var items = new Bloodhound({
         datumTokenizer: function (d) {
-            var test = Bloodhound.tokenizers.whitespace(d.code);
+           var test = Bloodhound.tokenizers.whitespace(d.code);
             $.each(test, function (k, v) {
-                i = 0;
+               i = 0;
                 while (i < v.length) {
                     test.push(v.substr(i, v.length));
                     i++;
@@ -67,9 +67,9 @@ $(document).ready(function () {
             return test;
         }
         , queryTokenizer: Bloodhound.tokenizers.whitespace
-        , limit: 10
+        , limit: 100
         , prefetch: {
-            url: 'http://localhost:8080/master/hsn'
+            url: getAbsoluteUrl('/master/hsn')
             , cache: false
         }
     });
@@ -80,7 +80,7 @@ $(document).ready(function () {
             row: '.col-xs-3'
             , validators: {
                 remote: {
-                    url: 'http://localhost:8080/master/hsn/validate'
+                    url: getAbsoluteUrl('/master/hsn/validate')
                     , type: 'POST'
                     , data: function (validator, $field, value) {
                         return {
@@ -100,7 +100,7 @@ $(document).ready(function () {
         },
 
         /*<![CDATA[*/
-        materialIndex = [[${#lists.size(vendor.materialMaster) - 1}]];
+        materialIndex = [[${#lists.size(model.materialMaster) - 1}]];
     /*]]>*/
 
     $('#material-tab')

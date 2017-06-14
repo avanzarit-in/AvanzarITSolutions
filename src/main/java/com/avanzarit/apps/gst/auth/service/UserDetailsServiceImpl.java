@@ -13,13 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by SPADHI on 5/4/2017.
- */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired

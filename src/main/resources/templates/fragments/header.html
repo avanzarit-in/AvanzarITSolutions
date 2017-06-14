@@ -34,12 +34,17 @@
                         <ul class="dropdown-menu">
                             <li><a href="/upload">Vendor Data Import</a></li>
                             <li><a href="/vendorListView">Vendor Management</a></li>
+                            <li><a href="/upload/customer">Customer Data Import</a></li>
+                            <li><a href="/customerListView">Customer Management</a></li>
                         </ul>
                     </li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#" data-toggle="modal" data-target="#myModal">PCBL GST Registration Details</a></li>
+                    <li sec:authorize="hasAuthority('VENDOR')"><a href="#" data-toggle="modal" data-target="#myModal">PCBL
+                        GST Registration Details</a></li>
+                    <li sec:authorize="hasAuthority('CUSTOMER')"><a href="#" data-toggle="modal" data-target="#myModal">PCBL
+                        GST Registration Details Customer</a></li>
                     <li sec:authorize="!isAuthenticated()"><a href="/login"><span
                             class="glyphicon glyphicon-log-in"></span> Login</a></li>
                     <li sec:authorize="isAuthenticated()"><p class="navbar-text">Logged in User:(<span

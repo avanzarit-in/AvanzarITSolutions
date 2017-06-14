@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<div th:fragment="general" th:object="${customer}">
+<div th:fragment="general" th:object="${model}">
 
     <div class="form-group">
         <label class="col-xs-2 control-label">Customer ID</label>
         <div class="col-xs-6">
-            <input type="text" class="form-control" th:field="*{customerId}" th:disabled="*{submityn == 'Y'}"
+            <input type="text" class="form-control" th:field="*{customerId}" th:readOnly="true"
                    placeholder="Customer ID"/>
         </div>
     </div>

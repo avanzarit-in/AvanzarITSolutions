@@ -1,68 +1,126 @@
 package com.avanzarit.apps.gst.model;
 
 import com.avanzarit.apps.gst.Model;
+import com.avanzarit.apps.gst.annotations.CopyOver;
+import com.avanzarit.apps.gst.batch.job.annotations.Export;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-/**
- * Created by SPADHI on 5/4/2017.
- */
 @Entity
 @Table(name = "customer")
 public class Customer implements Model {
 
-
+    @Export(order = 1, title = "LFA1#LIFNR")
     private String customerId;
+    @Export(order = 2, title = "LFA1#NAME1")
     private String customerName1;
+    @Export(order = 3, title = "LFA1#NAME2")
     private String customerName2;
+    @Export(order = 4, title = "LFA1#NAME3")
     private String customerName3;
-    private String contactPerson;
+    @Export(order = 5, title = "LFA1#TELF1")
     private String telephoneNumberExtn;
     private String telephoneNumber;
     private String telephoneExtn;
+    @Export(order = 6, title = "LFA1#TELF2")
     private String mobileNo;
+    @Export(order = 7, title = "ADR6#SMTP_ADDR")
     private String email;
     private String faxNumber;
     private String faxExtn;
+    @Export(order = 8, title = "LFA1#TELFX")
     private String faxNumberExtn;
+    @Export(order = 9, title = "ADRC#BUILDING")
     private String buildingNo;
+    @Export(order = 10, title = "LFA1#STRAS")
     private String address1;
+    @Export(order = 11, title = "ADRC#STR_SUPPL1")
     private String address2;
+    @Export(order = 12, title = "ADRC#STR_SUPPL2")
     private String address3;
+    @Export(order = 13, title = "ADRC#STR_SUPPL3")
     private String address4;
+    @Export(order = 14, title = "ADRC#LOCATION")
     private String address5;
+    @Export(order = 15, title = "LFA1#ORT01")
     private String city;
+    @Export(order = 16, title = "LFA1#PSTLZ")
     private String postCode;
+    @Export(order = 17, title = "LFA1#REGIO")
     private String region;
+    @Export(order = 18, title = "LFA1#LAND1")
     private String country;
+    private String railwayStation;
+    @Export(order = 21, title = "J_1IMOVEND#J_1IPANNO")
     private String pan;
+    @Export(order = 22, title = "LFA1#STCEG")
+    private String vatNumber;
     private String gstRegistrationStatus;
     private String noOfGstRegistration;
     private String state;
     private String gstNumber;
     private String submityn = "N";
+    private List<CustomerContactPersonMaster> customerContactPersonMasters = new ArrayList<>();
+    @CopyOver
     private CustomerStatusEnum customerStatus;
+    @CopyOver
+    private String createdBy;
+    @CopyOver
+    private Date createdOn;
+    @CopyOver
     private String modifiedBy;
+    @CopyOver
     private Date lastModifiedOn;
+    @CopyOver
     private String submittedBy;
+    @CopyOver
     private Date lastSubmittedOn;
+
+    @CopyOver
     private String approvedBy;
+    @CopyOver
     private Date lastApprovedOn;
+    @CopyOver
+    private int approveCount;
+    @CopyOver
+    private String approveReason;
+
+    @CopyOver
     private String rejectedBy;
+    @CopyOver
     private Date lastRejectedOn;
-    private String lastRevertedBy;
-    private Date lastRevertedOevertedOn;
-    private int revertCount;
+    @CopyOver
     private String rejectReason;
+    @CopyOver
+    private int rejectCount;
+
+    @CopyOver
+    private String lastRevertedBy;
+    @CopyOver
+    private Date lastRevertedOn;
+    @CopyOver
+    private int revertCount;
+    @CopyOver
     private String revertReason;
+
+    @CopyOver
     private String acceptTermsAndCondition;
+    @CopyOver
     private String tncAcceptBy;
+    @CopyOver
     private Date tncAcceptedOn;
+    @CopyOver
     private Date sapSyncDate;
 
 
@@ -103,15 +161,6 @@ public class Customer implements Model {
         this.customerName3 = customerName3;
     }
 
-    @Column(name = "contactperson")
-    public String getContactPerson() {
-        return contactPerson;
-    }
-
-    public void setContactPerson(String contactPerson) {
-        this.contactPerson = contactPerson;
-    }
-
     @Column(name = "telephonenumberextn")
     public String getTelephoneNumberExtn() {
         return telephoneNumberExtn;
@@ -136,7 +185,12 @@ public class Customer implements Model {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        if (email != null && email.contains(",")) {
+            this.email = email.substring(0, email.indexOf(','));
+        } else {
+            this.email = email;
+        }
+
     }
 
     @Column(name = "faxnumberextn")
@@ -238,6 +292,15 @@ public class Customer implements Model {
         this.country = country;
     }
 
+    @Column(name = "railwaystation")
+    public String getRailwayStation() {
+        return railwayStation;
+    }
+
+    public void setRailwayStation(String railwayStation) {
+        this.railwayStation = railwayStation;
+    }
+
     @Column(name = "pan")
     public String getPan() {
         return pan;
@@ -245,6 +308,15 @@ public class Customer implements Model {
 
     public void setPan(String pan) {
         this.pan = pan;
+    }
+
+    @Column(name = "vatnumber")
+    public String getVatNumber() {
+        return vatNumber;
+    }
+
+    public void setVatNumber(String vatNumber) {
+        this.vatNumber = vatNumber;
     }
 
     @Column(name = "gstregistrationstatus")
@@ -348,8 +420,17 @@ public class Customer implements Model {
         this.faxExtn = faxExtn;
     }
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE)
+    public List<CustomerContactPersonMaster> getCustomerContactPersonMaster() {
 
+        return customerContactPersonMasters;
+    }
 
+    public void setCustomerContactPersonMaster(List<CustomerContactPersonMaster> customerContactPersonMasters) {
+        this.customerContactPersonMasters = customerContactPersonMasters;
+    }
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "customerstatus")
     public CustomerStatusEnum getCustomerStatus() {
         return customerStatus;
@@ -358,6 +439,25 @@ public class Customer implements Model {
     public void setCustomerStatus(CustomerStatusEnum customerStatus) {
         this.customerStatus = customerStatus;
     }
+
+    @Column(name = "createdby")
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    @Column(name = "createdon")
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
 
     @Column(name = "modifiedby")
     public String getModifiedBy() {
@@ -441,12 +541,12 @@ public class Customer implements Model {
     }
 
     @Column(name = "lastrevertedon")
-    public Date getLastRevertedOevertedOn() {
-        return lastRevertedOevertedOn;
+    public Date getLastRevertedOn() {
+        return lastRevertedOn;
     }
 
-    public void setLastRevertedOevertedOn(Date lastRevertedOevertedOn) {
-        this.lastRevertedOevertedOn = lastRevertedOevertedOn;
+    public void setLastRevertedOn(Date lastRevertedOn) {
+        this.lastRevertedOn = lastRevertedOn;
     }
 
     @Column(name = "revertcount")
@@ -511,4 +611,40 @@ public class Customer implements Model {
     public void setSapSyncDate(Date sapSyncDate) {
         this.sapSyncDate = sapSyncDate;
     }
+
+    @Column(name = "approvecount")
+    public int getApproveCount() {
+        return approveCount;
+    }
+
+    public void setApproveCount(int approveCount) {
+        this.approveCount = approveCount;
+    }
+
+    @Column(name = "approvereason")
+    public String getApproveReason() {
+        return approveReason;
+    }
+
+    public void setApproveReason(String approveReason) {
+        this.approveReason = approveReason;
+    }
+
+    @Column(name = "rejectcount")
+    public int getRejectCount() {
+        return rejectCount;
+    }
+
+    public void setRejectCount(int rejectCount) {
+        this.rejectCount = rejectCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerId='" + customerId + '\'' +
+                ", customerName1='" + customerName1 + '\'' +
+                '}';
+    }
+
 }

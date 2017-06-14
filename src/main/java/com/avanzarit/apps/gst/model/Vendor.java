@@ -4,16 +4,21 @@ import com.avanzarit.apps.gst.Model;
 import com.avanzarit.apps.gst.annotations.CopyOver;
 import com.avanzarit.apps.gst.batch.job.annotations.Export;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static com.avanzarit.apps.gst.model.Attachment.PAN;
 
-/**
- * Created by SPADHI on 5/4/2017.
- */
 @Entity
 @Table(name = "vendor")
 public class Vendor implements Model {
@@ -196,9 +201,10 @@ public class Vendor implements Model {
 
     public void setEmail(String email) {
         if (email != null && email.contains(",")) {
-            this.email = email.substring(0, email.lastIndexOf(',') - 1);
+            this.email = email.substring(0, email.indexOf(','));
+        } else {
+            this.email = email;
         }
-        this.email = email;
 
     }
 

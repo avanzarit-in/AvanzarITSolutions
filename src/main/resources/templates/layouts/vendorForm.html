@@ -33,14 +33,15 @@
 <script src="/js/bootbox.min.js"></script>
 <script src="/js/typeahead.bundle.min.js"></script>
 <script src="/js/fileinput.min.js"></script>
+<script src="/js/app.js"></script>
 
 
 <script th:replace="${view} :: js"></script>
 <script th:replace="fragments/vendorForm/general :: generaljs"></script>
-<script th:replace="fragments/vendorForm/address :: addressjs"></script>
-<script th:replace="fragments/vendorForm/communication :: communicationjs"></script>
+<script th:replace="fragments/common/address :: addressjs"></script>
+<script th:replace="fragments/common/communication :: communicationjs"></script>
 <script th:replace="fragments/vendorForm/bank :: bankjs"></script>
-<script th:replace="fragments/vendorForm/gstn :: gstnjs"></script>
+<script th:replace="fragments/common/gstn :: gstnjs"></script>
 <script th:replace="fragments/vendorForm/material :: materialjs"></script>
 <script th:replace="fragments/vendorForm/contact :: contactjs"></script>
 <script th:replace="fragments/vendorForm/service :: servicejs"></script>

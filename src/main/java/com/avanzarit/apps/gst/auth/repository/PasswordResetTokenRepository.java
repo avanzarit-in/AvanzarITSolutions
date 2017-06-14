@@ -9,9 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Date;
 import java.util.stream.Stream;
 
-/**
- * Created by AVANZAR on 5/25/2017.
- */
 public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, Long> {
 
     PasswordResetToken findByToken(String token);

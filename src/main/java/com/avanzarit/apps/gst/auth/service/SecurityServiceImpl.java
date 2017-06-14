@@ -18,9 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Calendar;
 
-/**
- * Created by SPADHI on 5/4/2017.
- */
 @Service
 public class SecurityServiceImpl implements SecurityService {
     @Autowired

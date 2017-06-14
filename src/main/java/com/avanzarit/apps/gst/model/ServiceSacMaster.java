@@ -3,12 +3,17 @@ package com.avanzarit.apps.gst.model;
 import com.avanzarit.apps.gst.Model;
 import com.avanzarit.apps.gst.batch.job.annotations.Export;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Objects;
 
-/**
- * Created by SPADHI on 5/18/2017.
- */
 @Entity
 @Table(name = "servicesacmaster")
 public class ServiceSacMaster implements Model {

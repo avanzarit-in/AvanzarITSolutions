@@ -9,9 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * Created by SPADHI on 5/4/2017.
- */
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired

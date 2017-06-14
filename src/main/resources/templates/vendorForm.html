@@ -15,7 +15,7 @@
         <strong>Success!</strong> <span th:text="${message}"/>
     </div>
 
-    <form id="profileForm" th:action="@{/add}" th:object="${vendor}" class="form-horizontal" method="post">
+    <form id="profileForm" th:action="@{/add}" th:object="${model}" class="form-horizontal" method="post">
 
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -43,13 +43,13 @@
                     </div>
 
                     <div class="tab-pane" id="address-tab">
-                        <div th:replace="fragments/vendorForm/address :: address">
+                        <div th:replace="fragments/common/address :: address">
                             Address Details goes here
                         </div>
                     </div>
 
                     <div class="tab-pane" id="communication-tab">
-                        <div th:replace="fragments/vendorForm/communication :: communication">
+                        <div th:replace="fragments/common/communication :: communication">
                             Communication Details goes here
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                     </div>
 
                     <div class="tab-pane" id="gstinfo-tab">
-                        <div th:replace="fragments/vendorForm/gstn :: gstn">
+                        <div th:replace="fragments/common/gstn :: gstn">
                             GSTN Details goes here
                         </div>
                     </div>

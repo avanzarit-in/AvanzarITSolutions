@@ -16,8 +16,9 @@
 
                 &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input checked="checked" type="radio" value="1"
                                                                            name="filter"/>Show All</label>
-                &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="2" name="filter"/>Submitted</label>
-                &nbsp;&nbsp;&nbsp;&nbsp; <label class="radio-inline"><input type="radio" value="3" name="filter"/>Saved</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="2" name="filter"/>Approved</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="3" name="filter"/>Submitted</label>
+                &nbsp;&nbsp;&nbsp;&nbsp; <label class="radio-inline"><input type="radio" value="4" name="filter"/>Saved</label>
             </div>
 
             <div class="panel-body">
@@ -86,13 +87,16 @@ $.fn.dataTable.ext.search.push(
         var selected = $('input[name=filter]:checked').val();
         var vendorStatus = data[0];
 
-        if (selected == '2') {
+         if (selected == '2') {
+            return vendorStatus == 'APPROVED' ? true : false;
+        }
+        if (selected == '3') {
             return vendorStatus == 'SUBMITTED' ? true : false;
         }
         if (selected == '1') {
             return true;
         }
-        if (selected == '3') {
+        if (selected == '4') {
             return vendorStatus == 'NEW' ? true : false;
         }
     });
