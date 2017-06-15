@@ -6,10 +6,14 @@ import com.avanzarit.apps.gst.auth.model.UserStatusEnum;
 import com.avanzarit.apps.gst.auth.properties.UserProperties;
 import com.avanzarit.apps.gst.auth.repository.RoleRepository;
 import com.avanzarit.apps.gst.auth.service.UserService;
+import com.avanzarit.apps.gst.batch.job.report.BatchLog;
 import com.avanzarit.apps.gst.email.EmailServiceImpl;
+import com.avanzarit.apps.gst.email.MAIL_SENDER;
 import com.avanzarit.apps.gst.model.Customer;
 import com.avanzarit.apps.gst.properties.AppProperties;
 import com.avanzarit.apps.gst.repository.CustomerRepository;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -30,6 +34,7 @@ public class CustomerDataImportWriter implements ItemWriter<Customer> {
     private EmailServiceImpl emailService;
     private String defaultPassword;
     private String contextURL;
+    private BatchLog logger;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -67,6 +72,11 @@ public class CustomerDataImportWriter implements ItemWriter<Customer> {
 
     }
 
+    @BeforeStep
+    public void beforeStep(StepExecution stepExecution) {
+        logger = (BatchLog) stepExecution.getJobExecution().getExecutionContext().get("log");
+    }
+
     @Override
     public void write(List<? extends Customer> customers) throws Exception {
         for (Customer customer : customers) {
@@ -81,13 +91,20 @@ public class CustomerDataImportWriter implements ItemWriter<Customer> {
                 user.setUsername(customer.getCustomerId());
                 user.setPassword(defaultPassword);
                 user.setEmail(customer.getEmail());
+                user.setTelephone(customer.getTelephoneNumberExtn());
+                user.setMobile(customer.getMobileNo());
                 user.setUserStatus(UserStatusEnum.NEW);
                 user.setRoles(roleSet);
                 userService.save(user);
 
                 if (!StringUtils.isEmpty(user.getEmail())) {
                     String text = String.format(template.getText(), contextURL, user.getUsername(), defaultPassword);
-                    emailService.sendSimpleMessage(user.getEmail(), "Welcome to Customer Management Portal", text);
+                    try {
+                        emailService.sendSimpleMessage(user.getEmail(), "Welcome to Customer Management Portal", text, MAIL_SENDER.CUSTOMER);
+                    } catch (Exception e) {
+                        logger.log("WARNING: E-mail send Error: " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
             }
         }

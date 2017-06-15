@@ -5,8 +5,12 @@ import com.avanzarit.apps.gst.auth.model.UserStatusEnum;
 import com.avanzarit.apps.gst.auth.properties.UserProperties;
 import com.avanzarit.apps.gst.auth.repository.RoleRepository;
 import com.avanzarit.apps.gst.auth.service.UserService;
+import com.avanzarit.apps.gst.batch.job.report.BatchLog;
 import com.avanzarit.apps.gst.email.EmailServiceImpl;
+import com.avanzarit.apps.gst.email.MAIL_SENDER;
 import com.avanzarit.apps.gst.properties.AppProperties;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -25,6 +29,7 @@ UserDataWriter implements ItemWriter<User> {
     private String defaultPassword;
     private String contextURL;
     private UserProperties userProperties;
+    private BatchLog logger;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -62,6 +67,13 @@ UserDataWriter implements ItemWriter<User> {
 
     }
 
+    @BeforeStep
+    public void beforeStep(StepExecution stepExecution) {
+
+        logger = (BatchLog) stepExecution.getJobExecution().getExecutionContext().get("log");
+
+    }
+
     @Override
     public void write(List<? extends User> users) throws Exception {
 
@@ -72,7 +84,12 @@ UserDataWriter implements ItemWriter<User> {
 
             if (userProperties.isSendEmailOnCreate()) {
                 String text = String.format(template.getText(), contextURL, user.getUsername(), defaultPassword);
-                emailService.sendSimpleMessage(user.getEmail(), "Welcome to Vendor Management Portal", text);
+                try {
+                    emailService.sendSimpleMessage(user.getEmail(), "Welcome to Vendor Management Portal", text, MAIL_SENDER.VENDOR);
+                } catch (Exception e) {
+                    logger.log("WARNING: E-mail send Error: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
     }

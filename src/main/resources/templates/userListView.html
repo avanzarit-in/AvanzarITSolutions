@@ -23,6 +23,8 @@
                         <tr>
                             <th>UserID</th>
                             <th>Email</th>
+                            <th>Telephone</th>
+                            <th>Mobile</th>
                             <th>Roles</th>
                             <th>Status</th>
                             <th>UserLastLogin</th>
@@ -35,6 +37,10 @@
                                        th:text="${mItem.username}" /></td>
                             <td><label type="text"
                                        th:text="${mItem.email}" /></td>
+                            <td><label type="text"
+                                       th:text="${mItem.telephone}"/></td>
+                            <td><label type="text"
+                                       th:text="${mItem.mobile}"/></td>
                             <td><label type="text"
                                        th:each="a, iterStat : ${mItem.roles}" th:text="!${iterStat.last} ? ${a.name} + ',': ${a.name}" /></td>
                             <td><label type="text"

@@ -7,7 +7,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Export {
-    int order();
-    String title();
+public @interface SapInfo {
+
+    String table();
+
+    String column();
 }

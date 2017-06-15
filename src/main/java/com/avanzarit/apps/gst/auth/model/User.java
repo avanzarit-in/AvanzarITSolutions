@@ -2,15 +2,7 @@ package com.avanzarit.apps.gst.auth.model;
 
 import com.avanzarit.apps.gst.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
@@ -21,6 +13,8 @@ public class User implements Model {
     private String username;
     private String password;
     private String email;
+    private String telephone;
+    private String mobile;
     private Set<Role> roles;
     private Date lastLoginDate;
     private UserStatusEnum userStatus;
@@ -87,6 +81,24 @@ public class User implements Model {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Column(name = "telephone")
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    @Column(name = "mobile")
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     @Override

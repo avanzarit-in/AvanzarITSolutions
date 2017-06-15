@@ -1,4 +1,4 @@
-package com.avanzarit.apps.gst.properties;
+package com.avanzarit.apps.gst.email;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -13,6 +13,8 @@ public class VendorMailProperties {
     private String password;
     private String auth;
     private String starttls;
+    private boolean sendEmail;
+    private String fromMailId;
 
     public String getHost() {
         return host;
@@ -60,5 +62,21 @@ public class VendorMailProperties {
 
     public void setStarttls(String starttls) {
         this.starttls = starttls;
+    }
+
+    public boolean isSendEmail() {
+        return sendEmail;
+    }
+
+    public void setSendEmail(boolean sendEmail) {
+        this.sendEmail = sendEmail;
+    }
+
+    public String getFromMailId() {
+        return fromMailId;
+    }
+
+    public void setFromMailId(String fromMailId) {
+        this.fromMailId = fromMailId;
     }
 }

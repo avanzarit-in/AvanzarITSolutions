@@ -7,6 +7,7 @@ import com.avanzarit.apps.gst.auth.repository.UserRepository;
 import com.avanzarit.apps.gst.auth.service.SecurityService;
 import com.avanzarit.apps.gst.auth.service.UserService;
 import com.avanzarit.apps.gst.email.EmailService;
+import com.avanzarit.apps.gst.email.MAIL_SENDER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -140,6 +141,8 @@ public class UserController {
                                 @RequestParam("email") String userEmail) throws MalformedURLException {
         String contextPath = getContextPath(request);
         User user = userService.findByEmail(userEmail);
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "User with this e-mail ID does not exist, please enter a valid e-mail ID");
             return "redirect:/resetPassword";
@@ -147,7 +150,9 @@ public class UserController {
         String token = UUID.randomUUID().toString();
         userService.createPasswordResetTokenForUser(user, token);
         redirectAttributes.addFlashAttribute("message", "We have sent you a mail on your registered E-mail ID with a link to reset your password");
-        emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Reset Password", resetTokenMessage, contextPath, user.getUsername(), token);
+        MAIL_SENDER mailSender = getMailSender(roles);
+        emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Reset Password", mailSender, resetTokenMessage, contextPath, user.getUsername(), token);
+
         return "redirect:/login";
     }
 
@@ -157,11 +162,14 @@ public class UserController {
                                     @RequestParam("action") String action) throws MalformedURLException {
         String contextPath = getContextPath(request);
         User user = userService.findByEmail(userEmail);
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
         if (user != null && action.equals("SEND_REMINDER_EMAIL")) {
 
             redirectAttributes.addFlashAttribute("message", "Successfully sent a Login reminder mail to the vendor's registered E-mail ID");
+            MAIL_SENDER mailSender = getMailSender(roles);
             emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Action Required: Please login into the Vendor Management " +
-                    "Portal and update your registration details at the earliest", loginReminderMessage, contextPath);
+                    "Portal and update your registration details at the earliest", mailSender, loginReminderMessage, contextPath);
         } else {
             redirectAttributes.addFlashAttribute("error", "Failed to trigger reminder Email");
         }
@@ -194,6 +202,16 @@ public class UserController {
         ModelAndView model = new ModelAndView();
         model.setViewName("404");
         return model;
+    }
+
+    private MAIL_SENDER getMailSender(Set<String> roles) {
+        MAIL_SENDER mailSender = MAIL_SENDER.VENDOR;
+        if (roles.contains("VENDOR")) {
+            mailSender = MAIL_SENDER.VENDOR;
+        } else if (roles.contains("CUSTOMER")) {
+            mailSender = MAIL_SENDER.VENDOR;
+        }
+        return mailSender;
     }
 
 }

@@ -21,36 +21,60 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     public JavaMailSender javaVendorMailSender;
+    @Autowired
+    public JavaMailSender javaCustomerMailSender;
+    @Autowired
+    public VendorMailProperties vendorMailProperties;
+    @Autowired
+    public CustomerMailProperties customerMailProperties;
 
-    public void sendSimpleMessage(String to, String subject, String text) {
-        try {
+    public void sendSimpleMessage(String to, String subject, String text, MAIL_SENDER mailSender) throws MailException {
+
+        boolean sendMail = false;
+        String fromEmailId = null;
+        JavaMailSender javaMailSender = null;
+        if (mailSender == MAIL_SENDER.CUSTOMER) {
+            fromEmailId = customerMailProperties.getFromMailId();
+            sendMail = customerMailProperties.isSendEmail();
+            javaMailSender = javaCustomerMailSender;
+        } else if (mailSender == MAIL_SENDER.VENDOR) {
+            fromEmailId = vendorMailProperties.getFromMailId();
+            sendMail = vendorMailProperties.isSendEmail();
+            javaMailSender = javaVendorMailSender;
+        }
+
+        if (fromEmailId != null && javaMailSender != null && sendMail) {
             SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmailId);
             message.setTo(to);
             message.setSubject(subject);
             message.setText(text);
 
-            javaVendorMailSender.send(message);
-        } catch (MailException exception) {
-            exception.printStackTrace();
+            javaMailSender.send(message);
         }
+        throw new RuntimeException("Error Sending mail 'fromEmailId==null' or 'javaMailSender==null' or 'sendMail==false' ");
+
     }
 
     @Override
     public void sendSimpleMessageUsingTemplate(String to,
                                                String subject,
+                                               MAIL_SENDER mailSender,
                                                SimpleMailMessage template,
-                                               String ...templateArgs) {
+                                               String... templateArgs) {
         String text = String.format(template.getText(), templateArgs);
-        sendSimpleMessage(to, subject, text);
+        sendSimpleMessage(to, subject, text, mailSender);
     }
 
     @Override
     public void sendMessageWithAttachment(String to,
                                           String subject,
+                                          MAIL_SENDER mailSender,
                                           String text,
                                           String pathToAttachment) {
         try {
             MimeMessage message = javaVendorMailSender.createMimeMessage();
+
             // pass 'true' to the constructor to create a multipart message
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 

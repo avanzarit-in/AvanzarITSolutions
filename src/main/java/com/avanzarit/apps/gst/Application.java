@@ -1,8 +1,8 @@
 package com.avanzarit.apps.gst;
 
+import com.avanzarit.apps.gst.email.CustomerMailProperties;
+import com.avanzarit.apps.gst.email.VendorMailProperties;
 import com.avanzarit.apps.gst.interceptor.ThymeleafLayoutInterceptor;
-import com.avanzarit.apps.gst.properties.CustomerMailProperties;
-import com.avanzarit.apps.gst.properties.VendorMailProperties;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

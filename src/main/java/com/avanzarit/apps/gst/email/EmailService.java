@@ -9,15 +9,18 @@ public interface EmailService {
 
     void sendSimpleMessage(String to,
                            String subject,
-                           String text);
+                           String text,
+                           MAIL_SENDER mailSender);
 
     void sendSimpleMessageUsingTemplate(String to,
                                         String subject,
+                                        MAIL_SENDER mailSender,
                                         SimpleMailMessage template,
                                         String ...templateArgs);
 
     void sendMessageWithAttachment(String to,
                                    String subject,
+                                   MAIL_SENDER mailSender,
                                    String text,
                                    String pathToAttachment);
 }

@@ -12,6 +12,8 @@ CREATE TABLE appuser (
   id         BIGSERIAL PRIMARY KEY NOT NULL,
   username   VARCHAR(30)           NOT NULL,
   password   VARCHAR(300)          NOT NULL,
+  mobile VARCHAR(50),
+  telephone VARCHAR(50),
   email      VARCHAR(300),
   lastlogin  TIMESTAMP,
   userstatus VARCHAR(20)
