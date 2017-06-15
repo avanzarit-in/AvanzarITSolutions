@@ -197,7 +197,7 @@ $(document).ready(function() {
                  .val(faxNumber)
                  .end()
                  // Revalidate it
-                 .formValidation('revalidateField', 'faxNumberExtn');
+                 .formValidation('revalidateField', 'faxNumber');
          } else {
              $('#communication-tab')
              // Update the value for hidden field
@@ -221,7 +221,8 @@ $(document).ready(function() {
                  .val(telephone)
                  .end()
                  // Revalidate it
-                 .formValidation('revalidateField', 'telephoneNumberExtn');
+                 .formValidation('revalidateField', 'telephoneNumber');
+
 
          } else {
              $('#communication-tab')
@@ -230,7 +231,9 @@ $(document).ready(function() {
                     .val(telephone+'-'+extension)
                     .end()
                     // Revalidate it
+                    .formValidation('revalidateField', 'telephoneExtn')
                  .formValidation('revalidateField', 'telephoneNumberExtn');
+
          }
         });
 });
