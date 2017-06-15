@@ -3,16 +3,9 @@ package com.avanzarit.apps.gst.model;
 import com.avanzarit.apps.gst.Model;
 import com.avanzarit.apps.gst.annotations.CopyOver;
 import com.avanzarit.apps.gst.batch.job.annotations.Export;
+import com.avanzarit.apps.gst.batch.job.annotations.SapInfo;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,54 +14,74 @@ import java.util.List;
 @Table(name = "customer")
 public class Customer implements Model {
 
-    @Export(order = 1, title = "LFA1#LIFNR")
+    @SapInfo(table = "LFA1", column = "LIFNR")
+    @Export(order = 1, title = "CUSTOMERID")
     private String customerId;
-    @Export(order = 2, title = "LFA1#NAME1")
+    @SapInfo(table = "LFA1", column = "NAME1")
+    @Export(order = 2, title = "NAME1")
     private String customerName1;
-    @Export(order = 3, title = "LFA1#NAME2")
+    @SapInfo(table = "LFA1", column = "NAME2")
+    @Export(order = 3, title = "NAME2")
     private String customerName2;
-    @Export(order = 4, title = "LFA1#NAME3")
+    @SapInfo(table = "LFA1", column = "NAME3")
+    @Export(order = 4, title = "NAME3")
     private String customerName3;
-    @Export(order = 5, title = "LFA1#TELF1")
+    @SapInfo(table = "LFA1", column = "STRAS")
+    @Export(order = 5, title = "STREET1")
+    private String address1;
+    @SapInfo(table = "ADRC", column = "STR_SUPPL1")
+    @Export(order = 6, title = "STREET2")
+    private String address2;
+    @SapInfo(table = "ADRC", column = "STR_SUPPL2")
+    @Export(order = 7, title = "STREET3")
+    private String address3;
+    @SapInfo(table = "ADRC", column = "STR_SUPPL3")
+    @Export(order = 8, title = "STREET4")
+    private String address4;
+    @SapInfo(table = "ADRC", column = "LOCATION")
+    @Export(order = 9, title = "STREET5")
+    private String address5;
+    @SapInfo(table = "LFA1", column = "PSTLZ")
+    @Export(order = 10, title = "POSTCODE")
+    private String postCode;
+    @SapInfo(table = "LFA1", column = "ORT01")
+    @Export(order = 11, title = "CITY")
+    private String city;
+    @SapInfo(table = "LFA1", column = "REGIO")
+    @Export(order = 12, title = "REGION")
+    private String region;
+    @SapInfo(table = "LFA1", column = "LAND1")
+    @Export(order = 13, title = "COUNTRY")
+    private String country;
+    @SapInfo(table = "LFA1", column = "STCEG")
+    @Export(order = 14, title = "VATNO")
+    private String vatNumber;
+    @SapInfo(table = "ADR6", column = "SMTP_ADDR")
+    @Export(order = 15, title = "EMAIL")
+    private String email;
+    @SapInfo(table = "LFA1", column = "TELF1")
+    @Export(order = 16, title = "TELEPHONE1")
     private String telephoneNumberExtn;
     private String telephoneNumber;
     private String telephoneExtn;
-    @Export(order = 6, title = "LFA1#TELF2")
-    private String mobileNo;
-    @Export(order = 7, title = "ADR6#SMTP_ADDR")
-    private String email;
+    @SapInfo(table = "LFA1", column = "TELFX")
+    @Export(order = 17, title = "FAXNO")
+    private String faxNumberExtn;
     private String faxNumber;
     private String faxExtn;
-    @Export(order = 8, title = "LFA1#TELFX")
-    private String faxNumberExtn;
-    @Export(order = 9, title = "ADRC#BUILDING")
+    @SapInfo(table = "LFA1", column = "TELF2")
+    @Export(order = 18, title = "MOBILENO")
+    private String mobileNo;
+    @SapInfo(table = "ADRC", column = "BUILDING")
     private String buildingNo;
-    @Export(order = 10, title = "LFA1#STRAS")
-    private String address1;
-    @Export(order = 11, title = "ADRC#STR_SUPPL1")
-    private String address2;
-    @Export(order = 12, title = "ADRC#STR_SUPPL2")
-    private String address3;
-    @Export(order = 13, title = "ADRC#STR_SUPPL3")
-    private String address4;
-    @Export(order = 14, title = "ADRC#LOCATION")
-    private String address5;
-    @Export(order = 15, title = "LFA1#ORT01")
-    private String city;
-    @Export(order = 16, title = "LFA1#PSTLZ")
-    private String postCode;
-    @Export(order = 17, title = "LFA1#REGIO")
-    private String region;
-    @Export(order = 18, title = "LFA1#LAND1")
-    private String country;
     private String railwayStation;
-    @Export(order = 21, title = "J_1IMOVEND#J_1IPANNO")
+    @SapInfo(table = "J_1IMOVEND", column = "J_1IPANNO")
     private String pan;
-    @Export(order = 22, title = "LFA1#STCEG")
-    private String vatNumber;
+    @Export(order = 19, title = "GST_REGISTRATION_STATUS")
     private String gstRegistrationStatus;
     private String noOfGstRegistration;
     private String state;
+    @Export(order = 20, title = "GSTN_NUMBER")
     private String gstNumber;
     private String submityn = "N";
     private List<CustomerContactPersonMaster> customerContactPersonMasters = new ArrayList<>();

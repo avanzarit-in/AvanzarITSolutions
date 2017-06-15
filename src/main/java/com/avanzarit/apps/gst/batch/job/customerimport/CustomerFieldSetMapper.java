@@ -36,8 +36,8 @@ public class CustomerFieldSetMapper implements FieldSetMapper<Customer> {
     @Override
     public Customer mapFieldSet(FieldSet fieldSet) throws BindException {
 
-        String customerid = fieldSet.readString("customerid");
-        String email = fieldSet.readString("email");
+        String customerid = fieldSet.readString("CUSTOMERID");
+        String email = fieldSet.readString("EMAIL");
         if (StringUtils.isEmpty(email)) {
             logger.log("WARNING: Email ID missing for customerId: " + customerid);
         }
@@ -51,24 +51,23 @@ public class CustomerFieldSetMapper implements FieldSetMapper<Customer> {
 
         Customer result = new Customer();
         result.setCustomerId(customerid);
-        result.setCustomerName1(fieldSet.readString("customername1"));
-        result.setCustomerName2(fieldSet.readString("customername2"));
-        result.setCustomerName3(fieldSet.readString("customername3"));
-        result.setTelephoneNumberExtn(fieldSet.readString("telephonenumberextn"));
-        result.setMobileNo(fieldSet.readString("mobileno"));
-        result.setEmail(fieldSet.readString("email"));
-        result.setFaxNumberExtn(fieldSet.readString("faxnumberextn"));
-        result.setBuildingNo(fieldSet.readString("buildingno"));
-        result.setAddress1(fieldSet.readString("address1"));
-        result.setAddress2(fieldSet.readString("address2"));
-        result.setAddress3(fieldSet.readString("address3"));
-        result.setAddress4(fieldSet.readString("address4"));
-        result.setAddress5(fieldSet.readString("address5"));
-        result.setCity(fieldSet.readString("city"));
-        result.setPostCode(fieldSet.readString("postcode"));
-        result.setRegion(fieldSet.readString("region"));
-        result.setCountry(fieldSet.readString("country"));
-        result.setVatNumber(fieldSet.readString("vatnumber"));
+        result.setCustomerName1(fieldSet.readString("NAME1"));
+        result.setCustomerName2(fieldSet.readString("NAME2"));
+        result.setCustomerName3(fieldSet.readString("NAME3"));
+        result.setTelephoneNumberExtn(fieldSet.readString("TELEPHONE1"));
+        result.setMobileNo(fieldSet.readString("MOBILENO"));
+        result.setEmail(email);
+        result.setFaxNumberExtn(fieldSet.readString("FAXNO"));
+        result.setAddress1(fieldSet.readString("STREET1"));
+        result.setAddress2(fieldSet.readString("STREET2"));
+        result.setAddress3(fieldSet.readString("STREET3"));
+        result.setAddress4(fieldSet.readString("STREET4"));
+        result.setAddress5(fieldSet.readString("STREET5"));
+        result.setCity(fieldSet.readString("CITY"));
+        result.setPostCode(fieldSet.readString("POSTCODE"));
+        result.setRegion(fieldSet.readString("REGION"));
+        result.setCountry(fieldSet.readString("COUNTRY"));
+        result.setVatNumber(fieldSet.readString("VATNO"));
         result.setCreatedBy(user);
         result.setCreatedOn(new Date());
         result.setCustomerStatus(CustomerStatusEnum.NEW);
