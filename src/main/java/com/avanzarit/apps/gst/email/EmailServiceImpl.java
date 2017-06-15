@@ -51,8 +51,9 @@ public class EmailServiceImpl implements EmailService {
             message.setText(text);
 
             javaMailSender.send(message);
+        } else {
+            throw new RuntimeException("Error Sending mail 'fromEmailId==null' or 'javaMailSender==null' or 'sendMail==false' ");
         }
-        throw new RuntimeException("Error Sending mail 'fromEmailId==null' or 'javaMailSender==null' or 'sendMail==false' ");
 
     }
 
