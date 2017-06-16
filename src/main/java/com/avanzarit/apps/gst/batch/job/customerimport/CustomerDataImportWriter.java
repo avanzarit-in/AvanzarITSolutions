@@ -12,6 +12,8 @@ import com.avanzarit.apps.gst.email.MAIL_SENDER;
 import com.avanzarit.apps.gst.model.Customer;
 import com.avanzarit.apps.gst.properties.AppProperties;
 import com.avanzarit.apps.gst.repository.CustomerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemWriter;
@@ -27,6 +29,7 @@ import java.util.Set;
 @Component
 public class CustomerDataImportWriter implements ItemWriter<Customer> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerDataImportWriter.class);
     private UserService userService;
     private RoleRepository roleRepository;
     private CustomerRepository customerRepository;
@@ -103,7 +106,7 @@ public class CustomerDataImportWriter implements ItemWriter<Customer> {
                         emailService.sendSimpleMessage(user.getEmail(), "Welcome to Customer Management Portal", text, MAIL_SENDER.CUSTOMER);
                     } catch (Exception e) {
                         logger.log("WARNING: E-mail send Error: " + e.getMessage());
-                        e.printStackTrace();
+                        LOGGER.error(e.getMessage());
                     }
                 }
             }

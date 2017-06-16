@@ -1,9 +1,0 @@
-1) Use internationalization for labels in the forms
-2) give context in the controllers like /user /vendor etc
-3) THe importal and exporter logging on results records read, processed, failed, reason for failute
-5) Display proper error message for uploads
-6) Every Model Class should have hascode and equals method
-7) Error Page
-8) SOme more changes
-9)FOr material/contactperson the export should not export blank Items and import should check if there
-is a blank Item then replace it with the one uploaded

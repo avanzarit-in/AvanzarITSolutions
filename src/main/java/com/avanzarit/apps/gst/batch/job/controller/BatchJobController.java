@@ -85,6 +85,12 @@ public class BatchJobController implements BeanFactoryAware {
         return "customerupload";
     }
 
+    @GetMapping("/upload/user")
+    public String getUserDataUploadForm() {
+
+        return "userupload";
+    }
+
     @PostMapping("/customerupload")
     public String handleCustomerFileUpload(@RequestParam("file") MultipartFile file,
                                            RedirectAttributes redirectAttributes) {

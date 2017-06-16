@@ -5,7 +5,15 @@ import com.avanzarit.apps.gst.annotations.CopyOver;
 import com.avanzarit.apps.gst.batch.job.annotations.Export;
 import com.avanzarit.apps.gst.batch.job.annotations.SapInfo;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +23,6 @@ import static com.avanzarit.apps.gst.model.Attachment.PAN;
 @Entity
 @Table(name = "vendor")
 public class Vendor implements Model {
-
     @SapInfo(table = "LFA1", column = "LIFNR")
     @Export(order = 1, title = "VENDORID")
     private String vendorId;
@@ -28,28 +35,26 @@ public class Vendor implements Model {
     @SapInfo(table = "LFA1", column = "NAME3")
     @Export(order = 4, title = "NAME3")
     private String vendorName3;
-    @Export(order = 5, title = "GST_REGISTRATION_STATUS")
-    private String gstRegistrationStatus;
-    @Export(order = 6, title = "GSTN_NUMBER")
-    private String gstNumber;
     @SapInfo(table = "LFA1", column = "TELF1")
-    @Export(order = 7, title = "TELEPHONENO1")
     private String telephoneNumberExtn;
+    @Export(order = 5, title = "TELEPHONENO1")
     private String telephoneNumber;
+    @Export(order = 6, title = "TELEPHONENO1EXTN")
     private String telephoneExtn;
     @SapInfo(table = "LFA1", column = "TELF2")
-    @Export(order = 8, title = "TELEPHONENO2")
+    @Export(order = 7, title = "TELEPHONENO2")
     private String mobileNo;
     @SapInfo(table = "LFA1", column = "TELFX")
-    @Export(order = 9, title = "FAXNO")
     private String faxNumberExtn;
+    @Export(order = 8, title = "FAXNO")
     private String faxNumber;
+    @Export(order = 9, title = "FAXEXTN")
     private String faxExtn;
-    @SapInfo(table = "LFA1", column = "STCEG")
-    @Export(order = 10, title = "VATNO")
-    private String vatNumber;
+    @SapInfo(table = "ADRC", column = "BUILDING")
+    @Export(order = 10, title = "BUILDING_NO")
+    private String buildingNo;
     @SapInfo(table = "LFA1", column = "STRAS")
-    @Export(order = 11, title = "STREET")
+    @Export(order = 11, title = "STREET1")
     private String address1;
     @SapInfo(table = "ADRC", column = "STR_SUPPL1")
     @Export(order = 12, title = "STREET2")
@@ -63,41 +68,45 @@ public class Vendor implements Model {
     @SapInfo(table = "ADRC", column = "LOCATION")
     @Export(order = 15, title = "LOCATION")
     private String address5;
-    @SapInfo(table = "LFA1", column = "ORT01")
-    @Export(order = 16, title = "CITY")
-    private String city;
-    @SapInfo(table = "ADRC", column = "BUILDING")
-    @Export(order = 17, title = "BUILDING_NO")
-    private String buildingNo;
     @SapInfo(table = "LFA1", column = "PSTLZ")
-    @Export(order = 18, title = "POSTCODE")
+    @Export(order = 16, title = "POSTCODE")
     private String postCode;
+    @SapInfo(table = "LFA1", column = "ORT01")
+    @Export(order = 17, title = "CITY")
+    private String city;
     @SapInfo(table = "LFA1", column = "REGIO")
-    @Export(order = 19, title = "REGION")
+    @Export(order = 18, title = "REGION")
     private String region;
+    @SapInfo(table = "LFA1", column = "LAND1")
+    @Export(order = 19, title = "COUNTRY")
+    private String country;
     @SapInfo(table = "ADR6", column = "SMTP_ADDR")
     @Export(order = 20, title = "EMAIL_ID")
     private String email;
-    @SapInfo(table = "LFA1", column = "LAND1")
-    @Export(order = 21, title = "COUNTRY")
-    private String country;
     @SapInfo(table = "LFBK", column = "KOINH")
-    @Export(order = 22, title = "ACCOUNT_HOLDER_NAME")
+    @Export(order = 21, title = "ACCOUNT_HOLDER_NAME")
     private String accountHolderName;
     @SapInfo(table = "LFBK", column = "BANKN")
-    @Export(order = 23, title = "ACCOUNT_NO")
+    @Export(order = 22, title = "ACCOUNT_NO")
     private String accountNumber;
-    @Export(order = 24, title = "BANK_NAME")
+    @Export(order = 23, title = "BANK_NAME")
     private String bankName;
-    @Export(order = 25, title = "IFSC_CODE")
+    @Export(order = 24, title = "IFSC_CODE")
     private String ifscCode;
-    @Export(order = 26, title = "BRANCH_NAME")
+    @Export(order = 25, title = "BRANCH_NAME")
     private String branchName;
-    @Export(order = 27, title = "BRANCH_LOCATION")
+    @Export(order = 26, title = "BRANCH_LOCATION")
     private String branchLocation;
-    private String railwayStation;
+    @SapInfo(table = "LFA1", column = "STCEG")
+    @Export(order = 27, title = "VATNO")
+    private String vatNumber;
     @SapInfo(table = "J_1IMOVEND", column = "J_1IPANNO")
     private String pan;
+    @Export(order = 28, title = "GST_REGISTRATION_STATUS")
+    private String gstRegistrationStatus;
+    @Export(order = 29, title = "GSTN_NUMBER")
+    private String gstNumber;
+    private String railwayStation;
     private String noOfGstRegistration;
     private String state;
     private String submityn="N";

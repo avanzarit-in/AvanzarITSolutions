@@ -61,7 +61,7 @@ public class VendorFieldSetMapper implements FieldSetMapper<Vendor>, ItemCountAw
         result.setEmail(email);
         result.setFaxNumberExtn(fieldSet.readString("FAXNO"));
         result.setBuildingNo(fieldSet.readString("BUILDING_NO"));
-        result.setAddress1(fieldSet.readString("STREET"));
+        result.setAddress1(fieldSet.readString("STREET1"));
         result.setAddress2(fieldSet.readString("STREET2"));
         result.setAddress3(fieldSet.readString("STREET3"));
         result.setAddress4(fieldSet.readString("STREET4"));
@@ -70,8 +70,6 @@ public class VendorFieldSetMapper implements FieldSetMapper<Vendor>, ItemCountAw
         result.setPostCode(fieldSet.readString("POSTCODE"));
         result.setRegion(fieldSet.readString("REGION"));
         result.setCountry(fieldSet.readString("COUNTRY"));
-        result.setAccountHolderName(fieldSet.readString("ACCOUNT_HOLDER_NAME"));
-        result.setAccountNumber(fieldSet.readString("ACCOUNT_NO"));
         result.setVatNumber(fieldSet.readString("VATNO"));
         result.setCreatedBy(user);
         result.setCreatedOn(new Date());

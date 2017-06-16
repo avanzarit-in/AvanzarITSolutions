@@ -5,6 +5,8 @@ import com.avanzarit.apps.gst.batch.job.report.BatchLog;
 import com.avanzarit.apps.gst.model.Customer;
 import com.avanzarit.apps.gst.model.CustomerStatusEnum;
 import com.avanzarit.apps.gst.repository.CustomerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
@@ -19,6 +21,7 @@ import java.util.Date;
 @Component
 public class CustomerFieldSetMapper implements FieldSetMapper<Customer> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerFieldSetMapper.class);
     private String user;
     @Autowired
     private CustomerRepository customerRepository;
@@ -37,7 +40,7 @@ public class CustomerFieldSetMapper implements FieldSetMapper<Customer> {
     public Customer mapFieldSet(FieldSet fieldSet) throws BindException {
 
         String customerid = fieldSet.readString("CUSTOMERID");
-        String email = fieldSet.readString("EMAIL");
+        String email = fieldSet.readString("EMAIL_ID");
         if (StringUtils.isEmpty(email)) {
             logger.log("WARNING: Email ID missing for customerId: " + customerid);
         }
@@ -54,15 +57,16 @@ public class CustomerFieldSetMapper implements FieldSetMapper<Customer> {
         result.setCustomerName1(fieldSet.readString("NAME1"));
         result.setCustomerName2(fieldSet.readString("NAME2"));
         result.setCustomerName3(fieldSet.readString("NAME3"));
-        result.setTelephoneNumberExtn(fieldSet.readString("TELEPHONE1"));
-        result.setMobileNo(fieldSet.readString("MOBILENO"));
+        result.setTelephoneNumberExtn(fieldSet.readString("TELEPHONENO1"));
+        result.setMobileNo(fieldSet.readString("TELEPHONENO2"));
         result.setEmail(email);
         result.setFaxNumberExtn(fieldSet.readString("FAXNO"));
+        result.setBuildingNo(fieldSet.readString("BUILDING_NO"));
         result.setAddress1(fieldSet.readString("STREET1"));
         result.setAddress2(fieldSet.readString("STREET2"));
         result.setAddress3(fieldSet.readString("STREET3"));
         result.setAddress4(fieldSet.readString("STREET4"));
-        result.setAddress5(fieldSet.readString("STREET5"));
+        result.setAddress5(fieldSet.readString("LOCATION"));
         result.setCity(fieldSet.readString("CITY"));
         result.setPostCode(fieldSet.readString("POSTCODE"));
         result.setRegion(fieldSet.readString("REGION"));

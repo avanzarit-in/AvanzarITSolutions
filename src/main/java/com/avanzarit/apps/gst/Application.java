@@ -24,9 +24,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import javax.sql.DataSource;
 import java.util.Properties;
 
-/**
- * Created by SPADHI on 5/3/2017.
- */
 @SpringBootApplication
 @EnableBatchProcessing
 public class Application extends WebMvcConfigurerAdapter {
@@ -92,7 +89,7 @@ public class Application extends WebMvcConfigurerAdapter {
         props.put("mail.transport.protocol", "smtp");
         props.put(customerMailProperties.getAuth(), "true");
         props.put(customerMailProperties.getStarttls(), "true");
-        props.put("mail.debug", "true");
+        props.put("mail.debug", customerMailProperties.isDebug());
 
         return mailSender;
     }
@@ -112,7 +109,7 @@ public class Application extends WebMvcConfigurerAdapter {
         props.put("mail.transport.protocol", "smtp");
         props.put(vendorMailProperties.getAuth(), "true");
         props.put(vendorMailProperties.getStarttls(), "true");
-        props.put("mail.debug", "true");
+        props.put("mail.debug", vendorMailProperties.isDebug());
 
         return mailSender;
     }

@@ -15,6 +15,7 @@ public class CustomerMailProperties {
     private String starttls;
     private boolean sendEmail;
     private String fromMailId;
+    private boolean debug;
 
     public String getHost() {
         return host;
@@ -78,5 +79,13 @@ public class CustomerMailProperties {
 
     public void setFromMailId(String fromMailId) {
         this.fromMailId = fromMailId;
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 }

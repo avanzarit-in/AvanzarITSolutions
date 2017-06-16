@@ -12,7 +12,8 @@
         </div>
 
 
-        <div sec:authorize="hasAuthority('BUSINESS_OWNER')" class="panel panel-default">
+        <div sec:authorize="hasAuthority('BUSINESS_OWNER_CUSTOMER') or hasAuthority('ADMIN')"
+             class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Customer Data Upload</h3>
             </div>

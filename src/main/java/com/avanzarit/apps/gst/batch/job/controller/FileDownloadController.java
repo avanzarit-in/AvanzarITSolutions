@@ -53,8 +53,8 @@ public class FileDownloadController implements BeanFactoryAware {
     public void downloadAttachment(HttpServletResponse response, @PathVariable String docType, @PathVariable String vendorId) throws IOException {
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
-        String userName = roles.contains("BUSINESS_OWNER") ? vendorId : auth.getUsername();
-        if (roles.contains("BUSINESS_OWNER") || (roles.contains("VENDOR") && auth.getUsername().equals(vendorId))) {
+        String userName = roles.contains("BUSINESS_OWNER_VENDOR") ? vendorId : auth.getUsername();
+        if (roles.contains("BUSINESS_OWNER_VENDOR") || (roles.contains("VENDOR") && auth.getUsername().equals(vendorId))) {
             File file = storageService.loadAsFile("attachment", userName + "/PAN");
             String mimeType = URLConnection.guessContentTypeFromName(file.getName());
             if (mimeType == null) {

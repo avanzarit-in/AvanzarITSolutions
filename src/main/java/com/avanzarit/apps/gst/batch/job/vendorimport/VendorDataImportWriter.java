@@ -12,6 +12,8 @@ import com.avanzarit.apps.gst.email.MAIL_SENDER;
 import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.properties.AppProperties;
 import com.avanzarit.apps.gst.repository.VendorRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemWriter;
@@ -27,6 +29,7 @@ import java.util.Set;
 @Component
 public class VendorDataImportWriter implements ItemWriter<Vendor> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(VendorDataImportWriter.class);
     private UserService userService;
     private RoleRepository roleRepository;
     private VendorRepository vendorRepository;
@@ -105,7 +108,8 @@ public class VendorDataImportWriter implements ItemWriter<Vendor> {
                         emailService.sendSimpleMessage(user.getEmail(), "Welcome to Vendor Management Portal", text, MAIL_SENDER.VENDOR);
                     } catch (Exception e) {
                         logger.log("WARNING: E-mail send Error: " + e.getMessage());
-                        e.printStackTrace();
+                        LOGGER.error(e.getMessage());
+
                     }
                 }
             }

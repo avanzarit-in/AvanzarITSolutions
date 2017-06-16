@@ -9,6 +9,8 @@ import com.avanzarit.apps.gst.batch.job.report.BatchLog;
 import com.avanzarit.apps.gst.email.EmailServiceImpl;
 import com.avanzarit.apps.gst.email.MAIL_SENDER;
 import com.avanzarit.apps.gst.properties.AppProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemWriter;
@@ -22,6 +24,7 @@ import java.util.List;
 public class
 UserDataWriter implements ItemWriter<User> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserDataWriter.class);
     private UserService userService;
     private RoleRepository roleRepository;
     private SimpleMailMessage template;
@@ -88,7 +91,7 @@ UserDataWriter implements ItemWriter<User> {
                     emailService.sendSimpleMessage(user.getEmail(), "Welcome to Vendor Management Portal", text, MAIL_SENDER.VENDOR);
                 } catch (Exception e) {
                     logger.log("WARNING: E-mail send Error: " + e.getMessage());
-                    e.printStackTrace();
+                    LOGGER.error(e.getMessage());
                 }
             }
         }

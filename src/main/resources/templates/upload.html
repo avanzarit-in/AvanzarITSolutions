@@ -12,7 +12,7 @@
         </div>
 
 
-        <div sec:authorize="hasAuthority('BUSINESS_OWNER')" class="panel panel-default">
+        <div sec:authorize="hasAuthority('BUSINESS_OWNER_VENDOR') or hasAuthority('ADMIN')" class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Vendor Data Upload</h3>
             </div>
@@ -76,32 +76,6 @@
                    </div>
         </div>
 
-
-        <div sec:authorize="hasAuthority('ADMIN')" class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">System User Data Upload</h3>
-            </div>
-
-            <div class="panel-body">
-                <div class="row view-area">
-                    <form method="POST" enctype="multipart/form-data" action="/userupload">
-                        <div class="form-group">
-                            <label class="col-xs-2 control-label">User file to upload:</label>
-                            <div class="col-xs-3">
-                                <input type="file" name="file"/>
-                            </div>
-                            <div class="col-xs-1">
-                                <input type="submit" value="Upload"/>
-                            </div>
-                        </div>
-
-                        <input type="hidden"
-                               th:name="${_csrf.parameterName}"
-                               th:value="${_csrf.token}"/>
-                    </form>
-                </div>
-            </div>
-        </div>
 
 
     </div>

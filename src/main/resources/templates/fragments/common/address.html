@@ -315,15 +315,15 @@
     <div class="col-xs-3">
         <select th:field="*{region}" class="form-control"  th:disabled="*{submityn == 'Y'}">
             <option value="">Select a Region</option>
-            <option value="1">Andhra Pradesh</option>
-            <option value="2">Arunachal Pradesh</option>
-            <option value="3">Assam</option>
-            <option value="4">Bihar</option>
-            <option value="5">Goa</option>
-            <option value="6">Gujarat</option>
-            <option value="7">Haryana</option>
-            <option value="8">Himachal Pradesh</option>
-            <option value="9">Jammu and Kashmir</option>
+            <option value="01">Andhra Pradesh</option>
+            <option value="02">Arunachal Pradesh</option>
+            <option value="03">Assam</option>
+            <option value="04">Bihar</option>
+            <option value="05">Goa</option>
+            <option value="06">Gujarat</option>
+            <option value="07">Haryana</option>
+            <option value="08">Himachal Pradesh</option>
+            <option value="09">Jammu and Kashmir</option>
             <option value="10">Karnataka</option>
             <option value="11">Kerala</option>
             <option value="12">Madhya Pradesh</option>
@@ -502,6 +502,7 @@ $(document).ready(function() {
             // data.element --> The field element
             var $tabPane = data.element.parents('.tab-pane'),
                 tabId    = $tabPane.attr('id');
+
             $('a[href="#' + tabId + '"][data-toggle="tab"]')
                 .parent()
                 .find('i')
@@ -517,6 +518,13 @@ $(document).ready(function() {
                             .parent()
                             .find('i')
                             .removeClass('fa-check fa-times');
+
+
+            // Check if all fields in tab are valid
+            var isValidTab = data.fv.isValidContainer($tabPane);
+            if (isValidTab !== null) {
+                $icon.addClass(isValidTab ? '' : 'fa-times');
+            }
 
         });
 });

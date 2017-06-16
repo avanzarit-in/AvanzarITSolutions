@@ -19,21 +19,30 @@
 
                 <ul class="nav navbar-nav">
 
-                    <li sec:authorize="hasAuthority('ADMIN')" class="dropdown">
+                    <li sec:authorize="hasAuthority('ADMIN') or hasAuthority('BUSINESS_OWNER_VENDOR') or hasAuthority('BUSINESS_OWNER_CUSTOMER') "
+                        class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">Admin Actions<span class="caret"></span></a>
+                           aria-expanded="false">User Management<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="/upload">User Data Import</a></li>
+                            <li sec:authorize="hasAuthority('ADMIN')"><a href="/upload/user">User Data Import</a></li>
                             <li><a href="/userListView">User Management</a></li>
                         </ul>
                     </li>
 
-                    <li sec:authorize="hasAuthority('BUSINESS_OWNER')" class="dropdown">
+                    <li sec:authorize="hasAuthority('BUSINESS_OWNER_VENDOR') or hasAuthority('ADMIN')" class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">Business Owner Actions<span class="caret"></span></a>
+                           aria-expanded="false">Vendor Management<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="/upload">Vendor Data Import</a></li>
                             <li><a href="/vendorListView">Vendor Management</a></li>
+                        </ul>
+                    </li>
+
+                    <li sec:authorize="hasAuthority('BUSINESS_OWNER_CUSTOMER') or hasAuthority('ADMIN')"
+                        class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Customer Management<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
                             <li><a href="/upload/customer">Customer Data Import</a></li>
                             <li><a href="/customerListView">Customer Management</a></li>
                         </ul>

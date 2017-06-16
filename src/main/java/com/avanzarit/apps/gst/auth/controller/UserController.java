@@ -66,7 +66,7 @@ public class UserController {
         Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
         if (roles.contains("ADMIN")) {
             return "redirect:/adminLanding";
-        } else if (roles.contains("BUSINESS_OWNER")) {
+        } else if (roles.contains("BUSINESS_OWNER_VENDOR") || roles.contains("BUSINESS_OWNER_CUSTOMER")) {
             return "redirect:/businessOwnerLanding";
         } else if (roles.contains("VENDOR")) {
             return "redirect:/get";
@@ -165,11 +165,15 @@ public class UserController {
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
         if (user != null && action.equals("SEND_REMINDER_EMAIL")) {
-
-            redirectAttributes.addFlashAttribute("message", "Successfully sent a Login reminder mail to the vendor's registered E-mail ID");
             MAIL_SENDER mailSender = getMailSender(roles);
-            emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Action Required: Please login into the Vendor Management " +
-                    "Portal and update your registration details at the earliest", mailSender, loginReminderMessage, contextPath);
+            try {
+                emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Action Required: Please login into " +
+                        "Portal and update your registration details at the earliest", mailSender, loginReminderMessage, contextPath);
+                redirectAttributes.addFlashAttribute("message", "Successfully sent a Login reminder mail to the vendor's registered E-mail ID");
+            } catch (Exception exception) {
+                redirectAttributes.addFlashAttribute("error", "Failed to trigger reminder Email");
+
+            }
         } else {
             redirectAttributes.addFlashAttribute("error", "Failed to trigger reminder Email");
         }

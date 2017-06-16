@@ -2,9 +2,26 @@ package com.avanzarit.apps.gst.batch.job.config;
 
 import com.avanzarit.apps.gst.batch.job.CustomArrayExtractorLineAggregator;
 import com.avanzarit.apps.gst.batch.job.CustomExtractorLineAggregator;
-import com.avanzarit.apps.gst.batch.job.customercontactpersonimport.*;
-import com.avanzarit.apps.gst.batch.job.customerexport.*;
-import com.avanzarit.apps.gst.batch.job.customerimport.*;
+import com.avanzarit.apps.gst.batch.job.customercontactpersonimport.CustomerContactPersonDataImportProcessor;
+import com.avanzarit.apps.gst.batch.job.customercontactpersonimport.CustomerContactPersonDataImportWriter;
+import com.avanzarit.apps.gst.batch.job.customercontactpersonimport.CustomerContactPersonFieldSetMapper;
+import com.avanzarit.apps.gst.batch.job.customercontactpersonimport.CustomerContactPersonImportJobListener;
+import com.avanzarit.apps.gst.batch.job.customercontactpersonimport.CustomerContactPersonImportReaderStepListener;
+import com.avanzarit.apps.gst.batch.job.customercontactpersonimport.CustomerContactPersonImportWriterStepListener;
+import com.avanzarit.apps.gst.batch.job.customerexport.CustomerContactPersonDataFieldExtractor;
+import com.avanzarit.apps.gst.batch.job.customerexport.CustomerContactPersonExportHeaderCallback;
+import com.avanzarit.apps.gst.batch.job.customerexport.CustomerDataExportProcessor;
+import com.avanzarit.apps.gst.batch.job.customerexport.CustomerDataFieldExtractor;
+import com.avanzarit.apps.gst.batch.job.customerexport.CustomerExportHeaderCallback;
+import com.avanzarit.apps.gst.batch.job.customerexport.CustomerExportJobListener;
+import com.avanzarit.apps.gst.batch.job.customerexport.CustomerExportReaderStepListener;
+import com.avanzarit.apps.gst.batch.job.customerexport.CustomerExportWriterStepListener;
+import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportProcessor;
+import com.avanzarit.apps.gst.batch.job.customerimport.CustomerDataImportWriter;
+import com.avanzarit.apps.gst.batch.job.customerimport.CustomerFieldSetMapper;
+import com.avanzarit.apps.gst.batch.job.customerimport.CustomerImportJobListener;
+import com.avanzarit.apps.gst.batch.job.customerimport.CustomerImportReaderStepListener;
+import com.avanzarit.apps.gst.batch.job.customerimport.CustomerImportWriterStepListener;
 import com.avanzarit.apps.gst.batch.job.policy.SkipPolicy;
 import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
 import com.avanzarit.apps.gst.model.Customer;
@@ -171,9 +188,9 @@ public class CustomerJobConfig {
                 "mobileno", "email", "faxnumberextn", "buildingno", "address1", "address2", "address3",
                 "address4", "address5", "city", "postcode", "region", "country", "pan", "vatnumber"});*/
 
-        lineTokenizer.setNames(new String[]{"CUSTOMERID", "NAME1", "NAME2", "NAME3", "STREET1", "STREET2", "STREET3", "STREET4", "STREET5",
-                "POSTCODE", "CITY", "REGION", "COUNTRY", "VATNO", "EMAIL", "TELEPHONE1", "FAXNO", "MOBILENO",
-                "GST_REGISTRATION_STATUS", "GSTN_NUMBER"});
+        lineTokenizer.setNames(new String[]{"CUSTOMERID", "NAME1", "NAME2", "NAME3", "TELEPHONENO1",
+                "TELEPHONENO2", "FAXNO", "BUILDING_NO", "STREET1", "STREET2", "STREET3", "STREET4",
+                "LOCATION", "POSTCODE", "CITY", "REGION", "COUNTRY", "EMAIL_ID", "VATNO"});
 
         lineMapper.setLineTokenizer(lineTokenizer);
         lineMapper.setFieldSetMapper(customerFieldSetMapper);

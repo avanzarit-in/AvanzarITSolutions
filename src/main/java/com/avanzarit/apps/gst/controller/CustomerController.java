@@ -20,7 +20,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -117,13 +121,13 @@ class CustomerController {
             return "redirect:/login";
         }
         Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
-        if (roles.contains("BUSINESS_OWNER") || (roles.contains("CUSTOMER") && auth.getUsername().equals(customerId))) {
+        if (roles.contains("ADMIN") || roles.contains("BUSINESS_OWNER_CUSTOMER") || (roles.contains("CUSTOMER") && auth.getUsername().equals(customerId))) {
             Customer customer = customerRepository.findByCustomerId(customerId);
             if (customer == null) {
                 redirectAttributes.addFlashAttribute("message", "CUstomer Data not available, please contact for more Details");
                 return "redirect:/404";
             } else {
-                if (roles.contains("BUSINESS_OWNER")) {
+                if (!roles.contains("CUSTOMER")) {
                     customer.setSubmityn("Y");
                 }
                 model.addAttribute("model", customer);

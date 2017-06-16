@@ -19,13 +19,13 @@ import java.util.Objects;
 public class MaterialMaster implements Model {
 
     private Long id;
-    @Export(order = 2, title = "CODE")
+    @Export(order = 1, title = "CODE")
     private String code;
-    @Export(order = 3, title = "DESCRIPTION")
+    @Export(order = 2, title = "DESCRIPTION")
     private String desc;
-    @Export(order = 4, title = "HSN")
+    @Export(order = 3, title = "HSN")
     private String hsn;
-    @Export(order = 1, title = "VENDORID")
+    @Export(order = 4, title = "VENDORID")
     private String vendorId;
     private Vendor vendor;
 
