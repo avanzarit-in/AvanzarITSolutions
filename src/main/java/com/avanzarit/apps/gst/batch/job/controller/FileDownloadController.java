@@ -54,47 +54,17 @@ public class FileDownloadController implements BeanFactoryAware {
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
         String userName = roles.contains("BUSINESS_OWNER_VENDOR") ? vendorId : auth.getUsername();
-        if (roles.contains("BUSINESS_OWNER_VENDOR") || (roles.contains("VENDOR") && auth.getUsername().equals(vendorId))) {
+        if (roles.contains("ADMIN") || roles.contains("BUSINESS_OWNER_VENDOR") || (roles.contains("VENDOR") && auth.getUsername().equals(vendorId))) {
             File file = storageService.loadAsFile("attachment", userName + "/PAN");
-            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-            if (mimeType == null) {
-                System.out.println("mimetype is not detectable, will take default");
-                mimeType = "application/octet-stream";
-            }
-
-            System.out.println("mimetype : " + mimeType);
-
-            response.setContentType(mimeType);
-
-        /* "Content-Disposition : inline" will show viewable types [like images/text/pdf/anything viewable by browser] right on browser
-            while others(zip e.g) will be directly downloaded [may provide save as popup, based on your browser setting.]*/
-            response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
-
-
-        /* "Content-Disposition : attachment" will be directly download, may provide save as popup, based on your browser setting*/
-            //response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
-
-            response.setContentLength((int) file.length());
-
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-
-            //Copy bytes from source to destination(outputstream in this example), closes both streams.
-            FileCopyUtils.copy(inputStream, response.getOutputStream());
+            fileDownload(response, file, "inline");
         }
-
-
     }
-    /*
-     * Download a file from
-     *   - inside project, located in resources folder.
-     *   - outside project, located in File system somewhere.
-     */
+
     @RequestMapping(value = "/download", method = RequestMethod.POST)
     public void downloadFile(HttpServletResponse response) throws IOException {
 
         prepareDownload();
-        File file = ZipUtil.performZip(storagePropertie.getExportLocation(), storagePropertie.getVendorDownloadZipFilePath());
-
+        File file = ZipUtil.performZip(storagePropertie.getVendorExportLocation(), storagePropertie.getVendorDownloadZipFilePath());
 
         if (!file.exists()) {
             String errorMessage = "Sorry. The file you are looking for does not exist";
@@ -104,42 +74,42 @@ public class FileDownloadController implements BeanFactoryAware {
             outputStream.close();
             return;
         }
-
-        String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-        if (mimeType == null) {
-            System.out.println("mimetype is not detectable, will take default");
-            mimeType = "application/octet-stream";
-        }
-
-        System.out.println("mimetype : " + mimeType);
-
-        response.setContentType(mimeType);
-
-        /* "Content-Disposition : inline" will show viewable types [like images/text/pdf/anything viewable by browser] right on browser
-            while others(zip e.g) will be directly downloaded [may provide save as popup, based on your browser setting.]*/
-        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
-
-
-        /* "Content-Disposition : attachment" will be directly download, may provide save as popup, based on your browser setting*/
-        //response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
-
-        response.setContentLength((int) file.length());
-
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-
-        //Copy bytes from source to destination(outputstream in this example), closes both streams.
-        FileCopyUtils.copy(inputStream, response.getOutputStream());
+        fileDownload(response, file, "attachment");
     }
 
+    @RequestMapping(value = "/logs/{logFileId}", method = RequestMethod.GET)
+    public void downloadLogFile(HttpServletResponse response, @PathVariable("logFileId") String logFileId) throws IOException {
+        String logLocation = "";
+        String logFileName = "";
+        if (logFileId.equals("app")) {
+            logLocation = storagePropertie.getAppLogLocation();
+            logFileName = storagePropertie.getAppLogFileName();
+        } else {
+            logLocation = storagePropertie.getBatchjobLogLocation();
+            logFileName = storagePropertie.getLogFileName(logFileId);
+        }
+
+        File logFile = new File(logLocation + "/" + logFileName);
+
+        if (!logFile.exists()) {
+            String errorMessage = "Sorry. The file " + logFileId + "you are looking for does not exist";
+            System.out.println(errorMessage);
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
+            outputStream.close();
+            return;
+        }
+        fileDownload(response, logFile, "inline");
+    }
 
     private void prepareDownload() {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
-            storageService.store("export",batchProperties.getVendorExportFileName());
-            storageService.store("export",batchProperties.getVendorMaterialExportFileName());
-            storageService.store("export",batchProperties.getVendorContactPersonExportFileName());
-            storageService.store("export", batchProperties.getServiceSacExportFileNmae());
+            storageService.store("export-vendor", batchProperties.getVendorExportFileName());
+            storageService.store("export-vendor", batchProperties.getVendorMaterialExportFileName());
+            storageService.store("export-vendor", batchProperties.getVendorContactPersonExportFileName());
+            storageService.store("export-vendor", batchProperties.getServiceSacExportFileNmae());
             Map<String, String> resourceMap = new HashMap<>();
             resourceMap.put("VENDOR", batchProperties.getVendorExportFileName());
             resourceMap.put("MATERIAL", batchProperties.getVendorMaterialExportFileName());
@@ -154,16 +124,12 @@ public class FileDownloadController implements BeanFactoryAware {
             logger.info(e.getMessage());
         }
     }
-    /*
-     * Download a file from
-     *   - inside project, located in resources folder.
-     *   - outside project, located in File system somewhere.
-     */
+
     @RequestMapping(value = "/download/customer", method = RequestMethod.POST)
     public void downloadCustomerFile(HttpServletResponse response) throws IOException {
 
         prepareCustomerDownload();
-        File file = ZipUtil.performZip(storagePropertie.getExportLocation(), storagePropertie.getCustomerDownloadZipFilePath());
+        File file = ZipUtil.performZip(storagePropertie.getCustomerExportLocation(), storagePropertie.getCustomerDownloadZipFilePath());
 
 
         if (!file.exists()) {
@@ -175,30 +141,7 @@ public class FileDownloadController implements BeanFactoryAware {
             return;
         }
 
-        String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-        if (mimeType == null) {
-            System.out.println("mimetype is not detectable, will take default");
-            mimeType = "application/octet-stream";
-        }
-
-        System.out.println("mimetype : " + mimeType);
-
-        response.setContentType(mimeType);
-
-        /* "Content-Disposition : inline" will show viewable types [like images/text/pdf/anything viewable by browser] right on browser
-            while others(zip e.g) will be directly downloaded [may provide save as popup, based on your browser setting.]*/
-        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
-
-
-        /* "Content-Disposition : attachment" will be directly download, may provide save as popup, based on your browser setting*/
-        //response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
-
-        response.setContentLength((int) file.length());
-
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-
-        //Copy bytes from source to destination(outputstream in this example), closes both streams.
-        FileCopyUtils.copy(inputStream, response.getOutputStream());
+        fileDownload(response, file, "attachment");
     }
 
 
@@ -206,8 +149,8 @@ public class FileDownloadController implements BeanFactoryAware {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
-            storageService.store("export", batchProperties.getCustomerExportFileName());
-            storageService.store("export", batchProperties.getCustomerContactPersonExportFileName());
+            storageService.store("export-customer", batchProperties.getCustomerExportFileName());
+            storageService.store("export-customer", batchProperties.getCustomerContactPersonExportFileName());
             Map<String, String> resourceMap = new HashMap<>();
             resourceMap.put("CUSTOMER", batchProperties.getCustomerExportFileName());
             resourceMap.put("CUSTOMERCONTACTPERSON", batchProperties.getCustomerContactPersonExportFileName());
@@ -224,5 +167,37 @@ public class FileDownloadController implements BeanFactoryAware {
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
+    }
+
+    private void fileDownload(HttpServletResponse response, File file, String actionType) throws IOException {
+
+        String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+        if (mimeType == null) {
+            System.out.println("mimetype is not detectable, will take default");
+            mimeType = "application/octet-stream";
+        }
+
+        System.out.println("mimetype : " + mimeType);
+
+        response.setContentType(mimeType);
+
+        /* "Content-Disposition : inline" will show viewable types [like images/text/pdf/anything viewable by browser] right on browser
+            while others(zip e.g) will be directly downloaded [may provide save as popup, based on your browser setting.]*/
+        if (actionType.equalsIgnoreCase("inline")) {
+            response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+        }
+
+
+        /* "Content-Disposition : attachment" will be directly download, may provide save as popup, based on your browser setting*/
+        else if (actionType.equalsIgnoreCase("attachment")) {
+            response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
+        }
+
+        response.setContentLength((int) file.length());
+
+        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+        //Copy bytes from source to destination(outputstream in this example), closes both streams.
+        FileCopyUtils.copy(inputStream, response.getOutputStream());
     }
 }

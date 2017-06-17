@@ -12,9 +12,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 
-/**
- * Created by SPADHI on 5/25/2017.
- */
 @Component
 public class EmailServiceImpl implements EmailService {
 
@@ -52,7 +49,13 @@ public class EmailServiceImpl implements EmailService {
 
             javaMailSender.send(message);
         } else {
-            throw new RuntimeException("Error Sending mail 'fromEmailId==null' or 'javaMailSender==null' or 'sendMail==false' ");
+            if (fromEmailId == null) {
+                throw new RuntimeException("Error Sending mail 'fromEmailId' property not specified");
+            } else if (javaMailSender == null) {
+                throw new RuntimeException("Error Sending mail the mailSender client not configured properly");
+            } else if (!sendMail) {
+                throw new RuntimeException("Error Sending mail the 'sendMail' flag in properties file is set to false");
+            }
         }
 
     }

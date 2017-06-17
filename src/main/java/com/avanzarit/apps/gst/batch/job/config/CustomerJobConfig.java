@@ -184,9 +184,6 @@ public class CustomerJobConfig {
         DefaultLineMapper<Customer> lineMapper = new DefaultLineMapper<Customer>();
 
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-      /*  lineTokenizer.setNames(new String[]{"customerid", "customername1", "customername2", "customername3", "telephonenumberextn",
-                "mobileno", "email", "faxnumberextn", "buildingno", "address1", "address2", "address3",
-                "address4", "address5", "city", "postcode", "region", "country", "pan", "vatnumber"});*/
 
         lineTokenizer.setNames(new String[]{"CUSTOMERID", "NAME1", "NAME2", "NAME3", "TELEPHONENO1",
                 "TELEPHONENO2", "FAXNO", "BUILDING_NO", "STREET1", "STREET2", "STREET3", "STREET4",
@@ -241,8 +238,8 @@ public class CustomerJobConfig {
     public CompositeItemWriter<Customer> compositItemWriter(Map<String, String> resourceMap) {
         CompositeItemWriter<Customer> compositeItemWriter = new CompositeItemWriter<>();
         List<ItemWriter<? super Customer>> itemWriterList = new ArrayList<>();
-        itemWriterList.add(customerDataExportWriter(storageService.loadAsResource("export", resourceMap.get("CUSTOMER"))));
-        itemWriterList.add(customerContactPersonExportWriter(storageService.loadAsResource("export", resourceMap.get("CUSTOMERCONTACTPERSON"))));
+        itemWriterList.add(customerDataExportWriter(storageService.loadAsResource("export-customer", resourceMap.get("CUSTOMER"))));
+        itemWriterList.add(customerContactPersonExportWriter(storageService.loadAsResource("export-customer", resourceMap.get("CUSTOMERCONTACTPERSON"))));
         compositeItemWriter.setDelegates(itemWriterList);
         return compositeItemWriter;
     }

@@ -1,14 +1,22 @@
 package com.avanzarit.apps.gst.auth.controller;
 
 import com.avanzarit.apps.gst.Layout;
+import com.avanzarit.apps.gst.auth.model.Role;
 import com.avanzarit.apps.gst.auth.model.User;
 import com.avanzarit.apps.gst.auth.model.UserStatusEnum;
 import com.avanzarit.apps.gst.auth.repository.UserRepository;
 import com.avanzarit.apps.gst.auth.service.SecurityService;
 import com.avanzarit.apps.gst.auth.service.UserService;
+import com.avanzarit.apps.gst.email.CustomerMailProperties;
 import com.avanzarit.apps.gst.email.EmailService;
 import com.avanzarit.apps.gst.email.MAIL_SENDER;
+import com.avanzarit.apps.gst.email.VendorMailProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,11 +36,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Controller
-public class UserController {
+public class UserController implements ApplicationContextAware {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -42,9 +52,10 @@ public class UserController {
     @Autowired
     private EmailService emailService;
     @Autowired
-    private SimpleMailMessage resetTokenMessage;
+    private CustomerMailProperties customerMailProperties;
     @Autowired
-    private SimpleMailMessage loginReminderMessage;
+    private VendorMailProperties vendorMailProperties;
+    private ApplicationContext applicationContext;
 
 
     @Layout(value = "layouts/blank")
@@ -141,17 +152,41 @@ public class UserController {
                                 @RequestParam("email") String userEmail) throws MalformedURLException {
         String contextPath = getContextPath(request);
         User user = userService.findByEmail(userEmail);
-        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
+
         if (user == null) {
+
             redirectAttributes.addFlashAttribute("error", "User with this e-mail ID does not exist, please enter a valid e-mail ID");
             return "redirect:/resetPassword";
+        }
+        Set<Role> roles = user.getRoles();
+        Set<String> rolesString = new HashSet<>();
+        for (Role role : roles) {
+            rolesString.add(role.getName());
         }
         String token = UUID.randomUUID().toString();
         userService.createPasswordResetTokenForUser(user, token);
         redirectAttributes.addFlashAttribute("message", "We have sent you a mail on your registered E-mail ID with a link to reset your password");
-        MAIL_SENDER mailSender = getMailSender(roles);
-        emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Reset Password", mailSender, resetTokenMessage, contextPath, user.getUsername(), token);
+        MAIL_SENDER mailSender = getMailSender(rolesString);
+        String fromMailId = "";
+        SimpleMailMessage mailTemplate = null;
+        if (mailSender == MAIL_SENDER.CUSTOMER) {
+            fromMailId = customerMailProperties.getFromMailId();
+            mailTemplate = (SimpleMailMessage) applicationContext.getBean("resetTokenMessage", customerMailProperties.isFromMailIdDifferent());
+
+        } else if (mailSender == MAIL_SENDER.VENDOR) {
+            fromMailId = vendorMailProperties.getFromMailId();
+            mailTemplate = (SimpleMailMessage) applicationContext.getBean("resetTokenMessage", vendorMailProperties.isFromMailIdDifferent());
+        }
+        if (mailTemplate != null) {
+            try {
+                emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Reset Password", mailSender,
+                        mailTemplate, contextPath, user.getUsername(), token, fromMailId);
+            } catch (Exception exception) {
+                redirectAttributes.addFlashAttribute("error", "Failed to trigger reminder Email");
+            }
+        } else {
+            LOGGER.error("Could not send email fail to retrieve email Template 'resetTokenMessage'");
+        }
 
         return "redirect:/login";
     }
@@ -166,13 +201,25 @@ public class UserController {
         Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
         if (user != null && action.equals("SEND_REMINDER_EMAIL")) {
             MAIL_SENDER mailSender = getMailSender(roles);
+            String fromMailId = "";
+            SimpleMailMessage mailTemplate = null;
+            if (mailSender == MAIL_SENDER.CUSTOMER) {
+                fromMailId = customerMailProperties.getFromMailId();
+                mailTemplate = (SimpleMailMessage) applicationContext.getBean("loginReminderMessage", customerMailProperties.isFromMailIdDifferent());
+            } else if (mailSender == MAIL_SENDER.VENDOR) {
+                fromMailId = vendorMailProperties.getFromMailId();
+                mailTemplate = (SimpleMailMessage) applicationContext.getBean("loginReminderMessage", vendorMailProperties.isFromMailIdDifferent());
+            }
             try {
-                emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Action Required: Please login into " +
-                        "Portal and update your registration details at the earliest", mailSender, loginReminderMessage, contextPath);
-                redirectAttributes.addFlashAttribute("message", "Successfully sent a Login reminder mail to the vendor's registered E-mail ID");
+                if (mailTemplate != null) {
+                    emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Action Required: Please login into " +
+                            "GST Portal and complete your profile details at the earliest", mailSender, mailTemplate, contextPath, fromMailId);
+                    redirectAttributes.addFlashAttribute("message", "Successfully sent a Login reminder mail to the vendor's registered E-mail ID");
+                } else {
+                    LOGGER.error("Could not send email fail to retrieve email Template 'resetTokenMessage'");
+                }
             } catch (Exception exception) {
                 redirectAttributes.addFlashAttribute("error", "Failed to trigger reminder Email");
-
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "Failed to trigger reminder Email");
@@ -208,14 +255,20 @@ public class UserController {
         return model;
     }
 
+
     private MAIL_SENDER getMailSender(Set<String> roles) {
         MAIL_SENDER mailSender = MAIL_SENDER.VENDOR;
         if (roles.contains("VENDOR")) {
             mailSender = MAIL_SENDER.VENDOR;
         } else if (roles.contains("CUSTOMER")) {
-            mailSender = MAIL_SENDER.VENDOR;
+            mailSender = MAIL_SENDER.CUSTOMER;
         }
         return mailSender;
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+
+    }
 }

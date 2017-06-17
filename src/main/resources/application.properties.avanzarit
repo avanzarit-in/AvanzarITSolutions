@@ -10,8 +10,9 @@ vendorMail.username=admin@avanzarit.in
 vendorMail.password=admin
 vendorMail.auth=true
 vendorMail.starttls=true
-vendorMail.sendEmail=false
-vendorMail.fromMailId=admin@avanzarit.in
+vendorMail.sendEmail=true
+vendorMail.fromMailId=vadmin@avanzarit.in
+vendorMail.debug=false
 
 customerMail.host=127.0.0.1
 customerMail.port=587
@@ -19,16 +20,33 @@ customerMail.username=admin@avanzarit.in
 customerMail.password=admin
 customerMail.auth=true
 customerMail.starttls=true
-customerMail.sendEmail=false
-customerMail.fromMailId=admin@avanzarit.in
+customerMail.sendEmail=true
+customerMail.fromMailId=cadmin@avanzarit.in
+customerMail.debug=false
 
 storage.uploadLocation=c:/upload-dir
-storage.exportLocation=c:/export-dir
+storage.vendorExportLocation=c:/export-dir-vendor
+storage.customerExportLocation=c:/export-dir-customer
 storage.downloadLocation=c:/download
 storage.batchjobLogLocation=c:/batch-logs
 storage.attachmentLocation=c:/attachments
 storage.vendorDownloadFileName=vendor-export.zip
 storage.customerDownloadFileName=customer-export.zip
+
+storage.vendorUploadLogFileName=vendoruploadbatch.log
+storage.customerUploadLogFileName=customeruploadbatch.log
+storage.vendorContactPersonUploadLogFileName=vendorcontactpersonuploadbatch.log
+storage.customerContactPersonUploadLogFileName=customercontactpersonuploadbatch.log
+storage.materialUploadLogFileName=materialuploadbatch.log
+storage.userUploadLogFileName=useruploadbatch.log
+
+storage.vendorUploadLogFileId=vendor
+storage.customerUploadLogFileId=customer
+storage.vendorContactPersonUploadLogFileId=vendorcontact
+storage.customerContactPersonUploadLogId=customercontact
+storage.materialUploadLogFileId=material
+storage.userUploadLogFileId=user
+
 
 user.adminId=admin
 user.defaultPassword=welcome123
@@ -52,3 +70,7 @@ batch.vendorContactPersonExportFileName=vendor-contactperson-data-export.csv
 batch.customerContactPersonExportFileName=customer-contactperson-data-export.csv
 batch.serviceSacExportFileNmae=vendor-sac-data-export.csv
 #logging.level.org.springframework.batch:DEBUG
+logging.path=e:/applog
+storage.appLogLocation=e:/applog
+storage.appLogFileName=spring.log
+storage.appLogFileId=app

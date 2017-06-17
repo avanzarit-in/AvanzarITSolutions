@@ -88,4 +88,8 @@ public class VendorMailProperties {
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
+
+    public boolean isFromMailIdDifferent() {
+        return !username.equals(fromMailId);
+    }
 }

@@ -12,7 +12,11 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -21,7 +25,8 @@ import java.util.stream.Stream;
 public class FileSystemStorageService implements StorageService {
 
     private final Path uploadLocation;
-    private final Path exportLocation;
+    private final Path vendorExportLocation;
+    private final Path customerExportLocation;
     private final Path downloadLocation;
     private final Path batchLogLocation;
     private final Path attachmentLocation;
@@ -29,7 +34,8 @@ public class FileSystemStorageService implements StorageService {
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.uploadLocation = Paths.get(properties.getUploadLocation());
-        this.exportLocation = Paths.get(properties.getExportLocation());
+        this.vendorExportLocation = Paths.get(properties.getVendorExportLocation());
+        this.customerExportLocation = Paths.get(properties.getCustomerExportLocation());
         this.downloadLocation = Paths.get(properties.getDownloadLocation());
         this.batchLogLocation = Paths.get(properties.getBatchjobLogLocation());
         this.attachmentLocation = Paths.get(properties.getAttachmentLocation());
@@ -42,8 +48,11 @@ public class FileSystemStorageService implements StorageService {
             case "upload":
                 path = this.uploadLocation;
                 break;
-            case "export":
-                path = this.exportLocation;
+            case "export-vendor":
+                path = this.vendorExportLocation;
+                break;
+            case "export-customer":
+                path = this.customerExportLocation;
                 break;
             case "download":
                 path = this.downloadLocation;
@@ -209,12 +218,14 @@ public class FileSystemStorageService implements StorageService {
     public void init() {
         try {
             FileSystemUtils.deleteRecursively(uploadLocation.toFile());
-            FileSystemUtils.deleteRecursively(exportLocation.toFile());
+            FileSystemUtils.deleteRecursively(vendorExportLocation.toFile());
+            FileSystemUtils.deleteRecursively(customerExportLocation.toFile());
             FileSystemUtils.deleteRecursively(downloadLocation.toFile());
             FileSystemUtils.deleteRecursively(batchLogLocation.toFile());
 
             Files.createDirectory(uploadLocation);
-            Files.createDirectory(exportLocation);
+            Files.createDirectory(vendorExportLocation);
+            Files.createDirectory(customerExportLocation);
             Files.createDirectory(downloadLocation);
             Files.createDirectory(batchLogLocation);
             try {

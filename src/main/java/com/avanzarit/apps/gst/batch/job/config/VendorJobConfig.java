@@ -260,10 +260,6 @@ public class VendorJobConfig {
         DefaultLineMapper<Vendor> lineMapper = new DefaultLineMapper<Vendor>();
 
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-    /*    lineTokenizer.setNames(new String[]{"vendorid", "vendorname1", "vendorname2", "vendorname3", "telephonenumberextn",
-                "mobileno", "email", "faxnumberextn", "buildingno", "address1", "address2", "address3",
-                "address4", "address5", "city", "postcode", "region", "country", "accountholdername",
-                "accountnumber", "pan", "vatnumber"});*/
 
         lineTokenizer.setNames(new String[]{"VENDORID", "NAME1", "NAME2", "NAME3", "TELEPHONENO1",
                 "TELEPHONENO2", "FAXNO", "BUILDING_NO", "STREET1", "STREET2", "STREET3", "STREET4",
@@ -318,10 +314,10 @@ public class VendorJobConfig {
     public CompositeItemWriter<Vendor> compositItemWriter(Map<String, String> resourceMap) {
         CompositeItemWriter<Vendor> compositeItemWriter = new CompositeItemWriter<>();
         List<ItemWriter<? super Vendor>> itemWriterList = new ArrayList<>();
-        itemWriterList.add(vendorDataExportWriter(storageService.loadAsResource("export", resourceMap.get("VENDOR"))));
-        itemWriterList.add(contactPersonExportWriter(storageService.loadAsResource("export", resourceMap.get("CONTACTPERSON"))));
-        itemWriterList.add(materialExportWriter(storageService.loadAsResource("export", resourceMap.get("MATERIAL"))));
-        itemWriterList.add(serviceSacExportWriter(storageService.loadAsResource("export", resourceMap.get("SAC"))));
+        itemWriterList.add(vendorDataExportWriter(storageService.loadAsResource("export-vendor", resourceMap.get("VENDOR"))));
+        itemWriterList.add(contactPersonExportWriter(storageService.loadAsResource("export-vendor", resourceMap.get("CONTACTPERSON"))));
+        itemWriterList.add(materialExportWriter(storageService.loadAsResource("export-vendor", resourceMap.get("MATERIAL"))));
+        itemWriterList.add(serviceSacExportWriter(storageService.loadAsResource("export-vendor", resourceMap.get("SAC"))));
         compositeItemWriter.setDelegates(itemWriterList);
         return compositeItemWriter;
     }

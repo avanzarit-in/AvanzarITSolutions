@@ -61,11 +61,11 @@
                                 </div>
 
                             </div>
-                            <div class="row form-group">
-                                <div class="col-xs-12">
-                                    <div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
-                               </div>
-                            </div>
+                            <!--  <div class="row form-group">
+                                  <div class="col-xs-12">
+                                      <div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+                                 </div>
+                              </div> -->
 
                         </form>
                     </div>
@@ -127,7 +127,7 @@ $(document).ready(function() {
             // data.field   --> The field name
             // data.element --> The field element
 
-            data.fv.disableSubmitButtons(true);
+          //  data.fv.disableSubmitButtons(true);
         })
         .on('success.field.fv', function(e, data) {
             // e, data parameters are the same as in err.field.fv event handler
@@ -135,7 +135,7 @@ $(document).ready(function() {
             // - The submit button is clicked
             // - The form is invalid
 
-            data.fv.disableSubmitButtons(true);
+           // data.fv.disableSubmitButtons(true);
         });
 });
 </script>

@@ -7,6 +7,7 @@ import com.avanzarit.apps.gst.auth.properties.UserProperties;
 import com.avanzarit.apps.gst.auth.repository.RoleRepository;
 import com.avanzarit.apps.gst.auth.service.UserService;
 import com.avanzarit.apps.gst.batch.job.report.BatchLog;
+import com.avanzarit.apps.gst.email.CustomerMailProperties;
 import com.avanzarit.apps.gst.email.EmailServiceImpl;
 import com.avanzarit.apps.gst.email.MAIL_SENDER;
 import com.avanzarit.apps.gst.model.Customer;
@@ -17,7 +18,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -27,17 +31,20 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-public class CustomerDataImportWriter implements ItemWriter<Customer> {
+public class CustomerDataImportWriter implements ItemWriter<Customer>, ApplicationContextAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerDataImportWriter.class);
     private UserService userService;
     private RoleRepository roleRepository;
     private CustomerRepository customerRepository;
-    private SimpleMailMessage template;
     private EmailServiceImpl emailService;
     private String defaultPassword;
     private String contextURL;
     private BatchLog logger;
+
+    @Autowired
+    CustomerMailProperties customerMailProperties;
+    private ApplicationContext applicationContext;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -47,11 +54,6 @@ public class CustomerDataImportWriter implements ItemWriter<Customer> {
     @Autowired
     public void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
-    }
-
-    @Autowired
-    public void setTemplate(SimpleMailMessage updatePasswordMessage) {
-        this.template = updatePasswordMessage;
     }
 
     @Autowired
@@ -99,11 +101,11 @@ public class CustomerDataImportWriter implements ItemWriter<Customer> {
                 user.setUserStatus(UserStatusEnum.NEW);
                 user.setRoles(roleSet);
                 userService.save(user);
-
+                SimpleMailMessage mailTemplate = (SimpleMailMessage) applicationContext.getBean("updatePasswordMessage", customerMailProperties.isFromMailIdDifferent());
                 if (!StringUtils.isEmpty(user.getEmail())) {
-                    String text = String.format(template.getText(), contextURL, user.getUsername(), defaultPassword);
+                    String text = String.format(mailTemplate.getText(), contextURL, user.getUsername(), defaultPassword, customerMailProperties.getFromMailId());
                     try {
-                        emailService.sendSimpleMessage(user.getEmail(), "Welcome to Customer Management Portal", text, MAIL_SENDER.CUSTOMER);
+                        emailService.sendSimpleMessage(user.getEmail(), "Welcome to PCBL GST Portal", text, MAIL_SENDER.CUSTOMER);
                     } catch (Exception e) {
                         logger.log("WARNING: E-mail send Error: " + e.getMessage());
                         LOGGER.error(e.getMessage());
@@ -111,5 +113,10 @@ public class CustomerDataImportWriter implements ItemWriter<Customer> {
                 }
             }
         }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

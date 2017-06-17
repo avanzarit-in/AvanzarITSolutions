@@ -12,6 +12,7 @@ import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletCont
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.web.servlet.ErrorPage;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -115,30 +116,53 @@ public class Application extends WebMvcConfigurerAdapter {
     }
 
     @Bean(name = "updatePasswordMessage")
-    public SimpleMailMessage constructUpdatePasswordEmailMessage() {
+    @Scope("prototype")
+    public SimpleMailMessage constructUpdatePasswordEmailMessage(boolean isFromMailIdDifferent) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setText(
-                "Please visit %s and activate your Registration:\n\n"
-                        + "Initial UserId and Password to log into the portal are:\n\n"
-                        + "User ID : %s\n"
-                        + "Initial Login Password : %s"
-                        + "\n\n\n Please note: On successfull login to activate your registration " +
-                        "you will have to change your password and login again");
+        StringBuilder sb = new StringBuilder();
+        sb.append("Please visit %s and activate your Registration:\n\n")
+                .append("Initial UserId and Password to log into the portal are:\n\n")
+                .append("User ID : %s\n")
+                .append("Initial Login Password : %s")
+                .append("\n\n\n Please note: On successfull login to activate your registration ")
+                .append("you will have to change your password and login again");
+
+        if (isFromMailIdDifferent) {
+            sb.append("\n\n\n*** This is an automatically generated email, please do not reply ***\n\n")
+                    .append("Please email at %s for any queries");
+        }
+
+        message.setText(sb.toString());
         return message;
     }
 
     @Bean(name = "resetTokenMessage")
-    public SimpleMailMessage constructResetTokenEmailMessage() {
+    @Scope("prototype")
+    public SimpleMailMessage constructResetTokenEmailMessage(boolean isFromMailIdDifferent) {
         SimpleMailMessage emailMessage = new SimpleMailMessage();
-        emailMessage.setText("Please click the Link below to reset password" + "\n\n" + "%s" + "/changePassword?id=" + "%s" + "&token=" + "%s");
+        StringBuilder sb = new StringBuilder();
+        sb.append("Please click the Link below to reset password\n\n")
+                .append("%s/changePassword?id=%s&token=%s");
+        if (isFromMailIdDifferent) {
+            sb.append("\n\n\n*** This is an automatically generated email, please do not reply ***\n\n")
+                    .append("Please email at %s for any queries");
+        }
+        emailMessage.setText(sb.toString());
         return emailMessage;
     }
 
     @Bean(name = "loginReminderMessage")
-    public SimpleMailMessage constructLoginReminderEmailMessage() {
+    @Scope("prototype")
+    public SimpleMailMessage constructLoginReminderEmailMessage(boolean isFromMailIdDifferent) {
         SimpleMailMessage emailMessage = new SimpleMailMessage();
-        emailMessage.setText("It has been long since you have first logged in into the vendor management portal" + "\n\n" + "Please visit the Vendor Management portal " +
-                "at %s and complete your vendor registration information at the earliest");
+        StringBuilder sb = new StringBuilder();
+        sb.append("It has been long since you have first logged in into the portal\n\n")
+                .append("Please visit the PCBL GST Portal at %s and complete your profile information at the earliest");
+        if (isFromMailIdDifferent) {
+            sb.append("\n\n\n*** This is an automatically generated email, please do not reply ***\n\n")
+                    .append("Please email at %s for any queries");
+        }
+        emailMessage.setText(sb.toString());
         return emailMessage;
     }
 }

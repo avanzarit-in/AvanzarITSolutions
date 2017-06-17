@@ -9,6 +9,7 @@
 
         <div th:if="${message != null}" class="alert alert-success" id="success-alert">
             <strong>Success!</strong> <span th:text="${message}"/>
+            <a th:href="@{'/{paramsKey}'(paramsKey=${downloadLink})}">Click Here</a> to download the log file
         </div>
 
 

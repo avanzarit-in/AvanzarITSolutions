@@ -1,14 +1,8 @@
 package com.avanzarit.apps.gst.batch.job.controller;
 
-import com.avanzarit.apps.gst.auth.repository.RoleRepository;
-import com.avanzarit.apps.gst.auth.repository.UserRepository;
-import com.avanzarit.apps.gst.auth.service.UserService;
-import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
 import com.avanzarit.apps.gst.batch.job.report.BatchLog;
-import com.avanzarit.apps.gst.email.EmailServiceImpl;
-import com.avanzarit.apps.gst.repository.CustomerRepository;
-import com.avanzarit.apps.gst.repository.VendorRepository;
 import com.avanzarit.apps.gst.storage.StorageFileNotFoundException;
+import com.avanzarit.apps.gst.storage.StorageProperties;
 import com.avanzarit.apps.gst.storage.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,17 +10,13 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -37,8 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.sql.DataSource;
 import java.io.PrintWriter;
+
 @Controller
 public class BatchJobController implements BeanFactoryAware {
 
@@ -46,48 +36,23 @@ public class BatchJobController implements BeanFactoryAware {
     @Autowired
     JobLauncher jobLauncher;
     @Autowired
-    public SimpleMailMessage updatePasswordMessage;
-    @Autowired
-    public EmailServiceImpl emailService;
-    @Autowired
-    public JobBuilderFactory jobBuilderFactory;
-    @Autowired
-    public StepBuilderFactory stepBuilderFactory;
-    @Autowired
     StorageService storageService;
     @Autowired
-    public VendorRepository vendorRepository;
-    @Autowired
-    public CustomerRepository customerRepository;
-    @Autowired
-    public UserRepository userRepository;
-    @Autowired
-    public RoleRepository roleRepository;
-    @Qualifier("dataSource")
-    @Autowired
-    public DataSource dataSource;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private BatchProperties batchProperties;
-
+    StorageProperties storageProperties;
 
 
     @GetMapping("/upload")
     public String getVendorDataUploadForm() {
-
         return "upload";
     }
 
     @GetMapping("/upload/customer")
     public String getCustomerDataUploadForm() {
-
         return "customerupload";
     }
 
     @GetMapping("/upload/user")
     public String getUserDataUploadForm() {
-
         return "userupload";
     }
 
@@ -106,8 +71,8 @@ public class BatchJobController implements BeanFactoryAware {
                     .toJobParameters();
             JobExecution execution = jobLauncher.run(job, jobParameters);
             BatchLog logInfo = (BatchLog) execution.getExecutionContext().get("log");
-            storageService.store("batchlog", "customeruploadbatch.log");
-            Resource logFile = storageService.loadAsResource("batchlog", "customeruploadbatch.log");
+            storageService.store("batchlog", storageProperties.getCustomerUploadLogFileName());
+            Resource logFile = storageService.loadAsResource("batchlog", storageProperties.getCustomerUploadLogFileName());
             PrintWriter out = new PrintWriter(logFile.getFile());
             out.print(logInfo.getLog());
             out.flush();
@@ -115,39 +80,35 @@ public class BatchJobController implements BeanFactoryAware {
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-
+        setPostUploadMessage(redirectAttributes, file, "customer");
         return "redirect:/upload/customer";
     }
 
     @PostMapping("/vendorupload")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes) {
+    public String handleVendorFileUpload(@RequestParam("file") MultipartFile file,
+                                         RedirectAttributes redirectAttributes) {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
             UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String userName = auth.getUsername();
-            storageService.store("upload",file);
+            storageService.store("upload", file);
             Job job = (Job) beanFactory.getBean("vendorImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .addString("user", userName)
                     .toJobParameters();
-            JobExecution execution=jobLauncher.run(job, jobParameters);
+            JobExecution execution = jobLauncher.run(job, jobParameters);
             BatchLog logInfo = (BatchLog) execution.getExecutionContext().get("log");
-            storageService.store("batchlog","vendoruploadbatch.log");
-            Resource logFile=storageService.loadAsResource("batchlog","vendoruploadbatch.log");
-            PrintWriter out = new PrintWriter( logFile.getFile());
+            storageService.store("batchlog", storageProperties.getVendorUploadLogFileName());
+            Resource logFile = storageService.loadAsResource("batchlog", storageProperties.getVendorUploadLogFileName());
+            PrintWriter out = new PrintWriter(logFile.getFile());
             out.print(logInfo.getLog());
             out.flush();
             out.close();
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-
+        setPostUploadMessage(redirectAttributes, file, "vendor");
         return "redirect:/upload";
     }
 
@@ -165,8 +126,8 @@ public class BatchJobController implements BeanFactoryAware {
                     .toJobParameters();
             JobExecution execution = jobLauncher.run(job, jobParameters);
             BatchLog logInfo = (BatchLog) execution.getExecutionContext().get("log");
-            storageService.store("batchlog", "contactpersonuploadbatch.log");
-            Resource logFile = storageService.loadAsResource("batchlog", "contactpersonuploadbatch.log");
+            storageService.store("batchlog", storageProperties.getVendorContactPersonUploadLogFileName());
+            Resource logFile = storageService.loadAsResource("batchlog", storageProperties.getVendorContactPersonUploadLogFileName());
             PrintWriter out = new PrintWriter(logFile.getFile());
             out.print(logInfo.getLog());
             out.flush();
@@ -174,9 +135,7 @@ public class BatchJobController implements BeanFactoryAware {
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-
+        setPostUploadMessage(redirectAttributes, file, "vendorcontact");
         return "redirect:/upload";
     }
 
@@ -194,8 +153,8 @@ public class BatchJobController implements BeanFactoryAware {
                     .toJobParameters();
             JobExecution execution = jobLauncher.run(job, jobParameters);
             BatchLog logInfo = (BatchLog) execution.getExecutionContext().get("log");
-            storageService.store("batchlog", "customercontactpersonuploadbatch.log");
-            Resource logFile = storageService.loadAsResource("batchlog", "customercontactpersonuploadbatch.log");
+            storageService.store("batchlog", storageProperties.getCustomerContactPersonUploadLogFileName());
+            Resource logFile = storageService.loadAsResource("batchlog", storageProperties.getCustomerContactPersonUploadLogFileName());
             PrintWriter out = new PrintWriter(logFile.getFile());
             out.print(logInfo.getLog());
             out.flush();
@@ -203,10 +162,8 @@ public class BatchJobController implements BeanFactoryAware {
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-
-        return "redirect:/customerupload";
+        setPostUploadMessage(redirectAttributes, file, "customercontact");
+        return "redirect:/upload/customer";
     }
 
     @PostMapping("/materialupload")
@@ -217,24 +174,22 @@ public class BatchJobController implements BeanFactoryAware {
         try {
             UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String userName = auth.getUsername();
-            storageService.store("upload",file);
+            storageService.store("upload", file);
             Job job = (Job) beanFactory.getBean("materialImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
-            JobExecution execution=jobLauncher.run(job, jobParameters);
+            JobExecution execution = jobLauncher.run(job, jobParameters);
             BatchLog logInfo = (BatchLog) execution.getExecutionContext().get("log");
-            storageService.store("batchlog", "materialuploadbatch.log");
-            Resource logFile = storageService.loadAsResource("batchlog", "materialuploadbatch.log");
-            PrintWriter out = new PrintWriter( logFile.getFile());
+            storageService.store("batchlog", storageProperties.getMaterialUploadLogFileName());
+            Resource logFile = storageService.loadAsResource("batchlog", storageProperties.getMaterialUploadLogFileName());
+            PrintWriter out = new PrintWriter(logFile.getFile());
             out.print(logInfo.getLog());
             out.flush();
             out.close();
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-
+        setPostUploadMessage(redirectAttributes, file, "material");
         return "redirect:/upload";
     }
 
@@ -245,14 +200,14 @@ public class BatchJobController implements BeanFactoryAware {
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
         try {
-            storageService.store("upload",file);
+            storageService.store("upload", file);
             Job job = (Job) beanFactory.getBean("userImportJob", storageService.loadAsResource("upload", file.getOriginalFilename()));
             JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                     .toJobParameters();
             JobExecution execution = jobLauncher.run(job, jobParameters);
             BatchLog logInfo = (BatchLog) execution.getExecutionContext().get("log");
-            storageService.store("batchlog", "useruploadbatch.log");
-            Resource logFile = storageService.loadAsResource("batchlog", "useruploadbatch.log");
+            storageService.store("batchlog", storageProperties.getUserUploadLogFileName());
+            Resource logFile = storageService.loadAsResource("batchlog", storageProperties.getUserUploadLogFileName());
             PrintWriter out = new PrintWriter(logFile.getFile());
             out.print(logInfo.getLog());
             out.flush();
@@ -260,10 +215,8 @@ public class BatchJobController implements BeanFactoryAware {
         } catch (Exception e) {
             logger.info(e.getMessage());
         }
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-
-        return "redirect:/upload";
+        setPostUploadMessage(redirectAttributes, file, "user");
+        return "redirect:/upload/user";
     }
 
 
@@ -275,5 +228,14 @@ public class BatchJobController implements BeanFactoryAware {
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
+    }
+
+    private String setPostUploadMessage(RedirectAttributes redirectAttributes, MultipartFile file, String uploadType) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("You successfully uploaded " + file.getOriginalFilename() + "! ");
+        redirectAttributes.addFlashAttribute("message", sb.toString());
+        redirectAttributes.addFlashAttribute("downloadLink", "logs/" + uploadType);
+        return sb.toString();
     }
 }
