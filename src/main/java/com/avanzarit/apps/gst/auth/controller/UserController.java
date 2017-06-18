@@ -202,18 +202,20 @@ public class UserController implements ApplicationContextAware {
         if (user != null && action.equals("SEND_REMINDER_EMAIL")) {
             MAIL_SENDER mailSender = getMailSender(roles);
             String fromMailId = "";
+            String mailSubject = "";
             SimpleMailMessage mailTemplate = null;
             if (mailSender == MAIL_SENDER.CUSTOMER) {
                 fromMailId = customerMailProperties.getFromMailId();
-                mailTemplate = (SimpleMailMessage) applicationContext.getBean("loginReminderMessage", customerMailProperties.isFromMailIdDifferent());
+                mailSubject = customerMailProperties.getLoginReminderSubject();
+                mailTemplate = (SimpleMailMessage) applicationContext.getBean("loginReminderMessage", customerMailProperties.isFromMailIdDifferent(), MAIL_SENDER.CUSTOMER);
             } else if (mailSender == MAIL_SENDER.VENDOR) {
                 fromMailId = vendorMailProperties.getFromMailId();
-                mailTemplate = (SimpleMailMessage) applicationContext.getBean("loginReminderMessage", vendorMailProperties.isFromMailIdDifferent());
+                mailTemplate = (SimpleMailMessage) applicationContext.getBean("loginReminderMessage", vendorMailProperties.isFromMailIdDifferent(), MAIL_SENDER.VENDOR);
+                mailSubject = vendorMailProperties.getLoginReminderSubject();
             }
             try {
                 if (mailTemplate != null) {
-                    emailService.sendSimpleMessageUsingTemplate(user.getEmail(), "Action Required: Please login into " +
-                            "GST Portal and complete your profile details at the earliest", mailSender, mailTemplate, contextPath, fromMailId);
+                    emailService.sendSimpleMessageUsingTemplate(user.getEmail(), mailSubject, mailSender, mailTemplate, contextPath, fromMailId);
                     redirectAttributes.addFlashAttribute("message", "Successfully sent a Login reminder mail to the vendor's registered E-mail ID");
                 } else {
                     LOGGER.error("Could not send email fail to retrieve email Template 'resetTokenMessage'");

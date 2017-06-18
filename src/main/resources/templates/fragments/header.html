@@ -53,7 +53,7 @@
                     <li sec:authorize="hasAuthority('VENDOR')"><a href="#" data-toggle="modal" data-target="#myModal">PCBL
                         GST Registration Details</a></li>
                     <li sec:authorize="hasAuthority('CUSTOMER')"><a href="#" data-toggle="modal" data-target="#myModal">PCBL
-                        GST Registration Details Customer</a></li>
+                        GST Registration Details</a></li>
                     <li sec:authorize="!isAuthenticated()"><a href="/login"><span
                             class="glyphicon glyphicon-log-in"></span> Login</a></li>
                     <li sec:authorize="isAuthenticated()"><p class="navbar-text">Logged in User:(<span
@@ -78,86 +78,104 @@
                     <table class="table  table-bordered">
                         <thead class="thead-inverse">
                         <tr>
-                            <th>State Name</th>
+                            <th>State Names</th>
+                            <th>PCBL Locations Involved</th>
+                            <th>Complete Address</th>
                             <th>State Code</th>
-                            <th>Prov ID No.</th>
+                            <th>Provisional GST Regn No.</th>
                             <th>ARN No.</th>
-                            <th>PCBL Locations involved</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
 
                             <td th:rowspan="2">WEST BENGAL</td>
+                            <td>DGP Factory</td>
+                            <td>27, R.N. Mukherjee Road, Durgapur, 713201</td>
                             <td th:rowspan="2">19</td>
                             <td th:rowspan="2">19AABCP5762E1ZC</td>
                             <td th:rowspan="2">AA191216004374G</td>
-                            <td>DGP Factory</td>
 
                         </tr>
                         <tr>
                             <td>Kolkata Warehouse</td>
+                            <td>8, Pagladanga Road, Dhapa, Kolkata -700105</td>
                         </tr>
+
                         <tr>
 
-                            <td th:rowspan="2">GUJARAT</td>
+                            <td th:rowspan="2">GUJRAT</td>
+                            <td>Palej Factory</td>
+                            <td>National Highway No. 8, GIDC Estate, Palej, District Bharuch - 392220</td>
                             <td th:rowspan="2">24</td>
                             <td th:rowspan="2">24AABCP5762E1ZL</td>
                             <td th:rowspan="2">AA241216000345U</td>
-                            <td>Palej Factory</td>
 
                         </tr>
                         <tr>
                             <td>Mundra Factory</td>
+                            <td>Survey No. 47, SH-46, Mokha, Mundra, Kutch, Gujarat- 370421</td>
                         </tr>
+
                         <tr>
 
                             <td th:rowspan="4">KERALA</td>
+                            <td>Kochi Factory</td>
+                            <td>Karimugal, Brahmapuram, Ernakulum,  Cochin, Kerala - 682303</td>
                             <td th:rowspan="4">32</td>
                             <td th:rowspan="4">32AABCP5762E1ZO</td>
                             <td th:rowspan="4">AA320117043014Y</td>
-                            <td>Kochi Factory</td>
+
                         </tr>
                         <tr>
-                            <td>Trichhor Warehouse</td>
+                            <td>Trichur Warehouse</td>
+                            <td>Door No. IX/444, THIROOR, MULANKUNNATHUKAVU, P.O TRICHUR</td>
                         </tr>
                         <tr>
                             <td>Kalamessary Warehouse</td>
+                            <td>Door No. 12/391 D, KINFRA ROAD, BEHIND SUB STATION, HMT COLONY, P.O. KALAMASSERY KOCHI
+                            </td>
                         </tr>
                         <tr>
                             <td>Manjeri Warehouse</td>
+                            <td>Door No. TGP I/325 Q, NILAMBOOR ROAD, CHERANI MANJERI -3</td>
                         </tr>
 
                         <tr>
+
                             <td>TAMILNADU</td>
+                            <td>Chennai Warehouse</td>
+                            <td>SY No. 94/2A-2D, KOLATHUR, PADAPPAI ROAD, SRIPERUMBUTHUR TALUK, KANCHIPURAM, TAMILNADU
+                            </td>
                             <td>33</td>
                             <td>33AABCP5762E1ZM</td>
                             <td>AA330117010278N</td>
-                            <td>Chennai Warehouse</td>
+
                         </tr>
 
                         <tr>
+
                             <td>TELANGANA</td>
+                            <td>Medak Warehouse</td>
+                            <td>Plot I, Phase - 1, Pashmylaram, Village, Pagtancheru Mandal, Dist Medak, 502307</td>
                             <td>36</td>
                             <td>36AABCP5762E1ZG</td>
                             <td>AA360117008841G</td>
-                            <td>Medak Warehouse</td>
+
                         </tr>
 
                         <tr>
+
                             <td>GOA</td>
+                            <td>Goa Warehouse</td>
+                            <td>S.R. No.194, USGAO ROAD, P.R. AGRO FARMS, USGAO, NORTH GOA- 403409</td>
                             <td>30</td>
                             <td>30AABCP5762E1ZS</td>
                             <td>AA301216000043B</td>
-                            <td>Goa Warehouse</td>
+
                         </tr>
-                        <tr>
-                            <td>ANDHRA PRADESH</td>
-                            <td>28</td>
-                            <td>37AABCP5762E1ZE</td>
-                            <td>Mgt decision to close down GST regime</td>
-                            <td>Chittor Warehouse</td>
-                        </tr>
+
+
                         </tbody>
                     </table>
                 </div>

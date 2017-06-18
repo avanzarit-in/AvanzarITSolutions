@@ -1,6 +1,7 @@
 package com.avanzarit.apps.gst;
 
 import com.avanzarit.apps.gst.email.CustomerMailProperties;
+import com.avanzarit.apps.gst.email.MAIL_SENDER;
 import com.avanzarit.apps.gst.email.VendorMailProperties;
 import com.avanzarit.apps.gst.interceptor.ThymeleafLayoutInterceptor;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -19,6 +20,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -75,7 +77,6 @@ public class Application extends WebMvcConfigurerAdapter {
         };
     }
 
-
     @Bean(name = "javaCustomerMailSender")
     public JavaMailSender getJavaCustomerMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -117,19 +118,23 @@ public class Application extends WebMvcConfigurerAdapter {
 
     @Bean(name = "updatePasswordMessage")
     @Scope("prototype")
-    public SimpleMailMessage constructUpdatePasswordEmailMessage(boolean isFromMailIdDifferent) {
+    public SimpleMailMessage constructUpdatePasswordEmailMessage(boolean isFromMailIdDifferent, MAIL_SENDER mailSender) {
         SimpleMailMessage message = new SimpleMailMessage();
         StringBuilder sb = new StringBuilder();
-        sb.append("Please visit %s and activate your Registration:\n\n")
-                .append("Initial UserId and Password to log into the portal are:\n\n")
-                .append("User ID : %s\n")
-                .append("Initial Login Password : %s")
-                .append("\n\n\n Please note: On successfull login to activate your registration ")
-                .append("you will have to change your password and login again");
+        if (mailSender == MAIL_SENDER.CUSTOMER) {
+            sb.append(customerMailProperties.getUpdatePasswordMessage());
+        } else if (mailSender == MAIL_SENDER.VENDOR) {
+            sb.append(vendorMailProperties.getUpdatePasswordMessage());
+        }
 
         if (isFromMailIdDifferent) {
-            sb.append("\n\n\n*** This is an automatically generated email, please do not reply ***\n\n")
+            sb.append("\n\n*** This is an automatically generated email, please do not reply ***\n\n")
                     .append("Please email at %s for any queries");
+        }
+        if (mailSender == MAIL_SENDER.CUSTOMER && !StringUtils.isEmpty(customerMailProperties.getSignature())) {
+            sb.append(customerMailProperties.getSignature());
+        } else if (mailSender == MAIL_SENDER.VENDOR && !StringUtils.isEmpty(vendorMailProperties.getSignature())) {
+            sb.append(vendorMailProperties.getSignature());
         }
 
         message.setText(sb.toString());
@@ -144,7 +149,7 @@ public class Application extends WebMvcConfigurerAdapter {
         sb.append("Please click the Link below to reset password\n\n")
                 .append("%s/changePassword?id=%s&token=%s");
         if (isFromMailIdDifferent) {
-            sb.append("\n\n\n*** This is an automatically generated email, please do not reply ***\n\n")
+            sb.append("\n\n*** This is an automatically generated email, please do not reply ***\n\n")
                     .append("Please email at %s for any queries");
         }
         emailMessage.setText(sb.toString());
@@ -153,14 +158,22 @@ public class Application extends WebMvcConfigurerAdapter {
 
     @Bean(name = "loginReminderMessage")
     @Scope("prototype")
-    public SimpleMailMessage constructLoginReminderEmailMessage(boolean isFromMailIdDifferent) {
+    public SimpleMailMessage constructLoginReminderEmailMessage(boolean isFromMailIdDifferent, MAIL_SENDER mailSender) {
         SimpleMailMessage emailMessage = new SimpleMailMessage();
         StringBuilder sb = new StringBuilder();
-        sb.append("It has been long since you have first logged in into the portal\n\n")
-                .append("Please visit the PCBL GST Portal at %s and complete your profile information at the earliest");
+        if (mailSender == MAIL_SENDER.CUSTOMER) {
+            sb.append(customerMailProperties.getLoginReminderMessage());
+        } else if (mailSender == MAIL_SENDER.VENDOR) {
+            sb.append(vendorMailProperties.getLoginReminderMessage());
+        }
         if (isFromMailIdDifferent) {
-            sb.append("\n\n\n*** This is an automatically generated email, please do not reply ***\n\n")
+            sb.append("\n\n*** This is an automatically generated email, please do not reply ***\n\n")
                     .append("Please email at %s for any queries");
+        }
+        if (mailSender == MAIL_SENDER.CUSTOMER && !StringUtils.isEmpty(customerMailProperties.getSignature())) {
+            sb.append(customerMailProperties.getSignature());
+        } else if (mailSender == MAIL_SENDER.VENDOR && !StringUtils.isEmpty(vendorMailProperties.getSignature())) {
+            sb.append(vendorMailProperties.getSignature());
         }
         emailMessage.setText(sb.toString());
         return emailMessage;

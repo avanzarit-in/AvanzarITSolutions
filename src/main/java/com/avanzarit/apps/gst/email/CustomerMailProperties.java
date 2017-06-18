@@ -16,6 +16,11 @@ public class CustomerMailProperties {
     private boolean sendEmail;
     private String fromMailId;
     private boolean debug;
+    private String updatePasswordMessage;
+    private String updatePasswordSubject;
+    private String loginReminderMessage;
+    private String loginReminderSubject;
+    private String signature;
 
     public String getHost() {
         return host;
@@ -91,5 +96,45 @@ public class CustomerMailProperties {
 
     public boolean isFromMailIdDifferent() {
         return !username.equals(fromMailId);
+    }
+
+    public String getUpdatePasswordMessage() {
+        return updatePasswordMessage;
+    }
+
+    public void setUpdatePasswordMessage(String updatePasswordMessage) {
+        this.updatePasswordMessage = updatePasswordMessage;
+    }
+
+    public String getUpdatePasswordSubject() {
+        return updatePasswordSubject;
+    }
+
+    public void setUpdatePasswordSubject(String updatePasswordSubject) {
+        this.updatePasswordSubject = updatePasswordSubject;
+    }
+
+    public String getLoginReminderMessage() {
+        return loginReminderMessage;
+    }
+
+    public void setLoginReminderMessage(String loginReminderMessage) {
+        this.loginReminderMessage = loginReminderMessage;
+    }
+
+    public String getLoginReminderSubject() {
+        return loginReminderSubject;
+    }
+
+    public void setLoginReminderSubject(String loginReminderSubject) {
+        this.loginReminderSubject = loginReminderSubject;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }

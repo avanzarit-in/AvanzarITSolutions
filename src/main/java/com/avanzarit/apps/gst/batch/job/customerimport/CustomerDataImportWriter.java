@@ -101,11 +101,12 @@ public class CustomerDataImportWriter implements ItemWriter<Customer>, Applicati
                 user.setUserStatus(UserStatusEnum.NEW);
                 user.setRoles(roleSet);
                 userService.save(user);
-                SimpleMailMessage mailTemplate = (SimpleMailMessage) applicationContext.getBean("updatePasswordMessage", customerMailProperties.isFromMailIdDifferent());
+                SimpleMailMessage mailTemplate = (SimpleMailMessage) applicationContext.getBean("updatePasswordMessage", customerMailProperties.isFromMailIdDifferent(), MAIL_SENDER.CUSTOMER);
                 if (!StringUtils.isEmpty(user.getEmail())) {
                     String text = String.format(mailTemplate.getText(), contextURL, user.getUsername(), defaultPassword, customerMailProperties.getFromMailId());
+                    String subject = customerMailProperties.getUpdatePasswordSubject();
                     try {
-                        emailService.sendSimpleMessage(user.getEmail(), "Welcome to PCBL GST Portal", text, MAIL_SENDER.CUSTOMER);
+                        emailService.sendSimpleMessage(user.getEmail(), subject, text, MAIL_SENDER.CUSTOMER);
                     } catch (Exception e) {
                         logger.log("WARNING: E-mail send Error: " + e.getMessage());
                         LOGGER.error(e.getMessage());

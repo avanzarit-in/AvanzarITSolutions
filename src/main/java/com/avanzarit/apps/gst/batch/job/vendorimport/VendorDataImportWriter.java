@@ -103,11 +103,12 @@ public class VendorDataImportWriter implements ItemWriter<Vendor>, ApplicationCo
                 user.setUserStatus(UserStatusEnum.NEW);
                 user.setRoles(roleSet);
                 userService.save(user);
-                SimpleMailMessage mailTemplate = (SimpleMailMessage) applicationContext.getBean("updatePasswordMessage", vendorMailProperties.isFromMailIdDifferent());
+                SimpleMailMessage mailTemplate = (SimpleMailMessage) applicationContext.getBean("updatePasswordMessage", vendorMailProperties.isFromMailIdDifferent(), MAIL_SENDER.VENDOR);
                 if (!StringUtils.isEmpty(user.getEmail())) {
                     String text = String.format(mailTemplate.getText(), contextURL, user.getUsername(), defaultPassword, vendorMailProperties.getFromMailId());
+                    String subject = vendorMailProperties.getUpdatePasswordSubject();
                     try {
-                        emailService.sendSimpleMessage(user.getEmail(), "Welcome to PCBL GST Portal", text, MAIL_SENDER.VENDOR);
+                        emailService.sendSimpleMessage(user.getEmail(), subject, text, MAIL_SENDER.VENDOR);
                     } catch (Exception e) {
                         logger.log("WARNING: E-mail send Error: " + e.getMessage());
                         LOGGER.error(e.getMessage());

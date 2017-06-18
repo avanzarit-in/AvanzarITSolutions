@@ -3,7 +3,6 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
 spring.datasource.username=postgres
 spring.datasource.password=admin
 spring.datasource.platform=postgresql
-
 spring.batch.job.enabled=false
 vendorMail.host=10.2.2.30
 vendorMail.port=25
@@ -25,20 +24,18 @@ customerMail.fromMailId=pcbl_gstcustomers@rp-sg.in
 
 storage.uploadLocation=c:/avanzarit/upload-dir
 storage.vendorExportLocation=c:/avanzarit/export-dir-vendor
-storage.customerExportLocation=c:/avanzaritexport-dir-customer
+storage.customerExportLocation=c:/avanzarit/export-dir-customer
 storage.downloadLocation=c:/avanzarit/download
 storage.batchjobLogLocation=c:/avanzarit/batch-logs
 storage.attachmentLocation=c:/avanzarit/attachments
 storage.vendorDownloadFileName=vendor-export.zip
 storage.customerDownloadFileName=customer-export.zip
-
 storage.vendorUploadLogFileName=vendoruploadbatch.log
 storage.customerUploadLogFileName=customeruploadbatch.log
 storage.vendorContactPersonUploadLogFileName=vendorcontactpersonuploadbatch.log
 storage.customerContactPersonUploadLogFileName=customercontactpersonuploadbatch.log
 storage.materialUploadLogFileName=materialuploadbatch.log
 storage.userUploadLogFileName=useruploadbatch.log
-
 storage.vendorUploadLogFileId=vendor
 storage.customerUploadLogFileId=customer
 storage.vendorContactPersonUploadLogFileId=vendorcontact
@@ -46,16 +43,17 @@ storage.customerContactPersonUploadLogId=customercontact
 storage.materialUploadLogFileId=material
 storage.userUploadLogFileId=user
 
+
 user.adminId=admin
 user.defaultPassword=welcome123
-user.adminEmailId=dutta.souvik@rp-sg.in
+user.adminEmailId=admin@avanzarit.in
 user.adminPasswordResetOnStartup=false
 user.sendEmailOnCreate=true
 
 app.contextScheme=http
-app.contextDomain=pcblcare.com
+app.contextDomain=localhost
 app.contextPort=8080
-app.contextURL=http://pcblcare.com:8080
+app.contextURL=http://localhost:8080
 
 batch.userImportFileName=user-data.csv
 batch.vendorImportFileName=vendor-data.csv
@@ -72,3 +70,40 @@ logging.path=c:/avanzarit/applog
 storage.appLogLocation=c:/avanzarit/applog
 storage.appLogFileName=spring.log
 storage.appLogFileId=app
+
+vendorMail.updatePasswordMessage=Dear Supplier,\n\nThe Government has time and again reiterated its commitment to enroll Goods and Service Tax Act from 01st July, 17 onwards. \
+  Under the GST Regime, PCBL's eligibility to claim input tax credit would be subject to timely and correctly filing of details by its Suppliers. \
+  We therefore expect that our valued Suppliers must have got themselves migrated to the GST Regime by taking the provisional GST No. \
+  and would ensure adherence to timely and correctly issuance of their invoices, filing of returns and all other prescribed compliances.  \
+  \n\nPCBL, in order to update its system with the objective of free flow of credit and timely release of your payments, \
+  request you to kindly provide us with your details like GST registration of all the places of your business, HSN Codes, Bank details etc.  \
+  by clicking on the link provided.\n\nTherefore PCBL seeks your due support and active participation in strengthening our professional relationship by submitting your details on the given link in a time bound manner.  \
+  \n\nLogin Link: %s\n\nInitial UserId and Password to log into the portal are:\n\n\
+  User ID : %s\nInitial Login Password : %s\n\n****Please note: On successful login to activate your registration you will have to change your password and login again****
+
+vendorMail.updatePasswordSubject=Welcome to PCBL Vendor Communication Portal
+
+vendorMail.loginReminderMessage=It has been long since you have first logged in into the portal\n\n\
+  Please visit the Vendor Communication Portal at %s and complete your profile information at the earliest.
+
+vendorMail.loginReminderSubject=Action Required: Please login into Vendor Communication Portal and complete your profile details at the earliest"
+
+vendorMail.signature=\n\nThanks and Regards,\nVendor Communication Division\nPCBL
+
+customerMail.updatePasswordMessage=Dear Customer,\n\nThe Government has time and again reiterated its commitment to enroll Goods and Service Tax Act from 01st July, \
+  17 onwards. We therefore expect that our valued Customers must have got themselves migrated to the GST Regime by taking the provisional GST No.  \
+  \n\nPCBL, in order to update its system with the objective of free flow of tax credit and timely filing of returns, request you to \
+  kindly provide us with your details like GST registration of all the places of your business along with other details by clicking on the link provided.\
+  \n\nTherefore PCBL seeks your due support by submitting your details on the given link in a time bound manner. \
+  For your ready reference we have incorporated PCBL's details in the link.\
+  \n\nLogin Link: %s\n\nInitial UserId and Password to log into the portal are:\n\n\
+  User ID : %s\nInitial Login Password : %s\n\n****Please note: On successful login to activate your registration you will have to change your password and login again****
+
+customerMail.updatePasswordSubject=Welcome to PCBL Customer Communication Portal
+
+customerMail.loginReminderMessage=It has been long since you have first logged in into the portal\n\n\
+  Please visit the Customer Communication Portal at %s and complete your profile information at the earliest.
+
+customerMail.loginReminderSubject=Action Required: Please login into Customer Communication Portal and complete your profile details at the earliest"
+
+customerMail.signature=\n\nThanks and Regards,\nCustomer Communication Division\nPCBL
