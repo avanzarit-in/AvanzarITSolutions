@@ -39,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAt(captchaValidationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/updatePassword").hasAuthority("ROLE_PASSWORD_CHANGE")
-                .antMatchers("/upload/user", "/adminLanding", "/logs/**").hasAuthority("ADMIN")
+                .antMatchers("/upload/user", "/adminLanding", "/logs/**").hasAnyAuthority("ADMIN", "BUSINESS_OWNER_CUSTOMER", "BUSINESS_OWNER_VENDOR")
                 .antMatchers("/customerListView", "/upload/customer").hasAnyAuthority("ADMIN", "BUSINESS_OWNER_CUSTOMER")
                 .antMatchers("/vendorListView", "/upload").hasAnyAuthority("ADMIN", "BUSINESS_OWNER_VENDOR")
                 .antMatchers("/userListView").hasAnyAuthority("BUSINESS_OWNER_CUSTOMER", "ADMIN", "BUSINESS_OWNER_VENDOR")
