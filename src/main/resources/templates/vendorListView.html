@@ -19,6 +19,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="2" name="filter"/>Approved</label>
                 &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="3" name="filter"/>Submitted</label>
                 &nbsp;&nbsp;&nbsp;&nbsp; <label class="radio-inline"><input type="radio" value="4" name="filter"/>Saved</label>
+                <button style="float:right" class="btn btn-primary" id="createtButton" type="submit">Createee</button>
             </div>
 
             <div class="panel-body">
@@ -206,6 +207,11 @@ $(document).ready(function () {
 
     $('#viewVendorDetailsForm').on('click', '#exportButton', function () {
         $('#viewVendorDetailsForm').attr('action', '/download');
+    });
+
+    $('#viewVendorDetailsForm').on('click', '#createtButton', function () {
+    alert('hi');
+        $('#viewVendorDetailsForm').attr('action', '/create');
     });
 });
     </script>

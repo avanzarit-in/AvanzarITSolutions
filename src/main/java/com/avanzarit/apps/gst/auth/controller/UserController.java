@@ -79,7 +79,7 @@ public class UserController implements ApplicationContextAware {
             return "redirect:/adminLanding";
         } else if (roles.contains("BUSINESS_OWNER_VENDOR") || roles.contains("BUSINESS_OWNER_CUSTOMER")) {
             return "redirect:/businessOwnerLanding";
-        } else if (roles.contains("VENDOR")) {
+        } else if (roles.contains("VENDOR") || roles.contains("PO")) {
             return "redirect:/get";
         } else if (roles.contains("CUSTOMER")) {
             return "redirect:/get/customer";

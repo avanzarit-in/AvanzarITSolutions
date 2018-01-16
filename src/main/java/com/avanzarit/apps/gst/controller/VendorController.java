@@ -83,6 +83,20 @@ class VendorController {
     @Autowired
     AttachmentRepository attachmentRepository;
 
+    @Layout(value = "layouts/vendorForm")
+    @RequestMapping(path = "/create", method = RequestMethod.POST)
+    public String createVendor(RedirectAttributes redirectAttributes, Model model) {
+
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
+        if (auth == null) {
+            return "redirect:/login";
+        }else if(roles!=null && roles.contains("PO")){
+            return "vendorForm";
+        }
+        return "redirect:/login";
+    }
+
 
     @Layout(value = "layouts/vendorForm")
     @RequestMapping(path = "/get", method = RequestMethod.GET)
@@ -93,6 +107,10 @@ class VendorController {
             return "redirect:/login";
         }
         String userName = auth.getUsername();
+        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
+        if(roles!=null && roles.contains("PO")){
+            return "vendorForm";
+        }
         Vendor vendor = vendorRepository.findByVendorId(userName);
         if (vendor == null) {
             redirectAttributes.addFlashAttribute("message", "Vendor Data not available, please contact for more Details");
