@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
  
 <body>
 <div class="container-full" th:fragment="content">
@@ -19,7 +19,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="2" name="filter"/>Approved</label>
                 &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="3" name="filter"/>Submitted</label>
                 &nbsp;&nbsp;&nbsp;&nbsp; <label class="radio-inline"><input type="radio" value="4" name="filter"/>Saved</label>
-                <button style="float:right" class="btn btn-primary" id="createtButton" type="submit">Createee</button>
+                <button  sec:authorize="hasAuthority('PO')"  style="float:right" class="btn btn-primary" id="createtButton" type="submit">Create</button>
             </div>
 
             <div class="panel-body">
@@ -210,7 +210,6 @@ $(document).ready(function () {
     });
 
     $('#viewVendorDetailsForm').on('click', '#createtButton', function () {
-    alert('hi');
         $('#viewVendorDetailsForm').attr('action', '/create');
     });
 });

@@ -92,7 +92,9 @@ class VendorController {
         if (auth == null) {
             return "redirect:/login";
         }else if(roles!=null && roles.contains("PO")){
-            return "vendorForm";
+            model.addAttribute("model", new Vendor());
+            model.addAttribute("submityn","N");
+            return "createVendorForm";
         }
         return "redirect:/login";
     }
@@ -107,10 +109,6 @@ class VendorController {
             return "redirect:/login";
         }
         String userName = auth.getUsername();
-        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
-        if(roles!=null && roles.contains("PO")){
-            return "vendorForm";
-        }
         Vendor vendor = vendorRepository.findByVendorId(userName);
         if (vendor == null) {
             redirectAttributes.addFlashAttribute("message", "Vendor Data not available, please contact for more Details");
@@ -118,7 +116,7 @@ class VendorController {
         } else {
             model.addAttribute("model", vendor);
         }
-        return "vendorForm";
+        return "createVendorForm";
     }
 
     @RequestMapping(path = "/action", method = RequestMethod.POST)
@@ -303,6 +301,11 @@ class VendorController {
     @RequestMapping(value = {"/adminLanding"}, method = RequestMethod.GET)
     public String loadAdminLandingPage(Model model) {
         return "redirect:userListView";
+    }
+
+    @RequestMapping(value = {"/polanding"}, method = RequestMethod.GET)
+    public String loadPOLandingPage(Model model) {
+        return "redirect:vendorListView";
     }
 
     @RequestMapping(value = {"/businessOwnerLanding"}, method = RequestMethod.GET)
