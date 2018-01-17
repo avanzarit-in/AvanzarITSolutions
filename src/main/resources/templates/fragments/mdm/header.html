@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<div th:fragment="header">
+    <nav class="navbar navbar-fixed-top ">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse" id="navbar-main">
+
+
+                <ul class="nav navbar-nav">
+
+                    <li sec:authorize="hasAuthority('ADMIN')"
+                        class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">User Management<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li sec:authorize="hasAuthority('ADMIN')"><a href="/upload/user">User Data Import</a></li>
+                            <li><a href="/userListView">User Management</a></li>
+                        </ul>
+                    </li>
+
+                    <li sec:authorize="hasAuthority('ADMIN') or hasAuthority('PO_ADMIN') or hasAuthority('PO_FINANCE') or hasAuthority('PO_TAX') or hasAuthority('PO_ORG')" class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Vendor Management<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li sec:authorize="hasAuthority('ADMIN')"><a href="/upload">Vendor Data Import</a></li>
+                            <li><a href="/mdm/poadminlanding">Basic Details Management</a></li>
+                            <li><a href="/mdm/pofinancelanding">Finance Details Management</a></li>
+                            <li><a href="/mdm/potaxlanding">Tax Details Management</a></li>
+                            <li><a href="/mdm/poorglanding">Purchasing Org Details Management</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li sec:authorize="!isAuthenticated()"><a href="/login"><span
+                            class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <li sec:authorize="isAuthenticated()"><p class="navbar-text">Logged in User:(<span
+                            sec:authentication="name"></span>)</p></li>
+                    <li sec:authorize="isAuthenticated()"><a href="#" th:href="@{/mdm/logout}"><span
+                            class="glyphicon glyphicon-log-in"></span> Log Off</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>

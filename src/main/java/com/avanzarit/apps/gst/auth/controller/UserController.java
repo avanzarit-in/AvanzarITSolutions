@@ -87,6 +87,24 @@ public class UserController implements ApplicationContextAware {
         return "/404";
     }
 
+    @RequestMapping(value = {"/mdm"}, method = RequestMethod.GET)
+    public String welcomeMdm(Model model) {
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
+        if (roles.contains("ADMIN")) {
+            return "redirect:/mdm/adminlanding";
+        } else if (roles.contains("PO_ADMIN")) {
+            return "redirect:/mdm/poadminlanding";
+        } else if (roles.contains("PO_FINANCE")) {
+            return "redirect:/mdm/pofinancelanding";
+        } else if (roles.contains("PO_TAX")) {
+            return "redirect:/mdm/potaxlanding";
+        } else if (roles.contains("PO_ORG")) {
+            return "redirect:/mdm/poorglanding";
+        }
+        return "/404";
+    }
+
 
     @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.GET)
     public String updatePassword(Model model) {
