@@ -2,6 +2,7 @@ package com.avanzarit.apps.gst;
 
 import com.avanzarit.apps.gst.auth.filter.CaptchaValidationFilter;
 import com.avanzarit.apps.gst.auth.filter.CustomFilter;
+import com.avanzarit.apps.gst.auth.handler.LogoutSuccessHandlerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -22,6 +24,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private LogoutSuccessHandlerImpl logoutSuccessHandler;
 
     @Autowired
     private CaptchaValidationFilter captchaValidationFilter;
@@ -56,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureUrl("/login?error=true")
                 .permitAll()
                 .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/**/logout")).logoutSuccessHandler() .logoutSuccessUrl("/login")
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/**/logout")).logoutSuccessHandler(logoutSuccessHandler)
                 .invalidateHttpSession(true)
                 .permitAll()
                 .and()

@@ -12,17 +12,15 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.stereotype.Component;
 
 @Component
-public class LogoutSuccessHandler implements LogoutSuccessHandler {
+public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request,
                                 HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
-        if (authentication != null) {
-            System.out.println(authentication.getName());
-        }
+
         //perform other required operation
-        String URL = request.getContextPath() + "/app";
+        String pathInfo = request.getServletPath();
         response.setStatus(HttpStatus.OK.value());
-        response.sendRedirect(URL);
+        response.sendRedirect(pathInfo.contains("mdm")?"/mdm":"/");
     }
 }
