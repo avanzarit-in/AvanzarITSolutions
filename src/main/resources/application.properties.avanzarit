@@ -66,8 +66,8 @@ batch.vendorContactPersonExportFileName=vendor-contactperson-data-export.csv
 batch.customerContactPersonExportFileName=customer-contactperson-data-export.csv
 batch.serviceSacExportFileNmae=vendor-sac-data-export.csv
 #logging.level.org.springframework.batch:DEBUG
-logging.path=e:/applog
-storage.appLogLocation=e:/applog
+logging.path=c:/applog
+storage.appLogLocation=c:/applog
 storage.appLogFileName=spring.log
 storage.appLogFileId=app
 
