@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div class="container" th:fragment="content">
+    <style type="text/css">
+        #profileForm {
+            margin-top: 15px;
+        }
+
+
+    </style>
+
+    <div th:if="${message != null}" class="alert alert-success" id="success-alert">
+        <strong>Success!</strong> <span th:text="${message}"/>
+    </div>
+
+    <form id="profileForm" th:action="@{{id}/add}(id=${context})}" th:object="${model}" class="form-horizontal" method="post">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Vendor Financial Details</h3>
+            </div>
+
+            <div class="panel-body">
+
+                <ul class="nav nav-tabs">
+                    <li><a href="#bankaccount-tab" data-toggle="tab">Bank Details<i class="fa"></i></a></li>
+                </ul>
+                <div class="tab-content">
+
+                    <div class="tab-pane" id="bankaccount-tab">
+                        <div th:replace="fragments/vendorForm/bank :: bank">
+                            Bank Details goes here
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="form-group">
+                    <div class="col-xs-6 col-xs-offset-4">
+
+                        <button th:if="*{submityn != 'Y'}" type="submit" class="btn btn-primary" id="updateButton">
+                            Update profile
+                        </button>
+                        <button th:if="*{submityn != 'Y'}" type="submit" class="btn btn-primary" id="submitButton">
+                            Validate and Submit profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <input type="hidden" id="submitstatus" th:field="*{submityn}"/>
+
+    </form>
+</div>
+</body>
+
+
+<script th:fragment="js" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+
+$('#profileForm').on("keyup keypress", function(e) {
+    var code = e.keyCode || e.which;
+    if (code === 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+
+    $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#success-alert").slideUp(500);
+    });
+    $("#updateButton").click(function(e) {
+        $("#submitstatus").val("N");
+        var vendorIdValid=($('#info-tab').data('formValidation').validateField('vendorId').isValid());
+        if(vendorIdValid!=null && !vendorIdValid){
+            e.preventDefault();
+            return false;
+        }
+
+    });
+     $("#submitButton").click(function(e) {
+
+        $("#submitstatus").val("Y");
+
+        var bankTabValid=($('#bankaccount-tab').data('formValidation').validate().isValid());
+
+         if (!bankTabValid) {
+        e.preventDefault();
+            return false;
+         }
+        return true;
+    });
+});
+  /*]]>*/
+</script>
+</html>

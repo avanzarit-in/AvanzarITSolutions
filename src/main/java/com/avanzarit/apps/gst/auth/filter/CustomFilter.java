@@ -28,8 +28,9 @@ public class CustomFilter extends GenericFilterBean {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-            if (roles.contains("ROLE_PASSWORD_CHANGE") && uri.equals("/")) {
-                res.sendRedirect("/updatePassword");
+
+            if (roles.contains("ROLE_PASSWORD_CHANGE")&& (uri.equals("/")||uri.equals("/mdm"))) {
+                res.sendRedirect(uri == "/" ? "" : uri + "/updatePassword");
                 return;
             }
         }

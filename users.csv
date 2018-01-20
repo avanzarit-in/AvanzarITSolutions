@@ -1,0 +1,9 @@
+"USERNAME", "EMAIL", "ROLES"
+POA,poa@avanzarit.in,PO_ADMIN
+POAM,poam@avanzarit.in,PO_ADMIN_MANAGER
+POF,pof@avanzarit.in,PO_FINANCE
+POFM,pofm@avanzarit.in,PO_FINANCE_MANAGER
+POT,pot@avanzarit.in,PO_TAX
+POTM,potm@avanzarit.in,PO_TAX_MANAGER
+POO,poo@avanzarit.in,PO_ORG
+POOM,poom@avanzarit.in,PO_ORG_MANAGER

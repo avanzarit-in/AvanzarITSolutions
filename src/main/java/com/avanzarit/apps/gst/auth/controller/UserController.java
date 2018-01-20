@@ -11,6 +11,8 @@ import com.avanzarit.apps.gst.email.CustomerMailProperties;
 import com.avanzarit.apps.gst.email.EmailService;
 import com.avanzarit.apps.gst.email.MAIL_SENDER;
 import com.avanzarit.apps.gst.email.VendorMailProperties;
+import com.avanzarit.apps.gst.model.workflow.Workflow;
+import com.avanzarit.apps.gst.repository.WorkflowRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -23,7 +25,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +41,7 @@ import java.net.URL;
 import java.security.Principal;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -55,6 +60,8 @@ public class UserController implements ApplicationContextAware {
     private CustomerMailProperties customerMailProperties;
     @Autowired
     private VendorMailProperties vendorMailProperties;
+    @Autowired
+    private WorkflowRepository workflowRepository;
     private ApplicationContext applicationContext;
 
 
@@ -89,19 +96,26 @@ public class UserController implements ApplicationContextAware {
         return "/404";
     }
 
+    @RequestMapping(value = {"/mdm"}, method = RequestMethod.GET)
+    public String welcomeMdm(Model model) {
 
-    @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.GET)
-    public String updatePassword(Model model) {
+        return "redirect:/mdm/myworklist";
+    }
+
+
+    @RequestMapping(value = {"{context}/updatePassword"}, method = RequestMethod.GET)
+    public String updatePassword(Model model, @PathVariable("context") String appContext) {
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userName = auth.getUsername();
         User user = new User();
         user.setUsername(userName);
         model.addAttribute("user", user);
+        model.addAttribute("context", StringUtils.isEmpty(appContext) ? "" : "/" + appContext);
         return "updatePassword";
     }
 
-    @RequestMapping(value = {"/updatePassword"}, method = RequestMethod.POST)
-    public String changePassword(RedirectAttributes redirectAttributes, @ModelAttribute("user") User user) {
+    @RequestMapping(value = {"{context}/updatePassword"}, method = RequestMethod.POST)
+    public String changePassword(RedirectAttributes redirectAttributes, @ModelAttribute("user") User user, @PathVariable("context") String appContext) {
 
         String password = user.getPassword();
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -113,7 +127,7 @@ public class UserController implements ApplicationContextAware {
         userService.save(repUser);
         securityService.autologin(user.getUsername(), password);
         redirectAttributes.addFlashAttribute("message", "Please login with the new Password");
-        return "/logout";
+        return appContext + "/logout";
     }
 
     @Layout(value = "layouts/blank")

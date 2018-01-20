@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div class="container-full" th:fragment="content">
+
+    <div th:if="${message != null}" class="alert alert-success" id="success-alert">
+        <strong>Success!</strong> <span th:text="${message}"/>
+    </div>
+    <div th:if="${error != null}" class="alert alert-danger" id="failure-alert">
+        <strong>Error!</strong> <span th:text="${error}"/>
+    </div>
+    <form id="viewVendorDetailsForm" th:action="@{/action}" class="form-horizontal" method="post">
+        <div class="panel panel-default">
+            <div class="panel-heading">My Work List&nbsp;&nbsp;&nbsp;&nbsp;
+                <label class="radio-inline"><input checked="checked" type="radio" value="1" name="filter"/>Show All</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline"><input type="radio" value="2" name="filter"/>My Items</label>
+                <a class="btn btn-primary" data-toggle="modal" style="float:right"  data-target="#myModal">Create New Vendor</a>
+            </div>
+
+            <div class="panel-body">
+                <div class="row view-area">
+                    <table id="dataTable" class="table table-hover table-striped table-bordered">
+                        <thead class="thead-inverse">
+                        <tr>
+
+                            <th>Vendor&nbsp;ID</th>
+                            <th>Vendor&nbsp;Name</th>
+                            <th>Telephone&nbsp;Extn</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="mItem : ${items}">
+
+
+                            <td><a th:href="@{'/{id}/get/{paramsKey}'(id=${context},paramsKey=${mItem.vendor.vendorId})}"
+                                   th:text="${mItem.vendor.vendorId}"/></td>
+                            <td><label type="text"
+                                       th:text="${mItem.vendor.vendorName1}" /></td>
+                            <td><label type="text"
+                                       th:text="${mItem.vendor.telephoneNumberExtn}" /></td>
+                            <td><label type="text"
+                                       th:text="${mItem.vendor.email}" /></td>
+                            <td><label type="text"
+                                       th:text="${mItem.vendor.address1}" /></td>
+                            <td>
+                                <a class="btn btn-primary"  th:attr="data-vendorId=${mItem.vendor.vendorId}"
+                                        th:if="*{#strings.toString(mItem.assignedUser) == null}">Claim
+                                    </a>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <input type="hidden" name="vendorId" id="vendorId"/>
+        <input type="hidden" name="action" id="action"/>
+
+    </form>
+
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Provide basic Vendor Details</h4>
+                </div>
+                <form id="vendorNameDialogue" th:action="@{/{id}/createNewVendor(id=${context})}" class="form-horizontal" method="post">
+                <div class="modal-body">
+
+                    <div class="form-group required">
+                        <label class="col-xs-2 control-label">Vendor Name</label>
+                        <div class="col-xs-3">
+                            <input type="text" id="vendorNameField" class="form-control " name="vendorName"/>
+                        </div>
+
+                   </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="createVendorButton" class="btn btn-default" >Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+</body>
+<script th:fragment="js" th:inline="javascript">
+    $(document).ready(function () {
+var hasErrors=false;
+ $('#vendorNameDialogue').on('click', '#createVendorButton', function () {
+        var vendorName= $('#vendorNameDialogue').find('input[name="vendorName"]').val();
+        if(vendorName===""){
+        alert("Vendor Name Required");
+        return false;
+        }
+        if(hasErrors){
+            alert("Vendor Already Exisit in the System");
+            hasErrors=false;
+            $('#vendorNameDialogue').find('input[name="vendorName"]').val("");
+            return false;
+        }
+    });
+
+     var sacitems = new Bloodhound({
+        datumTokenizer: function (d) {
+            var test = Bloodhound.tokenizers.whitespace(d.vendorName);
+            $.each(test, function (k, v) {
+                i = 0;
+                while (i < v.length) {
+                    test.push(v.substr(i, v.length));
+                    i++;
+                }
+            })
+            return test;
+        }
+        , queryTokenizer: Bloodhound.tokenizers.whitespace
+        , limit : 10
+        , prefetch: {
+            url: getAbsoluteUrl('/master/vendorNames')
+            , cache: false
+            , ttl: 1
+        }
+
+
+    });
+    sacitems.initialize();
+
+
+    $('#vendorNameDialogue')
+            .find('input[name="vendorName"]')
+            .typeahead({
+                hint: true
+                , highlight: true
+                , minLength: 1
+            }, {
+                name: 'sacitems'
+                , displayKey: 'vendorName'
+                , source: sacitems.ttAdapter()
+            }).on('typeahead:selected', function(e,obj) {
+            $('#vendorNameDialogue').find('input[name="vendorName"]').value="";
+
+                    hasErrors=true;
+            });
+});
+
+</script>
+</html>
