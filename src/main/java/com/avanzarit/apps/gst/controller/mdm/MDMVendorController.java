@@ -12,6 +12,7 @@ import com.avanzarit.apps.gst.model.MaterialMaster;
 import com.avanzarit.apps.gst.model.ServiceSacMaster;
 import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.model.VendorStatusEnum;
+import com.avanzarit.apps.gst.model.workflow.Workflow;
 import com.avanzarit.apps.gst.repository.AttachmentRepository;
 import com.avanzarit.apps.gst.repository.ContactPersonMasterRepository;
 import com.avanzarit.apps.gst.repository.HsnMasterRepository;
@@ -19,6 +20,8 @@ import com.avanzarit.apps.gst.repository.MaterialMasterRepository;
 import com.avanzarit.apps.gst.repository.SacMasterRepository;
 import com.avanzarit.apps.gst.repository.ServiceSacMasterRepository;
 import com.avanzarit.apps.gst.repository.VendorRepository;
+import com.avanzarit.apps.gst.repository.WorkflowRepository;
+import com.avanzarit.apps.gst.service.VendorManagementService;
 import com.avanzarit.apps.gst.storage.StorageService;
 import com.avanzarit.apps.gst.utils.Utils;
 import org.slf4j.Logger;
@@ -33,6 +36,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,9 +65,6 @@ class MDMVendorController {
     private SacMasterRepository sacMasterRepository;
 
     @Autowired
-    private VendorRepository vendorRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -84,6 +85,106 @@ class MDMVendorController {
     @Autowired
     AttachmentRepository attachmentRepository;
 
+    @Autowired
+    VendorRepository vendorRepository;
+
+    @Autowired
+    WorkflowRepository workflowRepository;
+
+    @Autowired
+    VendorManagementService vendorManagementService;
+
+    @Layout(value = "layouts/mdmVendorForm")
+    @RequestMapping(path = "/add", method = RequestMethod.POST)
+    public String addAlbum(@ModelAttribute Vendor vendor, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = auth.getUsername();
+
+        vendorManagementService.save(vendor, userName);
+
+        redirectAttributes.addFlashAttribute("model", vendor);
+        logger.debug("Forwarding to the exportVendorJob list...");
+        if (vendor.getSubmityn() != null && vendor.getSubmityn().equals("N")) {
+            redirectAttributes.addFlashAttribute("message", "Your changes have been Saved!");
+            return "redirect:/mdm/get/"+vendor.getVendorId();
+        }
+        redirectAttributes.addFlashAttribute("message",
+                "Successfully Submitted the changes");
+        return "redirect:/mdm/get/"+vendor.getVendorId();
+    }
+
+
+    @Layout(value = "layouts/mdmVendorForm")
+    @RequestMapping(path = "/get/{vendorId}", method = RequestMethod.GET)
+    public String showVendor(RedirectAttributes redirectAttributes, Model model, @PathVariable String vendorId) {
+
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (auth == null) {
+            return "redirect:/login";
+        }
+        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
+        Vendor vendor = vendorRepository.findByVendorId(vendorId);
+        if (vendor == null) {
+            redirectAttributes.addFlashAttribute("message", "Vendor Data not available, please contact for more Details");
+            return "redirect:/404";
+        } else {
+            Workflow workflow = workflowRepository.findByVendor(vendor);
+
+            model.addAttribute("model", vendor);
+            model.addAttribute("context", "mdm");
+            if (workflow.getStage().equals("GENERAL")) {
+                model.addAttribute("stage", "GENERAL");
+                return "mdm/vendorFormGeneral";
+            }
+        }
+
+        return "redirect:/403";
+    }
+
+    @Layout(value = "layouts/mdmVendorForm")
+    @RequestMapping(path = "/createNewVendor", method = RequestMethod.POST)
+    public String createNewVendor(RedirectAttributes redirectAttributes, Model model, @RequestParam String vendorName) {
+
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (auth == null) {
+            return "redirect:/login";
+        }
+        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
+        Workflow workflow = new Workflow();
+        workflow = workflowRepository.save(workflow);
+        workflow.setAssignedGroup((String) roles.toArray()[0]);
+        workflow.setStage("GENERAL");
+        workflow.setStatus("DRAFT");
+        Vendor vendor = new Vendor();
+        vendor.setVendorId(workflow.getChangeRequestId().toString());
+        vendor.setVendorName1(vendorName);
+        vendor = vendorRepository.save(vendor);
+        workflow.setVendor(vendor);
+        workflowRepository.save(workflow);
+        model.addAttribute("model", vendor);
+        model.addAttribute("context", "mdm");
+        model.addAttribute("stage", "GENERAL");
+        return "mdm/vendorFormGeneral";
+    }
+
+
+    @Layout(value = "layouts/mdmdefault")
+    @RequestMapping(path = "/myworklist", method = RequestMethod.GET)
+    public String showMyWorkListScreen(RedirectAttributes redirectAttributes, Model model) {
+
+        UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (auth == null) {
+            return "redirect:/login";
+        }
+
+        Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
+        List<Workflow> workflowList = workflowRepository.findByAssignedGroup((String) roles.toArray()[0]);
+        List<Vendor> vendors = workflowList.stream().map(Workflow::getVendor).collect(Collectors.toList());
+        model.addAttribute("vendors", vendors);
+        model.addAttribute("context", "mdm");
+        return "mdm/myWorkList";
+    }
 
     @Layout(value = "layouts/mdmdefault")
     @RequestMapping(path = "/adminlanding", method = RequestMethod.GET)

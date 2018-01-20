@@ -1,5 +1,6 @@
 package com.avanzarit.apps.gst.batch.job.controller;
 
+import com.avanzarit.apps.gst.Layout;
 import com.avanzarit.apps.gst.batch.job.report.BatchLog;
 import com.avanzarit.apps.gst.storage.StorageFileNotFoundException;
 import com.avanzarit.apps.gst.storage.StorageProperties;
@@ -40,6 +41,11 @@ public class BatchJobController implements BeanFactoryAware {
     @Autowired
     StorageProperties storageProperties;
 
+    @Layout(value = "layouts/mdmdefault")
+    @GetMapping("/mdm/upload")
+    public String getMdmVendorDataUploadForm() {
+        return "upload";
+    }
 
     @GetMapping("/upload")
     public String getVendorDataUploadForm() {
