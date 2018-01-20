@@ -180,8 +180,8 @@ class MDMVendorController {
 
         Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
         List<Workflow> workflowList = workflowRepository.findByAssignedGroup((String) roles.toArray()[0]);
-        List<Vendor> vendors = workflowList.stream().map(Workflow::getVendor).collect(Collectors.toList());
-        model.addAttribute("vendors", vendors);
+      //  List<Vendor> vendors = workflowList.stream().map(Workflow::getVendor).collect(Collectors.toList());
+        model.addAttribute("items", workflowList);
         model.addAttribute("context", "mdm");
         return "mdm/myWorkList";
     }
@@ -194,55 +194,55 @@ class MDMVendorController {
         if (auth == null) {
             return "redirect:/login";
         }
-
+        model.addAttribute("context", "mdm");
         return "mdm/vendorFormGeneral";
     }
 
     @Layout(value = "layouts/mdmdefault")
-    @RequestMapping(path = "/poadminlanding", method = RequestMethod.GET)
-    public String showVendorBasicDetails(RedirectAttributes redirectAttributes, Model model) {
+    @RequestMapping(path = "/poadminlanding/{vendorId}", method = RequestMethod.GET)
+    public String showVendorBasicDetails(RedirectAttributes redirectAttributes, Model model,@PathVariable String vendorId) {
 
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (auth == null) {
             return "redirect:/login";
         }
-
+        model.addAttribute("context", "mdm");
         return "mdm/vendorFormGeneral";
     }
 
     @Layout(value = "layouts/mdmdefault")
-    @RequestMapping(path = "/pofinancelanding", method = RequestMethod.GET)
-    public String showFinanceDetails(RedirectAttributes redirectAttributes, Model model) {
+    @RequestMapping(path = "/pofinancelanding/{vendorId}", method = RequestMethod.GET)
+    public String showFinanceDetails(RedirectAttributes redirectAttributes, Model model,@PathVariable String vendorId) {
 
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (auth == null) {
             return "redirect:/login";
         }
-
+        model.addAttribute("context", "mdm");
         return "mdm/vendorFormFinance";
     }
 
     @Layout(value = "layouts/mdmdefault")
-    @RequestMapping(path = "/potaxlanding", method = RequestMethod.GET)
-    public String showTaxDetails(RedirectAttributes redirectAttributes, Model model) {
+    @RequestMapping(path = "/potaxlanding/{vendorId}", method = RequestMethod.GET)
+    public String showTaxDetails(RedirectAttributes redirectAttributes, Model model,@PathVariable String vendorId) {
 
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (auth == null) {
             return "redirect:/login";
         }
-
+        model.addAttribute("context", "mdm");
         return "mdm/vendorFormTax";
     }
 
     @Layout(value = "layouts/mdmdefault")
-    @RequestMapping(path = "/poorglanding", method = RequestMethod.GET)
-    public String showPoOrgDetails(RedirectAttributes redirectAttributes, Model model) {
+    @RequestMapping(path = "/poorglanding/{vendorId}", method = RequestMethod.GET)
+    public String showPoOrgDetails(RedirectAttributes redirectAttributes, Model model,@PathVariable String vendorId) {
 
         UserDetails auth = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (auth == null) {
             return "redirect:/login";
         }
-
+        model.addAttribute("context", "mdm");
         return "mdm/vendorFormPoOrg";
     }
 }

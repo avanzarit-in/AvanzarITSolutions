@@ -33,10 +33,11 @@
                            aria-expanded="false">Vendor Management<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li sec:authorize="hasAuthority('ADMIN')"><a href="/mdm/upload">Vendor Data Import</a></li>
-                            <li th:if="${vendor != null}"><a href="/mdm/poadminlanding">Basic Details Management</a></li>
-                            <li th:if="${vendor != null}"><a href="/mdm/pofinancelanding">Finance Details Management</a></li>
-                            <li th:if="${vendor != null}"><a href="/mdm/potaxlanding">Tax Details Management</a></li>
-                            <li th:if="${vendor != null}"><a href="/mdm/poorglanding">Purchasing Org Details Management</a></li>
+                            <li ><a href="/mdm/myworklist">My Work List</a></li>
+                            <li th:if="${model != null}"><a href="/mdm/poadminlanding">Basic Details Management</a></li>
+                            <li th:if="${model != null}"><a href="/mdm/pofinancelanding">Finance Details Management</a></li>
+                            <li th:if="${model != null}"><a href="/mdm/potaxlanding">Tax Details Management</a></li>
+                            <li th:if="${model != null}"><a href="/mdm/poorglanding">Purchasing Org Details Management</a></li>
                         </ul>
                     </li>
                 </ul>

@@ -15,7 +15,7 @@
         <strong>Success!</strong> <span th:text="${message}"/>
     </div>
 
-    <form id="profileForm" th:action="@{/add}" th:object="${model}" class="form-horizontal" method="post">
+    <form id="profileForm" th:action="@{{id}/add}(id=${context})}"  th:object="${model}" class="form-horizontal" method="post">
 
         <div class="panel panel-default">
             <div class="panel-heading">

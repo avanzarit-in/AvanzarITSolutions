@@ -33,29 +33,24 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="mItem : ${vendors}">
+                        <tr th:each="mItem : ${items}">
 
 
-                            <td><a th:href="@{'/{id}/get/{paramsKey}'(id=${context},paramsKey=${mItem.vendorId})}"
-                                   th:text="${mItem.vendorId}"/></td>
+                            <td><a th:href="@{'/{id}/get/{paramsKey}'(id=${context},paramsKey=${mItem.vendor.vendorId})}"
+                                   th:text="${mItem.vendor.vendorId}"/></td>
                             <td><label type="text"
-                                       th:text="${mItem.vendorName1}" /></td>
+                                       th:text="${mItem.vendor.vendorName1}" /></td>
                             <td><label type="text"
-                                       th:text="${mItem.telephoneNumberExtn}" /></td>
+                                       th:text="${mItem.vendor.telephoneNumberExtn}" /></td>
                             <td><label type="text"
-                                       th:text="${mItem.email}" /></td>
+                                       th:text="${mItem.vendor.email}" /></td>
                             <td><label type="text"
-                                       th:text="${mItem.address1}" /></td>
+                                       th:text="${mItem.vendor.address1}" /></td>
                             <td>
-                                <button type="submit" th:attr="data-vendorId=${mItem.vendorId}" class="approveButton"
-                                        th:if="*{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) != 'APPROVED'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) != 'SYNC'}">
-                                    <i title="Approve" class="fa  fa-thumbs-up"></i></button>
-                                <button type="submit" th:attr="data-vendorId=${mItem.vendorId}" class="rejectButton"
-                                        th:if="*{mItem.submityn == 'Y'}"><i title="Reject"
-                                                                            class="fa  fa-thumbs-down"></i></button>
-                                <button type="submit" th:attr="data-vendorId=${mItem.vendorId}" class="resetButton"
-                                        th:if="*{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) !='APPROVED'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) !='SYNC'}">
-                                    <i title="Revert" class="fa  fa-undo"></i></button>
+                                <a class="btn btn-primary"  th:attr="data-vendorId=${mItem.vendor.vendorId}"
+                                        th:if="*{#strings.toString(mItem.assignedUser) == null}">Claim
+                                    </a>
+
                             </td>
                         </tr>
                         </tbody>
