@@ -1,0 +1,238 @@
+# Sample LDIF data for vendor Master Data Mamangement
+#
+# Some sailors and their ships
+# userpassword for all persons is "welcome123"
+#
+version: 1
+
+dn: ou=users,o=avanzarit
+objectclass: organizationalUnit
+objectclass: top
+description: Contains entries which describe users
+ou: users
+
+dn: ou=groups,o=avanzarit
+objectclass: organizationalUnit
+objectclass: top
+description: Contains entries which describe groups
+ou: groups
+
+# Systm Admin
+# --------------
+
+dn: cn=admin,ou=users,o=avanzarit
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: inetOrgPersonExt
+objectclass: top
+cn: admin
+description: System Administrator
+givenname: admin
+sn: admin
+uid: admin
+mail: admin@avanzarit.in
+resetPasswordOnLogin: TRUE
+userpassword: {SHA}LEw4keKsaVjpgQoeScZwV4T7+ho=
+
+dn:cn=ADMIN,ou=groups,o=avanzarit
+objectclass: groupOfUniqueNames
+objectclass: top
+description: Contains entries which describe System Administrator
+uniquemember: cn=admin,ou=users,o=avanzarit
+
+# PO Admin
+# --------------
+
+dn: cn=POA,ou=users,o=avanzarit
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: inetOrgPersonExt
+objectclass: top
+cn: POA
+description: Purchase Organization Admin
+givenname: POA
+sn: POA
+uid: POA
+mail: POA@avanzarit.in
+resetPasswordOnLogin: TRUE
+userpassword: {SHA}LEw4keKsaVjpgQoeScZwV4T7+ho=
+
+dn:cn=PO_ADMIN,ou=groups,o=avanzarit
+objectclass: groupOfUniqueNames
+objectclass: top
+description: Contains entries which describe Purchase ORG Administrator User
+uniquemember: cn=POA,ou=users,o=avanzarit
+
+
+# PO Admin Manager
+# --------------
+
+dn: cn=POAM,ou=users,o=avanzarit
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: inetOrgPersonExt
+objectclass: top
+cn: POAM
+description: Purchase Organization Admin Manager
+givenname: POAM
+sn: POAM
+uid: POAM
+mail: POAM@avanzarit.in
+resetPasswordOnLogin: TRUE
+userpassword: {SHA}LEw4keKsaVjpgQoeScZwV4T7+ho=
+
+dn:cn=PO_ADMIN_MANAGER,ou=groups,o=avanzarit
+objectclass: groupOfUniqueNames
+objectclass: top
+description: Contains entries which describe Purchase ORG Administrator User with Approval Rights
+uniquemember: cn=POAM,ou=users,o=avanzarit
+
+# PO Finance 
+# --------------
+
+dn: cn=POF,ou=users,o=avanzarit
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: inetOrgPersonExt
+objectclass: top
+cn: POF
+description: Purchase Organization Finance User
+givenname: POF
+sn: POF
+uid: POF
+mail: POF@avanzarit.in
+resetPasswordOnLogin: TRUE
+userpassword: {SHA}LEw4keKsaVjpgQoeScZwV4T7+ho=
+
+dn:cn=PO_FINANCE,ou=groups,o=avanzarit
+objectclass: groupOfUniqueNames
+objectclass: top
+description: Contains entries which describe Purchase ORG Finance Department User
+uniquemember: cn=POF,ou=users,o=avanzarit
+
+
+# PO Finance Manager
+# --------------
+
+dn: cn=POFM,ou=users,o=avanzarit
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: inetOrgPersonExt
+objectclass: top
+cn: POFM
+description: Purchase Organization Finance Admin Manager
+givenname: POFM
+sn: POFM
+uid: POFM
+mail: POFM@avanzarit.in
+resetPasswordOnLogin: TRUE
+userpassword: {SHA}LEw4keKsaVjpgQoeScZwV4T7+ho=
+
+dn:cn=PO_FINANCE_MANAGER,ou=groups,o=avanzarit
+objectclass: groupOfUniqueNames
+objectclass: top
+description: Contains entries which describe Purchase ORG Finance Department User with Approval Rights
+uniquemember: cn=POFM,ou=users,o=avanzarit
+
+# PO TAX
+# --------------
+
+dn: cn=POT,ou=users,o=avanzarit
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: inetOrgPersonExt
+objectclass: top
+cn: POT
+description: Purchase Organization Tax Department User
+givenname: POT
+sn: POT
+uid: POT
+mail: POT@avanzarit.in
+resetPasswordOnLogin: TRUE
+userpassword: {SHA}LEw4keKsaVjpgQoeScZwV4T7+ho=
+
+dn: cn=PO_TAX,ou=groups,o=avanzarit
+objectclass: groupOfUniqueNames
+objectclass: top
+description: Contains entries which describe Purchase ORG Tax Department User
+uniquemember: cn=POT,ou=users,o=avanzarit
+
+
+# PO Tax Manager
+# --------------
+
+dn: cn=POTM,ou=users,o=avanzarit
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: inetOrgPersonExt
+objectclass: top
+cn: POTM
+description: Purchase Organization Tax Manager
+givenname: POTM
+sn: POTM
+uid: POTM
+mail: POTM@avanzarit.in
+resetPasswordOnLogin: TRUE
+userpassword: {SHA}LEw4keKsaVjpgQoeScZwV4T7+ho=
+
+dn: cn=PO_TAX_MANAGER,ou=groups,o=avanzarit
+objectclass: groupOfUniqueNames
+objectclass: top
+description: Contains entries which describe Purchase ORG TAX User with Approval Rights
+uniquemember: cn=POTM,ou=users,o=avanzarit
+
+# PO Organization
+# --------------
+
+dn: cn=POO,ou=users,o=avanzarit
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: inetOrgPersonExt
+objectclass: top
+cn: POO
+description: Purchase Organization User
+givenname: POO
+sn: POO
+uid: POO
+mail: POO@avanzarit.in
+resetPasswordOnLogin: TRUE
+userpassword: {SHA}LEw4keKsaVjpgQoeScZwV4T7+ho=
+
+dn: cn=PO_ORG,ou=groups,o=avanzarit
+objectclass: groupOfUniqueNames
+objectclass: top
+description: Contains entries which describe Purchase ORG User
+uniquemember: cn=POO,ou=users,o=avanzarit
+
+
+# PO Organization Manager
+# --------------
+
+dn: cn=POOM,ou=users,o=avanzarit
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: inetOrgPersonExt
+objectclass: top
+cn: POOM
+description: Purchase Organization User Manager
+givenname: POOM
+sn: POOM
+uid: POOM
+mail: POOM@avanzarit.in
+resetPasswordOnLogin: TRUE
+userpassword: {SHA}LEw4keKsaVjpgQoeScZwV4T7+ho=
+
+dn: cn=PO_ORG_MANAGER,ou=groups,o=avanzarit
+objectclass: groupOfUniqueNames
+objectclass: top
+description: Contains entries which describe Purchase ORG User with Approval Rights
+uniquemember: cn=POOM,ou=users,o=avanzarit
