@@ -1,8 +1,10 @@
 package com.avanzarit.apps.gst.auth.filter;
 
-import com.avanzarit.apps.gst.auth.handler.CustomAuthenticationSuccessHandler;
+import com.avanzarit.apps.gst.auth.db.handler.CustomAuthenticationSuccessHandler;
+import com.avanzarit.apps.gst.configcondition.DatabaseAuthEnabledCondition;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

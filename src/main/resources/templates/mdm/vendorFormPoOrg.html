@@ -103,6 +103,8 @@
 
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <input type="hidden" id="submitstatus" th:field="*{submityn}"/>
+        <input type="hidden" th:field="*{workflowId}"/>
+        <input type="hidden" th:field="*{vendorId}"/>
 
     </form>
 </div>

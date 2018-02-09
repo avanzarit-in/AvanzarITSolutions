@@ -1,8 +1,11 @@
-package com.avanzarit.apps.gst.auth.handler;
+package com.avanzarit.apps.gst.auth.db.handler;
 
-import com.avanzarit.apps.gst.auth.model.User;
+import com.avanzarit.apps.gst.auth.db.model.DbUser;
 import com.avanzarit.apps.gst.auth.service.UserService;
+import com.avanzarit.apps.gst.configcondition.DatabaseAuthEnabledCondition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -19,7 +22,7 @@ import java.util.Date;
 public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
-    private UserService userService;
+    private UserService<DbUser> userService;
 
     public CustomAuthenticationSuccessHandler() {
         super();
@@ -33,13 +36,18 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
 
         HttpSession session = httpServletRequest.getSession();
         String userName=authentication.getName();
-        User user=userService.findByUsername(userName);
-        user.setLastLoginDate(new Date());
-        userService.saveOnly(user);
+        DbUser dbUser =userService.findByUsername(userName);
 
+        if(dbUser!=null) {
+            dbUser.setLastLoginDate(new Date());
+            userService.save(dbUser);
+        }
         //set our response to OK status
+        String pathInfo = httpServletRequest.getServletPath();
+       // httpServletResponse.sendRedirect(pathInfo.contains("mdm")?"/mdm":"/");
         httpServletResponse.setStatus(HttpServletResponse.SC_OK);
         super.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
+
         //since we have created our custom success handler, its up to us to where
         //we will redirect the user after successfully login
         //  httpServletResponse.sendRedirect("/");

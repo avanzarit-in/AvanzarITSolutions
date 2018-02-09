@@ -1,15 +1,15 @@
 package com.avanzarit.apps.gst.auth.model;
 
 import com.avanzarit.apps.gst.Model;
+import com.avanzarit.apps.gst.auth.AUTH_SYSTEM;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,12 +27,15 @@ public class PasswordResetToken implements Model {
 
     private String token;
 
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "userid")
-    private User user;
+    @Column(name = "userid")
+    private String userId;
 
     @Column(name = "expirydate")
     private Date expiryDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="authsystem")
+    private AUTH_SYSTEM authSystem;
 
     public PasswordResetToken() {
         super();
@@ -45,11 +48,12 @@ public class PasswordResetToken implements Model {
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
-    public PasswordResetToken(final String token, final User user) {
+    public PasswordResetToken(final String token, final String userId,final AUTH_SYSTEM authSystem) {
         super();
 
         this.token = token;
-        this.user = user;
+        this.userId = userId;
+        this.authSystem=authSystem;
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
@@ -66,12 +70,12 @@ public class PasswordResetToken implements Model {
         this.token = token;
     }
 
-    public User getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser(final User user) {
-        this.user = user;
+    public void setUserId(final String userId) {
+        this.userId = userId;
     }
 
     @Column(name = "expirydate")
@@ -95,6 +99,16 @@ public class PasswordResetToken implements Model {
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="authsystem")
+    public AUTH_SYSTEM getAuthSystem() {
+        return authSystem;
+    }
+
+    public void setAuthSystem(AUTH_SYSTEM authSystem) {
+        this.authSystem = authSystem;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,13 +116,13 @@ public class PasswordResetToken implements Model {
         PasswordResetToken that = (PasswordResetToken) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(token, that.token) &&
-                Objects.equals(user, that.user) &&
+                Objects.equals(userId, that.userId) &&
                 Objects.equals(expiryDate, that.expiryDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, token, user, expiryDate);
+        return Objects.hash(id, token, userId, expiryDate);
     }
 
     @Override

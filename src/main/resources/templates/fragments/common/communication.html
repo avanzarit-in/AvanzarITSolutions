@@ -4,10 +4,10 @@
 <body>
 <div th:fragment="communication" th:object="${model}">
 <div class="form-group required">
-    <label class="col-xs-2  control-label">Telephone-Extn</label>
+    <label class="col-xs-2   control-label">Telephone-Extn</label>
     <div class="col-xs-6">
 
-        <div class="input-group ">
+        <div class="input-group">
 
             <input type="text" class="form-control" th:field="*{telephoneNumber}" th:disabled="*{submityn == 'Y'}"
                    th:placeholder="*{submityn != 'Y' ? 'TelephoneNo':''}"/>
@@ -105,7 +105,12 @@ $(document).ready(function() {
                     phone: {
                        country: 'IN',
                         message: 'The value is not valid %s phone number'
-                    }
+                    },
+                    stringLength: {
+                        max: 10,
+                        message: 'Fax number can not be more than 10 digits'
+                            }
+
                }
             },
              faxExtn:{
@@ -197,13 +202,14 @@ $(document).ready(function() {
              extension = $('#communication-tab').find('[name="faxExtn"]').val();
 
          if (extension == "") {
+
              $('#communication-tab')
                 // Update the value for hidden field
                  .find('[name="faxNumberExtn"]')
                  .val(faxNumber)
                  .end()
                  // Revalidate it
-                 .formValidation('revalidateField', 'faxNumber');
+                 .formValidation('revalidateField', 'faxNumber','faxExtn');
          } else {
              $('#communication-tab')
              // Update the value for hidden field

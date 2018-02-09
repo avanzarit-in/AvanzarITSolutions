@@ -1,15 +1,12 @@
 package com.avanzarit.apps.gst.auth.service;
 
-import com.avanzarit.apps.gst.auth.model.User;
+public interface UserService<T> {
 
-public interface UserService {
-    void save(User user);
+    void save(T user);
 
-    void saveOnly(User user);
+    T findByUsername(String username);
 
-    User findByUsername(String username);
+    public T findByEmail(String email);
 
-    public User findByEmail(String email);
-
-    public void createPasswordResetTokenForUser(User user, String token);
+    public void createPasswordResetTokenForUser(String userId, String token);
 }

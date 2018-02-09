@@ -1,10 +1,10 @@
 package com.avanzarit.apps.gst.batch.job.customerimport;
 
-import com.avanzarit.apps.gst.auth.model.Role;
-import com.avanzarit.apps.gst.auth.model.User;
-import com.avanzarit.apps.gst.auth.model.UserStatusEnum;
+import com.avanzarit.apps.gst.auth.db.model.Role;
+import com.avanzarit.apps.gst.auth.db.model.DbUser;
+import com.avanzarit.apps.gst.auth.db.model.UserStatusEnum;
 import com.avanzarit.apps.gst.auth.properties.UserProperties;
-import com.avanzarit.apps.gst.auth.repository.RoleRepository;
+import com.avanzarit.apps.gst.auth.db.repository.RoleRepository;
 import com.avanzarit.apps.gst.auth.service.UserService;
 import com.avanzarit.apps.gst.batch.job.report.BatchLog;
 import com.avanzarit.apps.gst.email.CustomerMailProperties;
@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -34,7 +35,7 @@ import java.util.Set;
 public class CustomerDataImportWriter implements ItemWriter<Customer>, ApplicationContextAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerDataImportWriter.class);
-    private UserService userService;
+    private UserService<DbUser> userService;
     private RoleRepository roleRepository;
     private CustomerRepository customerRepository;
     private EmailServiceImpl emailService;
@@ -44,10 +45,12 @@ public class CustomerDataImportWriter implements ItemWriter<Customer>, Applicati
 
     @Autowired
     CustomerMailProperties customerMailProperties;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     private ApplicationContext applicationContext;
 
     @Autowired
-    public void setUserService(UserService userService) {
+    public void setUserService(UserService<DbUser> userService) {
         this.userService = userService;
     }
 
@@ -92,21 +95,21 @@ public class CustomerDataImportWriter implements ItemWriter<Customer>, Applicati
                 Role vendorRole = roleRepository.findByName("CUSTOMER");
                 Set<Role> roleSet = new HashSet<>();
                 roleSet.add(vendorRole);
-                User user = new User();
-                user.setUsername(customer.getCustomerId());
-                user.setPassword(defaultPassword);
-                user.setEmail(customer.getEmail());
-                user.setTelephone(customer.getTelephoneNumberExtn());
-                user.setMobile(customer.getMobileNo());
-                user.setUserStatus(UserStatusEnum.NEW);
-                user.setRoles(roleSet);
-                userService.save(user);
+                DbUser dbUser = new DbUser();
+                dbUser.setUsername(customer.getCustomerId());
+                dbUser.setPassword(bCryptPasswordEncoder.encode(defaultPassword));
+                dbUser.setEmail(customer.getEmail());
+                dbUser.setTelephone(customer.getTelephoneNumberExtn());
+                dbUser.setMobile(customer.getMobileNo());
+                dbUser.setUserStatus(UserStatusEnum.NEW);
+                dbUser.setRoles(roleSet);
+                userService.save(dbUser);
                 SimpleMailMessage mailTemplate = (SimpleMailMessage) applicationContext.getBean("updatePasswordMessage", customerMailProperties.isFromMailIdDifferent(), MAIL_SENDER.CUSTOMER);
-                if (!StringUtils.isEmpty(user.getEmail())) {
-                    String text = String.format(mailTemplate.getText(), contextURL, user.getUsername(), defaultPassword, customerMailProperties.getFromMailId());
+                if (!StringUtils.isEmpty(dbUser.getEmail())) {
+                    String text = String.format(mailTemplate.getText(), contextURL, dbUser.getUsername(), defaultPassword, customerMailProperties.getFromMailId());
                     String subject = customerMailProperties.getUpdatePasswordSubject();
                     try {
-                        emailService.sendSimpleMessage(user.getEmail(), subject, text, MAIL_SENDER.CUSTOMER);
+                        emailService.sendSimpleMessage(dbUser.getEmail(), subject, text, MAIL_SENDER.CUSTOMER);
                     } catch (Exception e) {
                         logger.log("WARNING: E-mail send Error: " + e.getMessage());
                         LOGGER.error(e.getMessage());

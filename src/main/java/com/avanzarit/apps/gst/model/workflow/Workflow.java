@@ -1,9 +1,13 @@
 package com.avanzarit.apps.gst.model.workflow;
 
+import com.avanzarit.apps.gst.auth.SYSTEM_ROLES;
 import com.avanzarit.apps.gst.model.Vendor;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "workflow")
@@ -21,21 +26,24 @@ public class Workflow {
     @Column(name = "changerequestid")
     private Long changeRequestId;
 
-    @OneToOne(targetEntity = Vendor.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = Vendor.class, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @JoinColumn(nullable = false, name = "vendorid")
     private Vendor vendor;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "assignedgroup")
-    private String assignedGroup;
+    private SYSTEM_ROLES assignedGroup;
 
     @Column(name = "assigneduser")
     private String assignedUser;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private WORKFLOW_STATUS status;
 
-    @Column(name = "stage")
-    private String stage;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private WORKFLOW_TYPE type;
 
     public Long getChangeRequestId() {
         return changeRequestId;
@@ -53,11 +61,11 @@ public class Workflow {
         this.vendor = vendor;
     }
 
-    public String getAssignedGroup() {
+    public SYSTEM_ROLES getAssignedGroup() {
         return assignedGroup;
     }
 
-    public void setAssignedGroup(String assignedGroup) {
+    public void setAssignedGroup(SYSTEM_ROLES assignedGroup) {
         this.assignedGroup = assignedGroup;
     }
 
@@ -69,19 +77,19 @@ public class Workflow {
         this.assignedUser = assignedUser;
     }
 
-    public String getStatus() {
+    public WORKFLOW_STATUS getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(WORKFLOW_STATUS status) {
         this.status = status;
     }
 
-    public String getStage() {
-        return stage;
+    public WORKFLOW_TYPE getType() {
+        return type;
     }
 
-    public void setStage(String stage) {
-        this.stage = stage;
+    public void setType(WORKFLOW_TYPE type) {
+        this.type = type;
     }
 }

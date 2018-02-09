@@ -1,9 +1,9 @@
 package com.avanzarit.apps.gst.service;
 
 import com.avanzarit.apps.gst.annotations.CopyOver;
-import com.avanzarit.apps.gst.auth.model.User;
-import com.avanzarit.apps.gst.auth.repository.RoleRepository;
-import com.avanzarit.apps.gst.auth.repository.UserRepository;
+import com.avanzarit.apps.gst.auth.db.model.DbUser;
+import com.avanzarit.apps.gst.auth.db.repository.RoleRepository;
+import com.avanzarit.apps.gst.auth.db.repository.UserRepository;
 import com.avanzarit.apps.gst.model.ContactPersonMaster;
 import com.avanzarit.apps.gst.model.MaterialMaster;
 import com.avanzarit.apps.gst.model.ServiceSacMaster;
@@ -20,13 +20,14 @@ import com.avanzarit.apps.gst.storage.StorageService;
 import com.avanzarit.apps.gst.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class VendorManagementService {
 
     @Autowired
@@ -59,7 +60,7 @@ public class VendorManagementService {
     @Autowired
     AttachmentRepository attachmentRepository;
 
-    public void save(Vendor vendor,String userName){
+    public void save(Vendor vendor, String userName) {
         List<MaterialMaster> materials = vendor.getMaterialMaster();
         List<MaterialMaster> cleanedMaterailList = materials.stream()
                 .filter(line -> line.getId() != null)
@@ -101,24 +102,29 @@ public class VendorManagementService {
             contactPersonMasterRepository.save(contactPersonMaster);
         }
 
-        if (vendor.getSubmityn().equalsIgnoreCase("Y")) {
-            vendor.setSubmittedBy(userName);
-            vendor.setLastSubmittedOn(new Date());
-        } else {
-            vendor.setModifiedBy(userName);
-            vendor.setLastModifiedOn(new Date());
+        Vendor oldVendor = vendorRepository.findByVendorId(vendor.getVendorId());
+
+        if (oldVendor.getVendorStatus() != VendorStatusEnum.SUBMITTED_APPROVAL) {
+            if (vendor.getSubmityn().equalsIgnoreCase("Y")) {
+                vendor.setSubmittedBy(userName);
+                vendor.setLastSubmittedOn(new Date());
+            } else {
+                vendor.setModifiedBy(userName);
+                vendor.setLastModifiedOn(new Date());
+            }
         }
 
-        Vendor oldVendor = vendorRepository.findByVendorId(vendor.getVendorId());
         copyOverProperties(vendor, oldVendor);
-        if (vendor.getSubmityn().equalsIgnoreCase("Y")) {
-            vendor.setSubmittedBy(userName);
-            vendor.setLastSubmittedOn(new Date());
-            vendor.setVendorStatus(VendorStatusEnum.SUBMITTED);
-        } else {
-            vendor.setModifiedBy(userName);
-            vendor.setLastModifiedOn(new Date());
-            vendor.setVendorStatus(VendorStatusEnum.MODIFIED);
+        if (oldVendor.getVendorStatus() != VendorStatusEnum.SUBMITTED_APPROVAL) {
+            if (vendor.getSubmityn().equalsIgnoreCase("Y")) {
+                vendor.setSubmittedBy(userName);
+                vendor.setLastSubmittedOn(new Date());
+                vendor.setVendorStatus(VendorStatusEnum.SUBMITTED);
+            } else {
+                vendor.setModifiedBy(userName);
+                vendor.setLastModifiedOn(new Date());
+                vendor.setVendorStatus(VendorStatusEnum.MODIFIED);
+            }
         }
 
         vendorRepository.save(vendor);
@@ -145,12 +151,12 @@ public class VendorManagementService {
             }
         }
 
-        User user = userRepository.findByUsername(vendor.getVendorId());
-        if (user != null) {
-            user.setEmail(vendor.getEmail());
-            user.setTelephone(vendor.getTelephoneNumberExtn());
-            user.setMobile(vendor.getMobileNo());
-            userRepository.save(user);
+        DbUser dbUser = userRepository.findByUsername(vendor.getVendorId());
+        if (dbUser != null) {
+            dbUser.setEmail(vendor.getEmail());
+            dbUser.setTelephone(vendor.getTelephoneNumberExtn());
+            dbUser.setMobile(vendor.getMobileNo());
+            userRepository.save(dbUser);
         }
     }
 
@@ -163,7 +169,7 @@ public class VendorManagementService {
                 field.set(newVendor, value);
             }
         } catch (Exception exception) {
-
+            System.out.println(exception);
         }
     }
 }

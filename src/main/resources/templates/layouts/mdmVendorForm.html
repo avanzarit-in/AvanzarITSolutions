@@ -38,12 +38,12 @@
 
 
 <script th:replace="${view} :: js"></script>
-<script th:replace="${#strings.toString(stage) =='GENERAL'} ? ~{fragments/vendorForm/general :: generaljs} : ~{}"></script>
-<script th:replace="${#strings.toString(stage) =='GENERAL'} ? ~{fragments/common/address :: addressjs} : ~{}"></script>
-<script th:replace="${#strings.toString(stage) =='GENERAL'} ? ~{fragments/common/communication :: communicationjs} : ~{}"></script>
-<script th:replace="${#strings.toString(stage) =='FINANCE'} ? ~{fragments/vendorForm/bank :: bankjs} : ~{}"></script>
-<script th:replace="${#strings.toString(stage) =='TAX'} ? ~{fragments/common/gstn :: gstnjs} : ~{}"></script>
-<script th:replace="${#strings.toString(stage) =='GENERAL'} ? ~{fragments/vendorForm/material :: materialjs} : ~{}"></script>
-<script th:replace="${#strings.toString(stage) =='GENERAL'} ? ~{fragments/vendorForm/contact :: contactjs} : ~{}"></script>
-<script th:replace="${#strings.toString(stage) =='GENERAL'} ? ~{fragments/vendorForm/service :: servicejs} : ~{}"></script>
+<script th:replace="${#strings.toString(landingpage) =='vendorFormGeneral'} ? ~{fragments/vendorForm/general :: generaljs} : ~{}"></script>
+<script th:replace="${#strings.toString(landingpage) =='vendorFormGeneral'} ? ~{fragments/common/address :: addressjs} : ~{}"></script>
+<script th:replace="${#strings.toString(landingpage) =='vendorFormGeneral'} ? ~{fragments/common/communication :: communicationjs} : ~{}"></script>
+<script th:replace="${#strings.toString(landingpage) =='vendorFormFinance'} ? ~{fragments/vendorForm/bank :: bankjs} : ~{}"></script>
+<script th:replace="${#strings.toString(landingpage) =='vendorFormTax'} ? ~{fragments/common/gstn :: gstnjs} : ~{}"></script>
+<script th:replace="${#strings.toString(landingpage) =='vendorFormGeneral'} ? ~{fragments/vendorForm/material :: materialjs} : ~{}"></script>
+<script th:replace="${#strings.toString(landingpage) =='vendorFormGeneral'} ? ~{fragments/vendorForm/contact :: contactjs} : ~{}"></script>
+<script th:replace="${#strings.toString(landingpage) =='vendorFormGeneral'} ? ~{fragments/vendorForm/service :: servicejs} : ~{}"></script>
 </html>

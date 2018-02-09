@@ -1,4 +1,4 @@
-package com.avanzarit.apps.gst.auth.model;
+package com.avanzarit.apps.gst.auth.db.model;
 
 import com.avanzarit.apps.gst.Model;
 
@@ -15,7 +15,7 @@ import java.util.Set;
 public class Role implements Model {
     private Long id;
     private String name;
-    private Set<User> users;
+    private Set<DbUser> dbUsers;
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -36,11 +36,11 @@ public class Role implements Model {
     }
 
     @ManyToMany(mappedBy = "roles")
-    public Set<User> getUsers() {
-        return users;
+    public Set<DbUser> getDbUsers() {
+        return dbUsers;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setDbUsers(Set<DbUser> dbUsers) {
+        this.dbUsers = dbUsers;
     }
 }

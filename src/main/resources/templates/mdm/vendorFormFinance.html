@@ -15,21 +15,25 @@
         <strong>Success!</strong> <span th:text="${message}"/>
     </div>
 
-    <form id="profileForm" th:action="@{{id}/add}(id=${context})}" th:object="${model}" class="form-horizontal" method="post">
+    <form id="profileForm" th:action="@{/{context}/add(context=${context})}" th:object="${model}" class="form-horizontal" method="post">
 
         <div class="panel panel-default">
+
             <div class="panel-heading">
-                <h3 class="panel-title">Vendor Financial Details</h3>
+                <div class="row">
+                    <div class="col-md-4 text-left panel-title"><h3 class="panel-title">Vendor Financial Details</h3></div>
+                    <div class="col-md-8 text-right"><a class="btn btn-primary" data-toggle="modal" data-target="#workflowModal">View Workflow Details</a></div>
+                </div>
             </div>
 
             <div class="panel-body">
 
                 <ul class="nav nav-tabs">
-                    <li><a href="#bankaccount-tab" data-toggle="tab">Bank Details<i class="fa"></i></a></li>
+                    <li class="active"><a href="#bankaccount-tab" data-toggle="tab">Bank Details<i class="fa"></i></a></li>
                 </ul>
                 <div class="tab-content">
 
-                    <div class="tab-pane" id="bankaccount-tab">
+                    <div class="tab-pane active" id="bankaccount-tab">
                         <div th:replace="fragments/vendorForm/bank :: bank">
                             Bank Details goes here
                         </div>
@@ -53,8 +57,16 @@
 
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <input type="hidden" id="submitstatus" th:field="*{submityn}"/>
-
+        <input type="hidden" th:field="*{workflowId}"/>
+        <input type="hidden" th:field="*{vendorId}"/>
     </form>
+
+    <div id="workflowModal" class="modal fade" role="dialog">
+        <div th:replace="fragments/workflow/workflow :: workflow">
+            Workflow Dialogue
+        </div>
+    </div>
+
 </div>
 </body>
 

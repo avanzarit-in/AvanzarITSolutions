@@ -1,10 +1,10 @@
 package com.avanzarit.apps.gst.startup;
 
-import com.avanzarit.apps.gst.auth.model.Role;
-import com.avanzarit.apps.gst.auth.model.User;
-import com.avanzarit.apps.gst.auth.model.UserStatusEnum;
+import com.avanzarit.apps.gst.auth.db.model.Role;
+import com.avanzarit.apps.gst.auth.db.model.DbUser;
+import com.avanzarit.apps.gst.auth.db.model.UserStatusEnum;
 import com.avanzarit.apps.gst.auth.properties.UserProperties;
-import com.avanzarit.apps.gst.auth.repository.RoleRepository;
+import com.avanzarit.apps.gst.auth.db.repository.RoleRepository;
 import com.avanzarit.apps.gst.auth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -20,8 +20,8 @@ import java.util.Set;
 @Component
 public class StartupHousekeeper {
 
-    @Autowired
-    private UserService userService;
+    @Autowired(required = false)
+    private UserService<DbUser> userService;
 
     @Autowired
     private UserProperties userProperties;
@@ -31,21 +31,23 @@ public class StartupHousekeeper {
 
     @EventListener(ContextRefreshedEvent.class)
     public void contextRefreshedEvent() {
-        User user = userService.findByUsername(userProperties.getAdminId());
-        if (user == null) {
-            Set<Role> roles = new HashSet<>();
-            Role role = roleRepository.findByName("ADMIN");
-            roles.add(role);
-            user = new User();
-            user.setUsername(userProperties.getAdminId());
-            user.setRoles(roles);
-            user.setPassword(userProperties.getDefaultPassword());
-            user.setEmail(userProperties.getAdminEmailId());
-            user.setUserStatus(UserStatusEnum.NEW);
-            userService.save(user);
-        }else if(userProperties.isAdminPasswordResetOnStartup()){
-            user.setUserStatus(UserStatusEnum.NEW);
-            userService.saveOnly(user);
-        }
+    /*    if (userService != null) {
+            DbUser dbUser = userService.findByUsername(userProperties.getAdminId());
+            if (dbUser == null) {
+                Set<Role> roles = new HashSet<>();
+                Role role = roleRepository.findByName("ADMIN");
+                roles.add(role);
+                dbUser = new DbUser();
+                dbUser.setUsername(userProperties.getAdminId());
+                dbUser.setRoles(roles);
+                dbUser.setPassword(userProperties.getDefaultPassword());
+                dbUser.setEmail(userProperties.getAdminEmailId());
+                dbUser.setUserStatus(UserStatusEnum.NEW);
+                userService.save(dbUser);
+            } else if (userProperties.isAdminPasswordResetOnStartup()) {
+                dbUser.setUserStatus(UserStatusEnum.NEW);
+                userService.saveOnly(dbUser);
+            }
+        }*/
     }
 }

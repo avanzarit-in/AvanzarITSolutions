@@ -1,6 +1,6 @@
 package com.avanzarit.apps.gst.batch.job.config;
 
-import com.avanzarit.apps.gst.auth.model.User;
+import com.avanzarit.apps.gst.auth.db.model.DbUser;
 import com.avanzarit.apps.gst.batch.job.policy.SkipPolicy;
 import com.avanzarit.apps.gst.batch.job.properties.BatchProperties;
 import com.avanzarit.apps.gst.batch.job.userimport.*;
@@ -10,7 +10,6 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
@@ -57,8 +56,8 @@ public class UserJobConfig {
     UserWriterStepListener userWriterStepListener;
 
 
-    public ItemReader<User> reader(Resource resource){
-        FlatFileItemReader<User> reader = new FlatFileItemReader<User>();
+    public ItemReader<DbUser> reader(Resource resource){
+        FlatFileItemReader<DbUser> reader = new FlatFileItemReader<DbUser>();
         reader.setLinesToSkip(1);
         reader.setResource(resource);
         reader.setLineMapper(userLineMapper());
@@ -66,12 +65,12 @@ public class UserJobConfig {
     }
 
     @Bean
-    public LineMapper<User> userLineMapper() {
-        DefaultLineMapper<User> lineMapper = new DefaultLineMapper<User>();
+    public LineMapper<DbUser> userLineMapper() {
+        DefaultLineMapper<DbUser> lineMapper = new DefaultLineMapper<DbUser>();
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setNames(new String[]{"USERNAME", "EMAIL", "ROLES"});
-        BeanWrapperFieldSetMapper<User> fieldSetMapper = new BeanWrapperFieldSetMapper<User>();
-        fieldSetMapper.setTargetType(User.class);
+        BeanWrapperFieldSetMapper<DbUser> fieldSetMapper = new BeanWrapperFieldSetMapper<DbUser>();
+        fieldSetMapper.setTargetType(DbUser.class);
         lineMapper.setLineTokenizer(lineTokenizer);
         lineMapper.setFieldSetMapper(userFieldSetMapper);
         return lineMapper;
@@ -86,7 +85,7 @@ public class UserJobConfig {
 
 
     public Step importUserStep(Resource resource) {
-        return stepBuilderFactory.get("importUserStep").<User, User>chunk(1)
+        return stepBuilderFactory.get("importUserStep").<DbUser, DbUser>chunk(1)
              .faultTolerant().skipPolicy(new SkipPolicy())
                 .reader(reader(resource)).listener(userReaderStepListener)
                 .processor(userDataProcessor)

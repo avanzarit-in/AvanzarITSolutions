@@ -1,17 +1,14 @@
 package com.avanzarit.apps.gst.controller;
 
 import com.avanzarit.apps.gst.Layout;
-import com.avanzarit.apps.gst.annotations.CopyOver;
-import com.avanzarit.apps.gst.auth.model.Role;
-import com.avanzarit.apps.gst.auth.model.User;
-import com.avanzarit.apps.gst.auth.repository.RoleRepository;
-import com.avanzarit.apps.gst.auth.repository.UserRepository;
+import com.avanzarit.apps.gst.auth.db.model.Role;
+import com.avanzarit.apps.gst.auth.db.repository.RoleRepository;
+import com.avanzarit.apps.gst.auth.db.repository.UserRepository;
 import com.avanzarit.apps.gst.model.Attachment;
-import com.avanzarit.apps.gst.model.ContactPersonMaster;
-import com.avanzarit.apps.gst.model.MaterialMaster;
-import com.avanzarit.apps.gst.model.ServiceSacMaster;
 import com.avanzarit.apps.gst.model.Vendor;
 import com.avanzarit.apps.gst.model.VendorStatusEnum;
+import com.avanzarit.apps.gst.model.workflow.WORKFLOW_GROUP;
+import com.avanzarit.apps.gst.model.workflow.Workflow;
 import com.avanzarit.apps.gst.repository.AttachmentRepository;
 import com.avanzarit.apps.gst.repository.ContactPersonMasterRepository;
 import com.avanzarit.apps.gst.repository.HsnMasterRepository;
@@ -19,9 +16,10 @@ import com.avanzarit.apps.gst.repository.MaterialMasterRepository;
 import com.avanzarit.apps.gst.repository.SacMasterRepository;
 import com.avanzarit.apps.gst.repository.ServiceSacMasterRepository;
 import com.avanzarit.apps.gst.repository.VendorRepository;
+import com.avanzarit.apps.gst.repository.WorkflowRepository;
 import com.avanzarit.apps.gst.service.VendorManagementService;
+import com.avanzarit.apps.gst.service.WorkflowManagementService;
 import com.avanzarit.apps.gst.storage.StorageService;
-import com.avanzarit.apps.gst.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,18 +40,20 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 class VendorController {
 
     private static final Logger logger = LoggerFactory.getLogger(VendorController.class);
 
+    @Autowired
+    private WorkflowRepository workflowRepository;
+    @Autowired
+    private WorkflowManagementService workflowManagementService;
     @Autowired
     private HsnMasterRepository hsnMasterRepository;
 
@@ -124,13 +124,19 @@ class VendorController {
                 vendorRepository.save(vendor);
                 redirectAttributes.addFlashAttribute("message", "Vendor Data Approved Successfully");
 
+
             } else if (action.equalsIgnoreCase("REJECT")) {
-                vendor.setSubmityn("N");
-                vendor.setRejectedBy(userName);
-                vendor.setLastRejectedOn(new Date());
-                vendor.setVendorStatus(VendorStatusEnum.REJECTED);
-                vendorRepository.save(vendor);
-                redirectAttributes.addFlashAttribute("message", "Vendor Data Rejected Successfully");
+                List<Workflow> workflowList=workflowRepository.findByVendor(vendor);
+                if(workflowList==null || workflowList.isEmpty()) {
+                    vendor.setSubmityn("N");
+                    vendor.setRejectedBy(userName);
+                    vendor.setLastRejectedOn(new Date());
+                    vendor.setVendorStatus(VendorStatusEnum.REJECTED);
+                    vendorRepository.save(vendor);
+                    redirectAttributes.addFlashAttribute("message", "Vendor Data Rejected Successfully");
+                }else{
+                    redirectAttributes.addFlashAttribute("error", "Could not Reject Vendor Data as it is already in a approval workflow");
+                }
 
             } else if (action.equalsIgnoreCase("RESET")) {
                 vendor.setSubmityn("N");
@@ -141,6 +147,20 @@ class VendorController {
                 vendor.setVendorStatus(VendorStatusEnum.REVERTED);
                 vendorRepository.save(vendor);
                 redirectAttributes.addFlashAttribute("message", "Vendor Data Reset Successfully");
+            }else if (action.equalsIgnoreCase("VALIDATE")) {
+                List<Workflow> workflowList=workflowRepository.findByVendor(vendor);
+                if(workflowList==null || workflowList.isEmpty()) {
+                    vendor.setSubmityn("Y");
+                    vendor.setLastSubmittedForApprovalBy(userName);
+                    vendor.setLastSubmittedForApprovalOn(new Date());
+                    vendor.setVendorStatus(VendorStatusEnum.SUBMITTED_APPROVAL);
+                    vendorRepository.save(vendor);
+                    workflowManagementService.createWorkflowItemsFor(vendor, WORKFLOW_GROUP.PO_WORKFLOW);
+                    redirectAttributes.addFlashAttribute("message", "Vendor Data Successfully Submitted for Approval");
+                }else{
+                    redirectAttributes.addFlashAttribute("error", "Could not Submit Vendor Data for Approval as it is already in a approval workflow");
+                }
+
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "Vendor Data could not be Reset contact support");

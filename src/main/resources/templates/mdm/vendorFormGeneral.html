@@ -19,7 +19,10 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Vendor General Details</h3>
+                <div class="row">
+                    <div class="col-md-4 text-left panel-title"><h3 class="panel-title">Vendor General Details</h3></div>
+                    <div class="col-md-8 text-right"><a class="btn btn-primary" data-toggle="modal" data-target="#workflowModal">View Workflow Details</a></div>
+                </div>
             </div>
 
             <div class="panel-body">
@@ -89,8 +92,16 @@
 
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <input type="hidden" id="submitstatus" th:field="*{submityn}"/>
+        <input type="hidden" th:field="*{workflowId}"/>
+
 
     </form>
+
+    <div id="workflowModal" class="modal fade" role="dialog">
+        <div th:replace="fragments/workflow/workflow :: workflow">
+            Workflow Dialogue
+        </div>
+    </div>
 </div>
 </body>
 

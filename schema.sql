@@ -10,7 +10,7 @@ changerequestid BIGSERIAL PRIMARY KEY NOT NULL,
   assignedgroup VARCHAR(100),
   assigneduser VARCHAR(100),
   status VARCHAR(100),
-  stage VARCHAR(100)
+  type VARCHAR(100)
 );
 
 CREATE TABLE role (
@@ -38,22 +38,15 @@ CREATE TABLE password_reset_token (
   id         BIGSERIAL PRIMARY KEY NOT NULL,
   userid     VARCHAR(30)           NOT NULL,
   token      VARCHAR(100)          NOT NULL,
+  authsystem VARCHAR(100)          NOT NULL,
   expirydate TIMESTAMP
 );
 
-INSERT INTO role VALUES (1001, 'ADMIN');
 INSERT INTO role VALUES (1002, 'BUSINESS_OWNER_VENDOR');
 INSERT INTO role VALUES (1003, 'BUSINESS_OWNER_CUSTOMER');
 INSERT INTO role VALUES (1004, 'VENDOR');
 INSERT INTO role VALUES (1005, 'CUSTOMER');
-INSERT INTO role VALUES (1006, 'PO_ADMIN');
-INSERT INTO role VALUES (1007, 'PO_ADMIN_MANAGER');
-INSERT INTO role VALUES (1008, 'PO_FINANCE');
-INSERT INTO role VALUES (1009, 'PO_FINANCE_MANAGER');
-INSERT INTO role VALUES (1010, 'PO_TAX');
-INSERT INTO role VALUES (1011, 'PO_TAX_MANAGER');
-INSERT INTO role VALUES (1012, 'PO_ORG');
-INSERT INTO role VALUES (1013, 'PO_ORG_MANAGER');
+
 
 DROP TABLE IF EXISTS vendor;
 DROP TABLE IF EXISTS materialmaster;
@@ -118,6 +111,9 @@ CREATE TABLE vendor (
   lastrevertedon        TIMESTAMP,
   revertcount           INTEGER,
   revertreason          VARCHAR(500),
+
+  lastsubmittedforapprovalby        VARCHAR(500),
+  lastsubmittedforapprovalon        TIMESTAMP,
 
   isaccepttnc           VARCHAR(2),
   tncacceptedby         VARCHAR(500),

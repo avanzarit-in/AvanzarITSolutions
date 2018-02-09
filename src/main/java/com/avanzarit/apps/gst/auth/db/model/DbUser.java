@@ -1,14 +1,18 @@
-package com.avanzarit.apps.gst.auth.model;
+package com.avanzarit.apps.gst.auth.db.model;
 
 import com.avanzarit.apps.gst.Model;
+import com.avanzarit.apps.gst.auth.AUTH_SYSTEM;
+import com.avanzarit.apps.gst.auth.model.AppUser;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "appuser")
-public class User implements Model {
+public class DbUser implements Model, AppUser {
     private Long id;
     private String username;
     private String password;
@@ -74,9 +78,27 @@ public class User implements Model {
         this.userStatus = userStatus;
     }
 
+    @Override
+    @Transient
+    public String getUserId() {
+        return getUsername();
+    }
+
     @Column(name="email")
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    @Transient
+    public List<String> getRolesAsString() {
+        return getRoles().stream().map(item->item.getName()).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transient
+    public AUTH_SYSTEM getAuthSystem() {
+        return AUTH_SYSTEM.DB;
     }
 
     public void setEmail(String email) {
@@ -108,4 +130,6 @@ public class User implements Model {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+
 }

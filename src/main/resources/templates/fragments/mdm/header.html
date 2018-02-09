@@ -34,10 +34,10 @@
                         <ul class="dropdown-menu">
                             <li sec:authorize="hasAuthority('ADMIN')"><a href="/mdm/upload">Vendor Data Import</a></li>
                             <li ><a href="/mdm/myworklist">My Work List</a></li>
-                            <li th:if="${model != null}"><a href="/mdm/poadminlanding">Basic Details Management</a></li>
-                            <li th:if="${model != null}"><a href="/mdm/pofinancelanding">Finance Details Management</a></li>
-                            <li th:if="${model != null}"><a href="/mdm/potaxlanding">Tax Details Management</a></li>
-                            <li th:if="${model != null}"><a href="/mdm/poorglanding">Purchasing Org Details Management</a></li>
+                            <li th:if="${model != null}"><a th:href="@{/mdm/poadminlanding/{workflowId}/{vendorId}(vendorId=${model.vendorId},workflowId=${model.workflowId})}">Basic Details Management</a></li>
+                            <li th:if="${model != null}"><a th:href="@{/mdm/pofinancelanding/{workflowId}/{vendorId}(vendorId=${model.vendorId},workflowId=${model.workflowId})}">Finance Details Management</a></li>
+                            <li th:if="${model != null}"><a th:href="@{/mdm/potaxlanding/{workflowId}/{vendorId}(vendorId=${model.vendorId},workflowId=${model.workflowId})}">Tax Details Management</a></li>
+                           <!-- <li th:if="${model != null}"><a th:href="@{/mdm/poorglanding/{vendorId}(vendorId=${model.vendorId})}">Purchasing Org Details Management</a></li> -->
                         </ul>
                     </li>
                 </ul>
@@ -47,7 +47,7 @@
                             class="glyphicon glyphicon-log-in"></span> Login</a></li>
                     <li sec:authorize="isAuthenticated()"><p class="navbar-text">Logged in User:(<span
                             sec:authentication="name"></span>)</p></li>
-                    <li sec:authorize="isAuthenticated()"><a href="#" th:href="@{/mdm/logout}"><span
+                    <li sec:authorize="isAuthenticated()"><a href="#" th:href="@{/logout}"><span
                             class="glyphicon glyphicon-log-in"></span> Log Off</a></li>
                 </ul>
             </div>

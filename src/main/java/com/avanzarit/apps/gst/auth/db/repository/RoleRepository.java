@@ -1,6 +1,6 @@
-package com.avanzarit.apps.gst.auth.repository;
+package com.avanzarit.apps.gst.auth.db.repository;
 
-import com.avanzarit.apps.gst.auth.model.Role;
+import com.avanzarit.apps.gst.auth.db.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

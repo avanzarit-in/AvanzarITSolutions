@@ -2,8 +2,8 @@ package com.avanzarit.apps.gst.controller;
 
 import com.avanzarit.apps.gst.Layout;
 import com.avanzarit.apps.gst.annotations.CopyOver;
-import com.avanzarit.apps.gst.auth.model.User;
-import com.avanzarit.apps.gst.auth.repository.UserRepository;
+import com.avanzarit.apps.gst.auth.db.model.DbUser;
+import com.avanzarit.apps.gst.auth.db.repository.UserRepository;
 import com.avanzarit.apps.gst.model.Customer;
 import com.avanzarit.apps.gst.model.CustomerContactPersonMaster;
 import com.avanzarit.apps.gst.model.CustomerStatusEnum;
@@ -187,12 +187,12 @@ class CustomerController {
             }
         }
 
-        User user = userRepository.findByUsername(customer.getCustomerId());
-        if (user != null) {
-            user.setEmail(customer.getEmail());
-            user.setTelephone(customer.getTelephoneNumberExtn());
-            user.setMobile(customer.getMobileNo());
-            userRepository.save(user);
+        DbUser dbUser = userRepository.findByUsername(customer.getCustomerId());
+        if (dbUser != null) {
+            dbUser.setEmail(customer.getEmail());
+            dbUser.setTelephone(customer.getTelephoneNumberExtn());
+            dbUser.setMobile(customer.getMobileNo());
+            userRepository.save(dbUser);
         }
 
         redirectAttributes.addFlashAttribute("model", customer);

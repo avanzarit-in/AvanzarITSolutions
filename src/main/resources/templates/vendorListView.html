@@ -56,13 +56,16 @@
                                        th:text="${mItem.gstNumber}" /></td>
                             <td>
                                 <button type="submit" th:attr="data-vendorId=${mItem.vendorId}" class="approveButton"
-                                        th:if="*{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) != 'APPROVED'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) != 'SYNC'}">
+                                        th:if="*{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) != 'APPROVED'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) !='SUBMITTED_APPROVAL'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) != 'SYNC'}">
                                     <i title="Approve" class="fa  fa-thumbs-up"></i></button>
                                 <button type="submit" th:attr="data-vendorId=${mItem.vendorId}" class="rejectButton"
                                         th:if="*{mItem.submityn == 'Y'}"><i title="Reject"
                                                                             class="fa  fa-thumbs-down"></i></button>
+                                <button type="submit" th:attr="data-vendorId=${mItem.vendorId}" class="validateButton"
+                                        th:if="*{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) =='APPROVED'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) !='SUBMITTED_APPROVAL'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) != 'SYNC'}" ><i title="Validate"
+                                                                            class="fa  fa-check-square"></i></button>
                                 <button type="submit" th:attr="data-vendorId=${mItem.vendorId}" class="resetButton"
-                                        th:if="*{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) !='APPROVED'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) !='SYNC'}">
+                                        th:if="*{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) !='APPROVED'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) !='SUBMITTED_APPROVAL'} and *{mItem.submityn == 'Y' and #strings.toString(mItem.vendorStatus) !='SYNC'}">
                                     <i title="Revert" class="fa  fa-undo"></i></button>
                             </td>
                         </tr>
@@ -123,6 +126,34 @@ $(document).ready(function () {
     });
     $("#failure-alert").fadeTo(2000, 500).slideUp(500, function () {
         $("#failure-alert").slideUp(500);
+    });
+
+  $('#viewVendorDetailsForm').on('click', '.validateButton', function (e) {
+        $('#viewVendorDetailsForm').attr('action', '/action');
+        e.preventDefault();
+        var $row = $(this)
+            , index = $row.attr('data-vendorid');
+        $('#vendorId').val(index);
+        $('#action').val("VALIDATE");
+        bootbox.confirm({
+            title: "Vendor Data Approval",
+            message: "Do you really want to Submit VEndor Data for Approval?",
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Cancel'
+                },
+                confirm: {
+                    label: '<i class="fa fa-check"></i> Confirm'
+                }
+            },
+            callback: function (result) {
+
+                if (result) {
+                    $('#viewVendorDetailsForm').submit();
+                }
+            }
+        });
+
     });
 
     $('#viewVendorDetailsForm').on('click', '.resetButton', function (e) {

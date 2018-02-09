@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <body>
 <div class="container-full" th:fragment="content">
@@ -23,7 +23,7 @@
                     <table id="dataTable" class="table table-hover table-striped table-bordered">
                         <thead class="thead-inverse">
                         <tr>
-
+                            <th>Workflow&nbsp;Item&nbsp;ID</th>
                             <th>Vendor&nbsp;ID</th>
                             <th>Vendor&nbsp;Name</th>
                             <th>Telephone&nbsp;Extn</th>
@@ -35,8 +35,9 @@
                         <tbody>
                         <tr th:each="mItem : ${items}">
 
-
-                            <td><a th:href="@{'/{id}/get/{paramsKey}'(id=${context},paramsKey=${mItem.vendor.vendorId})}"
+                            <td><label type="text"
+                                       th:text="${mItem.changeRequestId}" /></td>
+                            <td><a th:href="@{'/{context}/get/{workflowId}/{paramsKey}'(context=${context},workflowId=${mItem.changeRequestId},paramsKey=${mItem.vendor.vendorId})}"
                                    th:text="${mItem.vendor.vendorId}"/></td>
                             <td><label type="text"
                                        th:text="${mItem.vendor.vendorName1}" /></td>
@@ -47,10 +48,14 @@
                             <td><label type="text"
                                        th:text="${mItem.vendor.address1}" /></td>
                             <td>
-                                <a class="btn btn-primary"  th:attr="data-vendorId=${mItem.vendor.vendorId}"
+<div>
+                                <a class="btn btn-primary" id="claimButton"  th:attr="data-workflowId=${mItem.changeRequestId}"
                                         th:if="*{#strings.toString(mItem.assignedUser) == null}">Claim
                                     </a>
-
+                                <a class="btn btn-primary"  id="reassignButton" th:attr="data-vendorId=${mItem.vendor.vendorId}"
+                                   th:if="*{#strings.toString(mItem.assignedUser) == #authentication.principal.username}">ReAssign
+                                </a>
+</div>
                             </td>
                         </tr>
                         </tbody>
@@ -67,100 +72,29 @@
 
     <!-- Modal -->
     <div id="myModal" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-lg">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Provide basic Vendor Details</h4>
-                </div>
-                <form id="vendorNameDialogue" th:action="@{/{id}/createNewVendor(id=${context})}" class="form-horizontal" method="post">
-                <div class="modal-body">
-
-                    <div class="form-group required">
-                        <label class="col-xs-2 control-label">Vendor Name</label>
-                        <div class="col-xs-3">
-                            <input type="text" id="vendorNameField" class="form-control " name="vendorName"/>
-                        </div>
-
-                   </div>
-
-
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" id="createVendorButton" class="btn btn-default" >Submit</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-                </form>
-            </div>
-
+        <div th:replace="fragments/vendorForm/createNewVendor :: createVendorForm">
+            Workflow Dialogue
         </div>
-    </div>
-
+     </div>
 </div>
-
-
-
 
 </body>
 <script th:fragment="js" th:inline="javascript">
-    $(document).ready(function () {
-var hasErrors=false;
- $('#vendorNameDialogue').on('click', '#createVendorButton', function () {
-        var vendorName= $('#vendorNameDialogue').find('input[name="vendorName"]').val();
-        if(vendorName===""){
-        alert("Vendor Name Required");
-        return false;
-        }
-        if(hasErrors){
-            alert("Vendor Already Exisit in the System");
-            hasErrors=false;
-            $('#vendorNameDialogue').find('input[name="vendorName"]').val("");
-            return false;
-        }
+   $(document).ready(function () {
+    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+        $("#success-alert").slideUp(500);
+    });
+    $("#failure-alert").fadeTo(2000, 500).slideUp(500, function () {
+        $("#failure-alert").slideUp(500);
     });
 
-     var sacitems = new Bloodhound({
-        datumTokenizer: function (d) {
-            var test = Bloodhound.tokenizers.whitespace(d.vendorName);
-            $.each(test, function (k, v) {
-                i = 0;
-                while (i < v.length) {
-                    test.push(v.substr(i, v.length));
-                    i++;
-                }
-            })
-            return test;
-        }
-        , queryTokenizer: Bloodhound.tokenizers.whitespace
-        , limit : 10
-        , prefetch: {
-            url: getAbsoluteUrl('/master/vendorNames')
-            , cache: false
-            , ttl: 1
-        }
-
-
+    $('#viewVendorDetailsForm').on('click', '#claimButton', function () {
+        var $row = $(this)
+            , index = $row.attr('data-workflowId');
+        alert(index);
+        $('#viewVendorDetailsForm').attr('action', 'claim/' + index);
+        $('#viewVendorDetailsForm').submit();
     });
-    sacitems.initialize();
-
-
-    $('#vendorNameDialogue')
-            .find('input[name="vendorName"]')
-            .typeahead({
-                hint: true
-                , highlight: true
-                , minLength: 1
-            }, {
-                name: 'sacitems'
-                , displayKey: 'vendorName'
-                , source: sacitems.ttAdapter()
-            }).on('typeahead:selected', function(e,obj) {
-            $('#vendorNameDialogue').find('input[name="vendorName"]').value="";
-
-                    hasErrors=true;
-            });
 });
 
 </script>

@@ -21,6 +21,6 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
         //perform other required operation
         String pathInfo = request.getServletPath();
         response.setStatus(HttpStatus.OK.value());
-        response.sendRedirect(pathInfo.contains("mdm")?"/mdm":"/");
+        response.sendRedirect("");
     }
 }

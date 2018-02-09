@@ -1,6 +1,6 @@
 package com.avanzarit.apps.gst.batch.job.userimport;
 
-import com.avanzarit.apps.gst.auth.model.User;
+import com.avanzarit.apps.gst.auth.db.model.DbUser;
 import com.avanzarit.apps.gst.batch.job.WriterStepListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,17 +15,17 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class UserWriterStepListener extends WriterStepListener<User> {
+public class UserWriterStepListener extends WriterStepListener<DbUser> {
 
     private static final Logger LOGGER = LogManager.getLogger(UserWriterStepListener.class);
 
     @OnWriteError
-    public void onWriteError(Exception exception, List<User> items) {
+    public void onWriteError(Exception exception, List<DbUser> items) {
         super.onWriteError(exception, items);
     }
 
     @AfterWrite
-    public void afterWrite(List<User> item) {
+    public void afterWrite(List<DbUser> item) {
         super.afterWriteItem(item);
     }
 

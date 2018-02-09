@@ -1,10 +1,13 @@
-package com.avanzarit.apps.gst.auth.service;
+package com.avanzarit.apps.gst.auth.db.service;
 
-import com.avanzarit.apps.gst.auth.model.Role;
-import com.avanzarit.apps.gst.auth.model.User;
-import com.avanzarit.apps.gst.auth.model.UserStatusEnum;
-import com.avanzarit.apps.gst.auth.repository.UserRepository;
+import com.avanzarit.apps.gst.auth.db.model.Role;
+import com.avanzarit.apps.gst.auth.db.model.DbUser;
+import com.avanzarit.apps.gst.auth.db.model.UserStatusEnum;
+import com.avanzarit.apps.gst.auth.db.repository.UserRepository;
+import com.avanzarit.apps.gst.auth.service.UserService;
+import com.avanzarit.apps.gst.configcondition.DatabaseAuthEnabledCondition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,30 +23,28 @@ import java.util.Set;
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private UserService userService;
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         org.springframework.security.core.userdetails.User userDetails=null;
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
+        DbUser dbUser = userRepository.findByUsername(username);
+        if (dbUser == null) {
             throw new UsernameNotFoundException("User Does not exist.");
         }
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
-        if(user.getUserStatus()== UserStatusEnum.NEW) {
+        if(dbUser.getUserStatus()== UserStatusEnum.NEW) {
             grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_PASSWORD_CHANGE"));
              userDetails = new org.springframework.security.core.userdetails
-                     .User(user.getUsername(), user.getPassword(), grantedAuthorities);
+                     .User(dbUser.getUsername(), dbUser.getPassword(), grantedAuthorities);
 
         }else{
-            for (Role role : user.getRoles()) {
+            for (Role role : dbUser.getRoles()) {
                 grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
             }
             userDetails = new org.springframework.security.core.userdetails
-                    .User(user.getUsername(), user.getPassword(), grantedAuthorities);
+                    .User(dbUser.getUsername(), dbUser.getPassword(), grantedAuthorities);
 
         }
         return userDetails;

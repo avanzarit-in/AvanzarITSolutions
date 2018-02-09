@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<body>
+
+<!-- Modal -->
+
+<div class="modal-dialog modal-lg" th:fragment="createVendorForm">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Provide basic Vendor Details</h4>
+        </div>
+        <form id="createVendorDialogue" th:action="@{/{id}/createNewVendor(id=${context})}" class="form-horizontal"
+              method="post">
+            <div class="modal-body">
+
+                <div class="form-group required">
+                    <label class="col-xs-2 control-label">Vendor Name</label>
+                    <div class="col-xs-3">
+                        <input type="text" id="vendorNameField" class="form-control " name="vendorName"/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="createVendorButton" class="btn btn-default">Submit</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+<script th:fragment="createVendorFormJs" th:inline="javascript">
+$(document).ready(function () {
+    var hasErrors = false;
+    $('#createVendorDialogue').on('click', '#createVendorButton', function () {
+        var vendorName = $('#createVendorDialogue').find('input[name="vendorName"]').val();
+        if (vendorName === "") {
+            alert("Vendor Name Required");
+            return false;
+        }
+        if (hasErrors) {
+            alert("Vendor Already Exist in the System");
+            hasErrors = false;
+            $('#vendorNameDialogue').find('input[name="vendorName"]').val("");
+            return false;
+        }
+    });
+
+    var sacitems = new Bloodhound({
+        datumTokenizer: function (d) {
+            var test = Bloodhound.tokenizers.whitespace(d.vendorName);
+            $.each(test, function (k, v) {
+                i = 0;
+                while (i < v.length) {
+                    test.push(v.substr(i, v.length));
+                    i++;
+                }
+            })
+            return test;
+        }
+        , queryTokenizer: Bloodhound.tokenizers.whitespace
+        , limit: 10
+        , prefetch: {
+            url: getAbsoluteUrl('/master/vendorNames')
+            , cache: false
+            , ttl: 1
+        }
+
+
+    });
+    sacitems.initialize();
+
+    $('#createVendorDialogue')
+        .find('input[name="vendorName"]')
+        .typeahead({
+            hint: true
+            , highlight: true
+            , minLength: 1
+        }, {
+            name: 'sacitems'
+            , displayKey: 'vendorName'
+            , source: sacitems.ttAdapter()
+        }).on('typeahead:selected', function (e, obj) {
+            $('#vendorNameDialogue').find('input[name="vendorName"]').value = "";
+
+            hasErrors = true;
+        });
+});
+</script>
+</html>

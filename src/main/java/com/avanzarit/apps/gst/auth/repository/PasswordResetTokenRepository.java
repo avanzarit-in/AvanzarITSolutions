@@ -1,7 +1,7 @@
 package com.avanzarit.apps.gst.auth.repository;
 
 import com.avanzarit.apps.gst.auth.model.PasswordResetToken;
-import com.avanzarit.apps.gst.auth.model.User;
+import com.avanzarit.apps.gst.auth.db.model.DbUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +13,7 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
 
     PasswordResetToken findByToken(String token);
 
-    PasswordResetToken findByUser(User user);
+    PasswordResetToken findByUserId(String userId);
 
     Stream<PasswordResetToken> findAllByExpiryDateLessThan(Date now);
 

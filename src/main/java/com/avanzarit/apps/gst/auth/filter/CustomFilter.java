@@ -12,6 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Set;
 
 public class CustomFilter extends GenericFilterBean {
@@ -30,7 +31,7 @@ public class CustomFilter extends GenericFilterBean {
             Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
             if (roles.contains("ROLE_PASSWORD_CHANGE")&& (uri.equals("/")||uri.equals("/mdm"))) {
-                res.sendRedirect(uri == "/" ? "" : uri + "/updatePassword");
+                res.sendRedirect(Objects.equals(uri, "/") ? "/updatePassword" : uri + "/updatePassword");
                 return;
             }
         }

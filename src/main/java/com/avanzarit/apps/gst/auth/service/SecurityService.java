@@ -1,10 +1,12 @@
 package com.avanzarit.apps.gst.auth.service;
 
-public interface SecurityService {
+import org.springframework.security.core.userdetails.UserDetails;
+
+public interface SecurityService<T> {
 
     String findLoggedInUsername();
 
-    void autologin(String username, String password);
+    void changePassword(UserDetails user,String newPassword);
 
     String validatePasswordResetToken(String id, String token);
 }

@@ -1,6 +1,6 @@
 package com.avanzarit.apps.gst.batch.job.userimport;
 
-import com.avanzarit.apps.gst.auth.model.User;
+import com.avanzarit.apps.gst.auth.db.model.DbUser;
 import com.avanzarit.apps.gst.batch.job.ReaderStepListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +14,7 @@ import org.springframework.batch.core.annotation.OnReadError;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserReaderStepListener extends ReaderStepListener<User> {
+public class UserReaderStepListener extends ReaderStepListener<DbUser> {
 
     private static final Logger LOGGER = LogManager.getLogger(UserReaderStepListener.class);
 
@@ -24,7 +24,7 @@ public class UserReaderStepListener extends ReaderStepListener<User> {
     }
 
     @AfterRead
-    public void afterRead(User item) {
+    public void afterRead(DbUser item) {
         super.afterReadItem(item);
     }
 
